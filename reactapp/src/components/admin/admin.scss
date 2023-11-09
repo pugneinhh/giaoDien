@@ -5,10 +5,21 @@
         height: 100vh;
     }
     .admin-contents{
-        flex: 100%;
+
+
+        flex:100%;
+        background-color: #e6e8e7;
+
     }
 }
 .admin-header{
+    background-color: #f7faf9;
+    align-items: center;
     
-    height: 30px;
+    .admin-right{
+      display: flex;
+      justify-content: end;
+      margin-right: 50px;
+      align-items: center;
+    }
 }
