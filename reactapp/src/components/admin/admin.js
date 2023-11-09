@@ -10,16 +10,16 @@ const Admin=(props) =>{
            <div class="admin-sidebar">
                 <SideBar collapsed={collapsed}/>
             </div>
-            <div className="admin-content">
+            <div className="admin-contents">
                 <div className="admin-header">
                     {collapsed ? 
-                   
                    <TbLayoutSidebarRightCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/>:
                    <TbLayoutSidebarLeftCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/> 
                     }
                 </div>
-                
-                hehehehhe
+                <div className="admin-content">
+                    <Outlet/>
+                </div>
             </div>
         </div>
         

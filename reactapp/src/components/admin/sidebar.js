@@ -1,5 +1,6 @@
 import 'react-pro-sidebar/dist/css/styles.css';
-import {FaTachometerAlt,FaGem,FaList,FaGithub,FaReLaughWink,FaHeart, FaProductHunt, FaTshirt, FaMoneyBill, FaTag, FaUsersCog, FaUserTie, FaUserFriends, FaChartLine} from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {FaGithub,FaTshirt, FaTag} from 'react-icons/fa';
 import { GoNumber } from 'react-icons/go';
 import { AiOutlineColumnHeight } from 'react-icons/ai';
 import {  GiMaterialsScience } from 'react-icons/gi';
@@ -10,6 +11,7 @@ import { RxDashboard } from 'react-icons/rx';
 import { FaCartShopping, FaMoneyBills } from 'react-icons/fa6';
 import { PiTrademarkFill } from 'react-icons/pi';
 import { LuBadgePercent } from 'react-icons/lu';
+import {Link} from "react-router-dom";
 import {
     ProSidebar,
     Menu,
@@ -19,8 +21,9 @@ import {
     SidebarContent,
     SidebarFooter,
 } from 'react-pro-sidebar';
-import Image from '../../assets/images/logo.jpg';
+
 import { RiAccountCircleFill } from 'react-icons/ri';
+import { Image } from 'antd';
 
 
 const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
@@ -125,6 +128,7 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                             suffix={<span className='badge red'>New</span>}
                         >
                             Hóa Đơn
+                            <Link to='/hoa-don'></Link>
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
@@ -163,7 +167,7 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                             rel="noopener noreferrer"
                         >
                             <FaGithub color='#f7faf9'size={20}/>
-                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',color:'white', textDecoration:'none' }}>
                                 Mi Shoes
                             </span>
                         </a>}
