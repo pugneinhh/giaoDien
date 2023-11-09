@@ -1,13 +1,22 @@
 .admin-container{
     display: flex;
+    width: 100vw;
     .admin-sidebar{
         height: 100vh;
     }
     .admin-contents{
-        width: 100vw;
+        flex:100%;
+        background-color: #e6e8e7;
     }
 }
 .admin-header{
+    background-color: #f7faf9;
+    align-items: center;
     
-    height: 30px;
+    .admin-right{
+      display: flex;
+      justify-content: end;
+      margin-right: 50px;
+      align-items: center;
+    }
 }
