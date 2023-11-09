@@ -10,7 +10,10 @@ const App=() => {
       <div className='col-auto'>
         <Admin />
       </div>
-      <Outlet></Outlet>
+      <div>
+          {/* <Outlet></Outlet> */}
+      </div>
+    
     </div>
         
   );

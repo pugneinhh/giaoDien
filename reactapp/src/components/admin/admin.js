@@ -24,6 +24,11 @@ const Admin=(props) =>{
             }} icon={collapsed ? 
                    <TbLayoutSidebarRightCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/>:
                    <TbLayoutSidebarLeftCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/> 
+
+                    }
+                    
+                </div>
+
                     } />
                     
                     
@@ -37,6 +42,7 @@ const Admin=(props) =>{
                     </div>
                    
                 </Header>
+
                 <div className="admin-content">
                     <Outlet/>
                 </div>

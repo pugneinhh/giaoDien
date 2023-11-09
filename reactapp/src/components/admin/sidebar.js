@@ -16,6 +16,7 @@ import Badge from 'react-bootstrap/Badge';
 import {Image } from 'antd';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import logoShop from '../../assets/images/logo.jpg';
+
 import {
     ProSidebar,
     Menu,
@@ -29,10 +30,12 @@ import {
 
 
 
+
 const SideBar=(props)=>{
     const {collapsed,toggled,handleToggleSidebar}=props;
     return(
         <ProSidebar  className='nav-sidebar'
+
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
@@ -55,11 +58,13 @@ const SideBar=(props)=>{
                     >
                         <div className='logo_slibar'>
                             {!collapsed ? <Image width={100} src={logoShop} /> : <Image src={logoShop} rounded />}
+
                         </div>
                         <span> Mi Shoes</span>
                     </div>
                 </SidebarHeader>
                 <Menu iconShape="circle">
+          
                         <MenuItem
                             icon={<RxDashboard color='#f7faf9' size={20} />}
                         >
