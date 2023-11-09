@@ -16,6 +16,7 @@ const Admin=(props) =>{
                    <TbLayoutSidebarRightCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/>:
                    <TbLayoutSidebarLeftCollapseFilled  size={30} onClick={()=>{setCollapsed(!collapsed)}}/> 
                     }
+                    
                 </div>
                 <div className="admin-content">
                     <Outlet/>

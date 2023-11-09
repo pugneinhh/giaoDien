@@ -12,6 +12,8 @@ import { FaCartShopping, FaMoneyBills } from 'react-icons/fa6';
 import { PiTrademarkFill } from 'react-icons/pi';
 import { LuBadgePercent } from 'react-icons/lu';
 import {Link} from "react-router-dom";
+import LoGoShop from "../../assets/images/logo.jpg";
+import { Image } from 'antd';
 import {
     ProSidebar,
     Menu,
@@ -23,12 +25,13 @@ import {
 } from 'react-pro-sidebar';
 
 import { RiAccountCircleFill } from 'react-icons/ri';
-import { Image } from 'antd';
+
 
 
 const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
     return(
         <ProSidebar  className='nav-sidebar'
+
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
@@ -50,12 +53,16 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                         }}
                     >
                         <div className='logo_slibar'>
-                            {!collapsed ? <Image className='img_logo_slibar' src='../../assets/images/logo.jpg' /> : <Image className='img_logo_slibar' src='../../assets/images/logo.jpg' rounded />}
+                        {!collapsed ? <Image
+                            width={100}
+                            src={LoGoShop}
+                        /> : <Image className='img_logo_slibar' src={LoGoShop} rounded />}
                         </div>
                         <span> Mi Shoes</span>
                     </div>
                 </SidebarHeader>
                 <Menu iconShape="circle">
+          
                         <MenuItem
                             icon={<RxDashboard color='#f7faf9' size={20} />}
                         >

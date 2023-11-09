@@ -1,10 +1,11 @@
 .admin-container{
     display: flex;
+    width: 100vw;
     .admin-sidebar{
         height: 100vh;
     }
     .admin-contents{
-        width: 100vw;
+        flex: 100%;
     }
 }
 .admin-header{
