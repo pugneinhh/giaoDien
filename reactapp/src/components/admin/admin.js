@@ -1,5 +1,5 @@
 import { Outlet,Link } from "react-router-dom";
-import SideBar from "./sidebar";
+import SideBar from "./Sidebar";
 import './admin.scss';
 import { TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarRightCollapseFilled } from "react-icons/tb"
 import { useState } from "react";
