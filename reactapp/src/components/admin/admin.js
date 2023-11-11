@@ -1,15 +1,15 @@
-import { Outlet,Link } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import SideBar from "./sidebar";
 import './admin.scss';
 import { TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarRightCollapseFilled } from "react-icons/tb"
 import { useState } from "react";
-import {Avatar, Space,Badge, Button} from 'antd';
+import { Avatar, Space, Badge, Button } from 'antd';
 import { IoNotifications } from 'react-icons/io5';
 import { FaUserAlt } from 'react-icons/fa';
 import { Header } from "antd/es/layout/layout";
-const Admin=(props) =>{
-    const [collapsed,setCollapsed] = useState(false);
-    return(
+const Admin = (props) => {
+    const [collapsed, setCollapsed] = useState(false);
+    return (
         <div className="admin-container">
            <div class="admin-sidebar">
                 <SideBar collapsed={collapsed}/>
@@ -27,9 +27,7 @@ const Admin=(props) =>{
 
                     }
                     
-                </div>
-
-                    } />
+        />
                     
                     
                     <div className="admin-right float-end" >
@@ -46,8 +44,8 @@ const Admin=(props) =>{
                 <div className="admin-content">
                     <Outlet/>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
         
     )
 }
