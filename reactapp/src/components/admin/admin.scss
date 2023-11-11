@@ -5,17 +5,18 @@
         height: 100vh;
     }
     .admin-contents{
-
-
         flex:100%;
         background-color: #e6e8e7;
-
+        flex-direction: column; 
+    }
+    .admin-content{
+        background-color: #e6e8e7;
     }
 }
 .admin-header{
     background-color: #f7faf9;
     align-items: center;
-    
+    transition: 0.3s; 
     .admin-right{
       display: flex;
       justify-content: end;
@@ -23,3 +24,9 @@
       align-items: center;
     }
 }
+.admin-header.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Đảm bảo header nằm trên cùng khi cố định */
+  }
