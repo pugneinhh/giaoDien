@@ -152,6 +152,7 @@ const SideBar=(props)=>{
                             icon={<FaTag color='#f7faf9'size={20} />}
                         >
                             Voucher
+                            <Link to='/voucher'></Link>
                         </MenuItem>
                     </Menu>
 

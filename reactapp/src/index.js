@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './views/App';
 import reportWebVitals from './reportWebVitals';
-import Admin from './components/admin/Admin';
 import HoaDon from './components/hoaDon/HoaDon';
+import Voucher from './components/voucher/Voucher';
 import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +14,7 @@ root.render(
       <Routes>
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}></Route>
+          <Route path='voucher' element = {<Voucher/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
