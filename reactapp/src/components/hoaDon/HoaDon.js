@@ -1,11 +1,44 @@
 import React, { useState } from 'react';
-import Nav from 'react-bootstrap/Nav';
-import { DownOutlined } from '@ant-design/icons';
 import { Space,Table } from 'antd';
+import './HoaDon.scss';
+import { DndContext, PointerSensor, useSensor } from '@dnd-kit/core';
+import axios from "axios";
+import {
+    arrayMove,
+    horizontalListSortingStrategy,
+    SortableContext,
+    useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Tabs } from 'antd';
+const DraggableTabNode = ({ className, ...props }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: props['data-node-key'],
+    });
+    const style = {
+        ...props.style,
+        transform: CSS.Transform.toString(
+            transform && {
+                ...transform,
+                scaleX: 1,
+            },
+        ),
+        transition,
+        cursor: 'cursor',
+    };
+    return React.cloneElement(props.children, {
+        ref: setNodeRef,
+        style,
+        ...attributes,
+        ...listeners,
+    });
+};
+
 const columns = [
     {
-        title: 'Name',
+        title: 'STT',
         dataIndex: 'name',
+       
     },
     {
         title: 'Age',
@@ -34,12 +67,7 @@ const columns = [
         render: () => (
             <Space size="middle">
                 <a>Delete</a>
-                <a>
-                    <Space>
-                        More actions
-                        <DownOutlined />
-                    </Space>
-                </a>
+    
             </Space>
         ),
     },
@@ -54,9 +82,7 @@ for (let i = 1; i <= 7; i++) {
         description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
     });
 }
-const defaultExpandable = {
-    expandedRowRender: (record) => <p>{record.description}</p>,
-};
+
 const defaultTitle = () => 'Here is title';
 const defaultFooter = () => '';
 
@@ -72,18 +98,22 @@ const HoaDon = () => {
     const [hasData] = useState(true);
     const [tableLayout] = useState();
     const [top] = useState('none');
-    const [bottom] = useState('bottomRight');
+    const [bottom] = useState('bottomCenter');
     const [ellipsis] = useState(false);
     const [yScroll] = useState(false);
-    const [xScroll] = useState();
-
+    const [xScroll] = useState(false);
+   
+    // load hoa don 
+    const loadHoaDon = async()=>{
+        const refult = await axios.get("")
+    }
 
     const scroll = {};
     if (yScroll) {
         scroll.y = 240;
     }
     if (xScroll) {
-        scroll.x = '100vw';
+        scroll.x = 140;
     }
     const tableColumns = columns.map((item) => ({
         ...item,
@@ -102,57 +132,149 @@ const HoaDon = () => {
         showHeader,
         footer: showFooter ? defaultFooter : undefined,
         rowSelection,
-        scroll,
         tableLayout,
+    };
+    const [items, setItems] = useState([
+        {
+            key: '1',
+            label: 'Tất cả',
+            children: 
+
+                <Table
+                    {...tableProps}
+                    pagination={{
+                        position: [top, bottom],
+
+                    }}
+                    columns={tableColumns}
+                    dataSource={hasData ? data : []}
+                    headerBg='#fafafa'
+                    className='mt-3'
+                    
+                />
+          ,
+        },
+        {
+            key: '2',
+            label: 'Chờ xác nhận',
+            children:
+
+                <Table
+                    {...tableProps}
+                    pagination={{
+                        position: [top, bottom],
+
+                    }}
+                    columns={tableColumns}
+                    dataSource={hasData ? data : []}
+
+                    className='mt-3'
+                />
+            ,
+        },
+        {
+            key: '3',
+            label: 'Xác nhận',
+            children:
+
+                <Table
+                    {...tableProps}
+                    pagination={{
+                        position: [top, bottom],
+
+                    }}
+                    columns={tableColumns}
+                    dataSource={hasData ? data : []}
+
+                    className='mt-3'
+                />
+            ,
+        },
+        {
+            key: '4',
+            label: 'Chờ vận chuyển',
+            children:
+
+                <Table
+                    {...tableProps}
+                    pagination={{
+                        position: [top, bottom],
+
+                    }}
+                    columns={tableColumns}
+                    dataSource={hasData ? data : []}
+
+                    className='mt-3'
+                />
+            ,
+        },
+        {
+            key: '5',
+            label: 'Thanh toán',
+            children:
+
+                <Table
+                    {...tableProps}
+                    pagination={{
+                        position: [top, bottom],
+
+                    }}
+                    columns={tableColumns}
+                    dataSource={hasData ? data : []}
+
+                    className='mt-3'
+                />
+            ,
+        },
+        {
+            key: '6',
+            label: 'Hủy',
+            children: <p>heheh</p>
+            ,
+        },
+    ]);
+    const sensor = useSensor(PointerSensor, {
+        activationConstraint: {
+            distance: 10,
+        },
+    });
+    const onDragEnd = ({ active, over }) => {
+        if (active.id !== over?.id) {
+            setItems((prev) => {
+                const activeIndex = prev.findIndex((i) => i.key === active.id);
+                const overIndex = prev.findIndex((i) => i.key === over?.id);
+                return arrayMove(prev, activeIndex, overIndex);
+            });
+        }
     };
     return (
         <div>
             <div class="container-fluid">
-                <h3 >Danh sách hóa đơn</h3>
+                <h4 className='text-center pt-1' >Danh sách hóa đơn</h4>
 
-                <div className='container-fluid mt-5'>
+                <div className='container-fluid mt-4'>
                     <div>
-                        <Nav variant="tabs" defaultActiveKey="/home">
-                            <Nav.Item>
-                                <Nav.Link href="/home">Tất cả</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Chờ xác nhận</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Xác nhận</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Chờ vận chuyển</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Vận chuyển</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Thanh toán</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Hoàn thành</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link eventKey="link-1">Hủy</Nav.Link>
-                            </Nav.Item>
-                        </Nav>
+                        <Tabs
+                            items={items}
+                            renderTabBar={(tabBarProps, DefaultTabBar) => (
+                                <DndContext sensors={[sensor]} onDragEnd={onDragEnd}>
+                                    <SortableContext items={items.map((i) => i.key)} strategy={horizontalListSortingStrategy}>
+                                        <DefaultTabBar {...tabBarProps}>
+                                            {(node) => (
+                                                <DraggableTabNode {...node.props} key={node.key}>
+                                                    {node}
+                                                </DraggableTabNode>
+                                            )}
+                                        </DefaultTabBar>
+                                    </SortableContext>
+                                </DndContext>
+                            )}
+                        />
                     </div>
                 </div>
             </div>
 
-
-
-            <Table
-                {...tableProps}
-                pagination={{
-                    position: [top, bottom],
-                }}
-                columns={tableColumns}
-                dataSource={hasData ? data : []}
-                scroll={scroll}
-            />
+           
         </div>
     )
 
