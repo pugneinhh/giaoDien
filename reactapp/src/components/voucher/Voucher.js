@@ -11,7 +11,11 @@ import {
   Radio,
    Switch, 
    Table,
+   Tag,
 } from 'antd';
+import {MdDeleteForever} from 'react-icons/md';
+import {IoInformation, IoInformationCircleOutline} from 'react-icons/io5';
+import {BsPencilSquare} from 'react-icons/bs';
 const onChange = (value) => {
     console.log('changed', value);
   };
@@ -75,7 +79,7 @@ const columns = [
   },
   {
     title: 'Trạng thái',
-    dataIndex: 'address',
+    dataIndex: 'trangThai',
     filters: [
       {
         text: 'Hoạt động',
@@ -94,12 +98,14 @@ const columns = [
     sorter: true,
     render: () => (
       <Space size="middle">
-        <a>Delete</a>
         <a>
-          <Space>
-            More actions
-            <DownOutlined />
-          </Space>
+        <Button  danger shape="circle" icon={<IoInformation size={22} />}  />
+        </a>
+        <a>
+        <Button success shape="circle" icon={<BsPencilSquare size={22} />}  />
+        </a>
+        <a>
+          <Button type="primary" danger shape="circle" icon={<MdDeleteForever size={20} />}  />
         </a>
       </Space>
     ),
@@ -112,6 +118,7 @@ for (let i = 1; i <= 10; i++) {
     name: 'John Brown',
     age: Number(`${i}2`),
     address: `New York No. ${i} Lake Park`,
+    trangThai:<Tag color="success" >Hoạt động</Tag>,
     description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
   });
 }
@@ -147,26 +154,6 @@ const Voucher = ()=>{
     const [yScroll, setYScroll] = useState(false);
     const [xScroll, setXScroll] = useState();
     
-    const handleSizeChange = (e) => {
-      setSize(e.target.value);
-    };
-    const handleTableLayoutChange = (e) => {
-      setTableLayout(e.target.value);
-    };
-   
-
-    const handleRowSelectionChange = (enable) => {
-      setRowSelection(enable ? {} : undefined);
-    };
-    const handleYScrollChange = (enable) => {
-      setYScroll(enable);
-    };
-    const handleXScrollChange = (e) => {
-      setXScroll(e.target.value);
-    };
-    const handleDataChange = (newHasData) => {
-      setHasData(newHasData);
-    };
     const scroll = {};
     if (yScroll) {
       scroll.y = 240;

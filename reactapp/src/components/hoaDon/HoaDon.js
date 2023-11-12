@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Space,Table } from 'antd';
 import './HoaDon.scss';
 import { DndContext, PointerSensor, useSensor } from '@dnd-kit/core';
-import axios from "axios";
+// import axios from "axios";
 import {
     arrayMove,
     horizontalListSortingStrategy,
@@ -104,9 +104,9 @@ const HoaDon = () => {
     const [xScroll] = useState(false);
    
     // load hoa don 
-    const loadHoaDon = async()=>{
-        const refult = await axios.get("")
-    }
+    // const loadHoaDon = async()=>{
+    //     const refult = await axios.get("")
+    // }
 
     const scroll = {};
     if (yScroll) {
