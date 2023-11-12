@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './views/App';
 import reportWebVitals from './reportWebVitals';
-import Admin from './components/admin/Admin';
 import HoaDon from './components/hoaDon/HoaDon';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import KhuyenMai from './components/khuyenMai/KhuyenMai';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -14,6 +14,7 @@ root.render(
       <Routes>
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}></Route>
+          <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
