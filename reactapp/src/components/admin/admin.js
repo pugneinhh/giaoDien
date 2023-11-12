@@ -1,3 +1,38 @@
+
+import { Outlet,Link } from "react-router-dom";
+import SideBar from "./Sidebar.js";
+import './admin.scss';
+import { TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarRightCollapseFilled } from "react-icons/tb"
+import { useEffect, useState } from "react";
+import {Avatar,Badge, Button} from 'antd';
+import { IoNotifications } from 'react-icons/io5';
+import { FaUserAlt } from 'react-icons/fa';
+import { Header } from "antd/es/layout/layout";
+const Admin=(props) =>{
+    const [collapsed,setCollapsed] = useState(false);
+    const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+    
+  useEffect(() => {
+    const handleScroll = () => {
+      // Khi người dùng cuộn trang, kiểm tra vị trí cuộn so với vị trí của sidebar
+      const header = document.querySelector('.admin-header');
+      if (header) {
+        const headerTop = header.offsetTop;
+        const isFixed = window.scrollY > headerTop;
+        setIsHeaderFixed(isFixed);
+      }
+    };
+
+    // Thêm sự kiện cuộn
+    window.addEventListener('scroll', handleScroll);
+
+    // Loại bỏ sự kiện cuộn khi component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+    return(
+        <div className={`admin-container ${isHeaderFixed ? 'fixed' : ''}`}>
 import { Outlet, Link } from "react-router-dom";
 import SideBar from "./sidebar";
 import './admin.scss';
@@ -27,7 +62,13 @@ const Admin = (props) => {
 
                     }
                     
+
+                
+
+                    />
+
         />
+
                     
                     
                     <div className="admin-right float-end" >
