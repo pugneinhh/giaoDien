@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import {DownOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   DatePicker,
@@ -7,49 +6,82 @@ import {
   Input,
   InputNumber,
   Select,
-  Space,
-  Radio,
-   Switch, 
+  Space, 
    Table,
    Tag,
 } from 'antd';
 import {MdDeleteForever} from 'react-icons/md';
-import {IoInformation, IoInformationCircleOutline} from 'react-icons/io5';
+import {IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
+import axios from 'axios';
 const onChange = (value) => {
     console.log('changed', value);
   };
-//table
+
+const defaultExpandable = {
+  expandedRowRender: (record) => <p>{record.description}</p>,
+};
+
+const Voucher = ()=>{
+    //của form voucher
+    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
+    const handleChange = (value) => {
+        console.log(`Selected value: ${value}`);
+        setSelectedValue(value);
+      };
+    
+
+    const [componentSize, setComponentSize] = useState('default');
+    const onFormLayoutChange = ({ size }) => {
+      setComponentSize(size);
+    };
+    ///call api
+
+    const[voucher,setVouchers]=useState([])
+    useEffect(()=>{
+        loadVoucher();
+       
+    },[]);
+  
+    const loadVoucher=async()=>{
+       
+        const result = await axios.get('http://localhost:8080/voucher', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setVouchers(result.data); 
+        }  
+    
+      
+    };
+    //của table
+    //table
 
 
 const columns = [
   {
+    title: 'STT',
+    dataIndex: 'id',
+    key: 'id',
+    render: (id,record,index) => {++index; return index},
+    showSortTooltip:false,
+
+},
+  {
     title: 'Mã Voucher',
-    dataIndex: 'name',
+    dataIndex: 'ma',
+    sorter: (a, b) => a.ma - b.ma,
   },
   {
     title: 'Phương thức',
-    dataIndex: 'age',
-    sorter: (a, b) => a.age - b.age,
-  },
-  {
-    title: 'Mức độ',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    dataIndex: 'phuongThuc',
+    sorter: (a, b) => a.phuongThuc - b.phuongThuc,
   },
   {
     title: 'Ngày bắt đầu',
-    dataIndex: 'address',
+    dataIndex: 'ngayBatDau',
     filters: [
       {
         text: 'London',
@@ -64,22 +96,29 @@ const columns = [
   },
   {
     title: 'Ngày kết thúc',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    dataIndex: 'ngayKetThuc',
+    sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
   },
   {
     title: 'Trạng thái',
     dataIndex: 'trangThai',
+    key: 'trangThai',
+            render: (trangThai) => (
+                <>
+                    {
+                        (trangThai == 0) ?
+                            (
+                                <Tag color="green">
+                                    Hoạt động
+                                </Tag>
+                            ) :
+                            
+                                    <Tag color="red">
+                                        Ngừng hoạt động
+                                    </Tag>
+                              
+                    }
+                </>),
     filters: [
       {
         text: 'Hoạt động',
@@ -111,48 +150,19 @@ const columns = [
     ),
   },
 ];
-const data = [];
-for (let i = 1; i <= 10; i++) {
-  data.push({
-    key: i,
-    name: 'John Brown',
-    age: Number(`${i}2`),
-    address: `New York No. ${i} Lake Park`,
-    trangThai:<Tag color="success" >Hoạt động</Tag>,
-    description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
-  });
-}
-const defaultExpandable = {
-  expandedRowRender: (record) => <p>{record.description}</p>,
-};
 
-const Voucher = ()=>{
-    //của form voucher
-    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
-    const handleChange = (value) => {
-        console.log(`Selected value: ${value}`);
-        setSelectedValue(value);
-      };
-    
-
-    const [componentSize, setComponentSize] = useState('default');
-    const onFormLayoutChange = ({ size }) => {
-      setComponentSize(size);
-    };
-
-    //của table
-    const [bordered, setBordered] = useState(false);
-    const [size, setSize] = useState('large');
-    const [expandable, setExpandable] = useState(undefined);
-    const [showHeader, setShowHeader] = useState(true);
-    const [rowSelection, setRowSelection] = useState({});
-    const [hasData, setHasData] = useState(true);
-    const [tableLayout, setTableLayout] = useState();
-    const [top, setTop] = useState('none');
-    const [bottom, setBottom] = useState('bottomCenter');
-    const [ellipsis, setEllipsis] = useState(false);
-    const [yScroll, setYScroll] = useState(false);
-    const [xScroll, setXScroll] = useState();
+    const [bordered] = useState(false);
+    const [size] = useState('large');
+    const [expandable] = useState(undefined);
+    const [showHeader] = useState(true);
+    const [rowSelection] = useState({});
+    const [hasData] = useState(true);
+    const [tableLayout] = useState();
+    const [top] = useState('none');
+    const [bottom] = useState('bottomCenter');
+    const [ellipsis] = useState(false);
+    const [yScroll] = useState(false);
+    const [xScroll] = useState();
     
     const scroll = {};
     if (yScroll) {
@@ -174,7 +184,6 @@ const Voucher = ()=>{
       size,
       expandable,
       showHeader,
-      rowSelection,
       scroll,
       tableLayout,
     };
@@ -278,7 +287,7 @@ const Voucher = ()=>{
           position: [top, bottom],
         }}
         columns={tableColumns}
-        dataSource={hasData ? data : []}
+        dataSource={hasData ? voucher : []}
         scroll={scroll}
       />
     </>

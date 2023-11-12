@@ -1,8 +1,7 @@
-
 import { FloatButton } from 'antd';
 import './App.scss';
 import Admin from '../components/admin/Admin';
-import {  Outlet } from 'react-router-dom';
+
 
 const App=() => {
   return (
@@ -11,7 +10,7 @@ const App=() => {
         <Admin />
       </div>
       <div>
-          {/* <Outlet></Outlet> */}
+        {/* <Outlet></Outlet> */}
       </div>
       <FloatButton.BackTop />
     </div>
