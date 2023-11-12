@@ -16,6 +16,7 @@ import Badge from 'react-bootstrap/Badge';
 import {Image } from 'antd';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import logoShop from '../../assets/images/logo.jpg';
+import './sidebar.scss'
 
 import {
     ProSidebar,
