@@ -16,6 +16,7 @@ import Badge from 'react-bootstrap/Badge';
 import {Image } from 'antd';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import logoShop from '../../assets/images/logo.jpg';
+import './sidebar.scss'
 
 import {
     ProSidebar,
@@ -152,6 +153,7 @@ const SideBar=(props)=>{
                             icon={<FaTag color='#f7faf9'size={20} />}
                         >
                             Voucher
+                            <Link to='/voucher'></Link>
                         </MenuItem>
                     </Menu>
 
