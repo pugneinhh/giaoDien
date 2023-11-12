@@ -6,8 +6,9 @@ import Admin from '../components/admin/Admin';
 const App=() => {
   return (
     <div className='d-flex'>
+
       <div className='col-auto'>
-        <Admin />
+      { <Admin /> }
       </div>
       <div>
         {/* <Outlet></Outlet> */}
