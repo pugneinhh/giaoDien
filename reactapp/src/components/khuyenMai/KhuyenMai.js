@@ -1,9 +1,11 @@
-import React, { useState, useEffect, Text } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Space, Table, Tag, Breadcrumb } from "antd";
+import { Space, Table, Tag } from "antd";
 import "./KhuyenMai.scss";
 import { DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
+
+
 
 export default function KhuyenMai() {
   const [khuyenMai, setKhuyenMais] = useState([]);
@@ -18,7 +20,7 @@ export default function KhuyenMai() {
     });
     if (result.status === 302) {
       setKhuyenMais(result.data);
-    }
+    } 
   };
   const columns = [
     {
@@ -60,29 +62,31 @@ export default function KhuyenMai() {
 
       filters: [
         {
-          text: "London",
-          value: "London",
+          text: "Tiền Mặt",
+          value: "Tiền Mặt",
         },
         {
-          text: "New York",
-          value: "New York",
+          text: "Phần Trăm",
+          value: "Phầm Trăm",
         },
       ],
       onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
       title: "Khuyến mại tối đa",
-      dataIndex: ["loai", "khuyen_mai_toi_da"],
-      key: ["loai", "khuyen_mai_toi_da"],
-      render: (loai, khuyen_mai_toi_da) => (
+      dataIndex: "khuyen_mai_toi_da",
+      key: "khuyen_mai_toi_da",
+      render: (khuyen_mai_toi_da) => (
         <>
-          {loai === "Tiền Mặt"
-            ? (console.log("Loại" + loai),
+
+          {     
+          khuyenMai.loai === "Tiền Mặt"
+            ? (console.log("Loại" + khuyenMai.loai),
               new Intl.NumberFormat("vi-Vi", {
                 style: "currency",
                 currency: "VND",
               }).format(khuyen_mai_toi_da))
-            : (console.log("Loại" + loai), khuyen_mai_toi_da + "%")}
+            : (console.log("Loại" + khuyenMai.loai), khuyen_mai_toi_da + "%")}
         </>
       ),
       // render : (loai,khuyen_mai_toi_da) => (
@@ -157,14 +161,14 @@ export default function KhuyenMai() {
       key: "trang_thai",
       render: (trang_thai) => (
         <>
-          {trang_thai == 0 ? (
+          {trang_thai === 0 ? (
             <Tag
               color="#f50
                 "
             >
               Sắp bắt đầu
             </Tag>
-          ) : trang_thai == 1 ? (
+          ) : trang_thai === 1 ? (
             <Tag
               color="#87d068
                 "
@@ -204,26 +208,12 @@ export default function KhuyenMai() {
   return (
     <div className="container">
       <div>
-        {/* <Breadcrumb
-          items={[
-            {
-              href: "",
-              title: "Trang chủ",
-            },
-            {
-              href: "",
-              title: (
-                <>
-                  <KhuyenMai />
-                  <span>Khuyến Mại</span>
-                </>
-              ),
-            },
-          ]}
-        /> */}
         <div className="container-fluid">
-          <h4 className="text-center pt-1">Danh sách khuyến mại</h4>
 
+          <h4 className="text-center pt-1">Danh sách khuyến mại</h4>
+          <div className = "text-center">
+            <a name="" id="" class="btn btn-primary" href="#" role="button">Thêm khuyến mại</a>
+          </div>
           <div className="container-fluid mt-4">
             <div>
               <Table dataSource={khuyenMai} columns={columns} />
