@@ -1,4 +1,5 @@
 
+import { FloatButton } from 'antd';
 import './App.scss';
 import Admin from '../components/admin/Admin';
 
@@ -12,7 +13,7 @@ const App=() => {
       <div>
           {/* <Outlet></Outlet> */}
       </div>
-    
+      <FloatButton.BackTop />
     </div>
         
   );
