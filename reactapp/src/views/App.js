@@ -1,19 +1,24 @@
 
-import { Divider } from 'antd';
+import { FloatButton } from 'antd';
 import './App.scss';
 import Admin from '../components/admin/Admin';
-import {  Outlet } from 'react-router-dom';
+
 
 const App=() => {
   return (
     <div className='d-flex'>
+
       <div className='col-auto'>
       { <Admin /> }
+
+      <div className='col'>
+        <Admin />
+
       </div>
       <div>
           {/* <Outlet></Outlet> */}
       </div>
-    
+      <FloatButton.BackTop />
     </div>
         
   );
