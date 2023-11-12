@@ -17,7 +17,6 @@ root.render(
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
         <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
-  
 
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
