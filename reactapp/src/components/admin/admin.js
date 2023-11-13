@@ -61,11 +61,14 @@ const Admin = (props) => {
                     </div>
                    
                 </Header>
-          <div className="admin-content">
-            <Outlet />
-          </div>
-        </div>
-      </div>   
+
+                
+                <div className="admin-content">
+                    <Outlet/>
+                </div>
+</div>
+</div>
+
 
   )
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
+  Collapse,
   DatePicker,
   Form,
   Input,
@@ -14,12 +15,13 @@ import {MdDeleteForever} from 'react-icons/md';
 import {IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
+import moment from 'moment';
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
 };
 
-const Voucher = ({onAddItem})=>{
+const Voucher = ()=>{
     //của form voucher
     const [selectedValue, setSelectedValue] = useState('Tiền mặt');
     const handleChange = (value) => {
@@ -33,54 +35,36 @@ const Voucher = ({onAddItem})=>{
       setComponentSize(size);
     };
 
-    const [ma,setMa]=useState('');
-    const [phuongThuc,setPhuongThuc]=useState('Tiền mặt');
-    const [mucDo,setMucDo]=useState('');
-    const [giamToiDa,setGiamToiDa]=useState('');
-    const [dieuKien,setDieuKien]=useState('');
-    const [ngayBatDau,setNgayBatDau]=useState('');
-    const [ngayKetThuc,setNgayKetThuc]=useState('');
-    const [trangThai,setTrangThai]=useState(0);
+  
     const [form] = Form.useForm();
+
+    
     const handleSubmit = (value) => {
     
-       // Khởi tạo 1 đối tượng mới
-       const newVoucher = {
-        ma,
-        phuongThuc,
-        mucDo,
-        giamToiDa,
-        dieuKien,
-        ngayBatDau,
-        ngayKetThuc,
-        trangThai
-    };
+       
       // Send a POST request to the backend
       axios.post('http://localhost:8080/voucher/add',value)
       .then(response => {
           // Update the list of items
-          onAddItem(response.data);
+          console.log(response.data);
+          loadVoucher();
           form.resetFields();
-          // Clear the form
-          // setMa('');
-          // setPhuongThuc('Tiền mặt');
-          // setMucDo('');
-          // setGiamToiDa('');
-          // setDieuKien('');
-          // setNgayBatDau('');
-          // setNgayKetThuc('');
-          // setTrangThai('0');
+          
       })
       .catch(error => console.error('Error adding item:', error));
     }
+  
     ///call api
 
     const[voucher,setVouchers]=useState([])
+    
     useEffect(()=>{
         loadVoucher();
-       
     },[]);
-  
+
+     
+
+    //loadvoucher
     const loadVoucher=async()=>{
        
         const result = await axios.get('http://localhost:8080/voucher', {
@@ -105,7 +89,6 @@ const columns = [
     key: 'id',
     render: (id,record,index) => {++index; return index},
     showSortTooltip:false,
-
 },
   {
     title: 'Mã Voucher',
@@ -120,21 +103,16 @@ const columns = [
   {
     title: 'Ngày bắt đầu',
     dataIndex: 'ngayBatDau',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    render: (ngayBatDau) => (
+      <>{moment(ngayBatDau).format("DD/MM/YYYY")}</>
+  ),
   },
   {
     title: 'Ngày kết thúc',
     dataIndex: 'ngayKetThuc',
+    render: (ngayKetThuc) => (
+      <>{moment(ngayKetThuc).format("DD/MM/YYYY")}</>
+  ),
     sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
   },
   {
@@ -159,15 +137,16 @@ const columns = [
                 </>),
     filters: [
       {
-        text: 'Hoạt động',
-        value: 'Hoạt động',
+          text: 'Hoạt động',
+          value: '0',
       },
       {
-        text: 'Ngừng hoạt động',
-        value: 'Ngừng hoạt động',
+          text: 'Ngừng hoạt động',
+          value: '1',
       },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+
+  ],
+  onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
   },
   {
     title: 'Action',
@@ -228,7 +207,17 @@ const columns = [
     return (
         <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
+            
             <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
+            <Collapse
+      items={[
+        {
+          key: '1',
+          label: 'This is default size panel header',
+          children: <p>hehehe</p>,
+        },
+      ]}
+    />
             <Form className=" row col-md-12"
       labelCol={{
         span: 6,
@@ -247,13 +236,14 @@ const columns = [
       }}
       onFinish={handleSubmit}
       form={form}
+    
     >
         <div className="col-md-4">
       <Form.Item label="Mã Voucher" name='ma'  >
         <Input  required/>
       </Form.Item>
-      <Form.Item label="Phương thức"  name='phuongThuc'>
-        <Select  value={selectedValue} onChange={handleChange}>
+      <Form.Item label="Phương thức" name='phuongThuc'>
+        <Select defaultValue={selectedValue} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
