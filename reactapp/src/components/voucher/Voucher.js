@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
+  Collapse,
   DatePicker,
   Form,
   Input,
@@ -14,9 +15,7 @@ import {MdDeleteForever} from 'react-icons/md';
 import {IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
-const onChange = (value) => {
-    console.log('changed', value);
-  };
+import moment from 'moment';
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
@@ -35,14 +34,37 @@ const Voucher = ()=>{
     const onFormLayoutChange = ({ size }) => {
       setComponentSize(size);
     };
+
+  
+    const [form] = Form.useForm();
+
+    
+    const handleSubmit = (value) => {
+    
+       
+      // Send a POST request to the backend
+      axios.post('http://localhost:8080/voucher/add',value)
+      .then(response => {
+          // Update the list of items
+          console.log(response.data);
+          loadVoucher();
+          form.resetFields();
+          
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+  
     ///call api
 
     const[voucher,setVouchers]=useState([])
+    
     useEffect(()=>{
         loadVoucher();
-       
     },[]);
-  
+
+     
+
+    //loadvoucher
     const loadVoucher=async()=>{
        
         const result = await axios.get('http://localhost:8080/voucher', {
@@ -67,7 +89,6 @@ const columns = [
     key: 'id',
     render: (id,record,index) => {++index; return index},
     showSortTooltip:false,
-
 },
   {
     title: 'Mã Voucher',
@@ -82,21 +103,16 @@ const columns = [
   {
     title: 'Ngày bắt đầu',
     dataIndex: 'ngayBatDau',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    render: (ngayBatDau) => (
+      <>{moment(ngayBatDau).format("DD/MM/YYYY")}</>
+  ),
   },
   {
     title: 'Ngày kết thúc',
     dataIndex: 'ngayKetThuc',
+    render: (ngayKetThuc) => (
+      <>{moment(ngayKetThuc).format("DD/MM/YYYY")}</>
+  ),
     sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
   },
   {
@@ -121,15 +137,16 @@ const columns = [
                 </>),
     filters: [
       {
-        text: 'Hoạt động',
-        value: 'Hoạt động',
+          text: 'Hoạt động',
+          value: '0',
       },
       {
-        text: 'Ngừng hoạt động',
-        value: 'Ngừng hoạt động',
+          text: 'Ngừng hoạt động',
+          value: '1',
       },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+
+  ],
+  onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
   },
   {
     title: 'Action',
@@ -155,7 +172,6 @@ const columns = [
     const [size] = useState('large');
     const [expandable] = useState(undefined);
     const [showHeader] = useState(true);
-    const [rowSelection] = useState({});
     const [hasData] = useState(true);
     const [tableLayout] = useState();
     const [top] = useState('none');
@@ -191,7 +207,17 @@ const columns = [
     return (
         <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
+            
             <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
+            <Collapse
+      items={[
+        {
+          key: '1',
+          label: 'This is default size panel header',
+          children: <p>hehehe</p>,
+        },
+      ]}
+    />
             <Form className=" row col-md-12"
       labelCol={{
         span: 6,
@@ -208,27 +234,30 @@ const columns = [
       style={{
         maxWidth: 1600,
       }}
+      onFinish={handleSubmit}
+      form={form}
+    
     >
         <div className="col-md-4">
-      <Form.Item label="Mã Voucher">
-        <Input />
+      <Form.Item label="Mã Voucher" name='ma'  >
+        <Input  required/>
       </Form.Item>
-      <Form.Item label="Phương thức">
-        <Select value={selectedValue} onChange={handleChange}>
+      <Form.Item label="Phương thức" name='phuongThuc'>
+        <Select defaultValue={selectedValue} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
       </div>
       <div className='col-md-4'>
-      <Form.Item label="Mức độ">
+      <Form.Item label="Mức độ" name='mucDo'>
           {selectedValue==='Tiền mặt'?
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
     :
     <InputNumber
@@ -237,43 +266,43 @@ const columns = [
       max={100}
       formatter={(value) => `${value}%`}
       parser={(value) => value.replace('%', '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
           }
       </Form.Item>
-      <Form.Item label="Giảm tối đa">
+      <Form.Item label="Giảm tối đa" name='giamToiDa'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+       
     />
       </Form.Item>
-      <Form.Item label="Điều kiện">
+      <Form.Item label="Điều kiện" name='dieuKien'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
         
       </Form.Item>
       </div>
       <div className='col-md-4'>
       
-      <Form.Item label="Ngày bắt đầu">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày bắt đầu" name='ngayBatDau'>
+      <DatePicker style={{width:'100%'}}    />
       </Form.Item>
-      <Form.Item label="Ngày kết thúc">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc'>
+      <DatePicker style={{width:'100%'}}  />
       </Form.Item>
       </div>
       
       <Form.Item className='text-center'>
-      <Button type="primary">Thêm</Button>
+      <Button type="primary" htmlType='submit'>Thêm</Button>
       </Form.Item>
       
     </Form>

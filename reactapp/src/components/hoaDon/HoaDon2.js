@@ -1,30 +1,31 @@
-import React ,{useEffect, useState}from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
-import { Space, Table } from 'antd';
+import { Button, DatePicker, Form, Select, Space, Table } from 'antd';
 import './HoaDon.scss';
-import { Tabs,Tag} from 'antd';
+import { Tabs, Tag } from 'antd';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { Link } from "react-router-dom";
-
+import moment from "moment";
+import Input from 'antd/es/input/Input';
 export default function HoaDon() {
-    const[hoaDon,setHoaDons]=useState([])
-    useEffect(()=>{
+    const [hoaDon, setHoaDons] = useState([])
+    useEffect(() => {
         loadHoaDon();
-       
-    },[]);
-  
-    const loadHoaDon=async()=>{
-       
+
+    }, []);
+
+    const loadHoaDon = async () => {
+
         const result = await axios.get('http://localhost:8080/hoa-don', {
             validateStatus: () => {
                 return true;
             },
         });
         if (result.status === 302) {
-            setHoaDons(result.data); 
-        }  
-    
-      
+            setHoaDons(result.data);
+        }
+
+
     };
     const [hoaDonCho, setHoaDonsCho] = useState([])
     useEffect(() => {
@@ -41,7 +42,7 @@ export default function HoaDon() {
         if (result.status === 302) {
             setHoaDonsCho(result.data);
         }
-       
+
 
     };
     const [hoaDonXN, setHoaDonsXN] = useState([])
@@ -67,15 +68,15 @@ export default function HoaDon() {
             title: 'STT',
             dataIndex: 'id',
             key: 'id',
-            render: (id,record,index) => {++index; return index},
-            showSortTooltip:false,
+            render: (id, record, index) => { ++index; return index },
+            showSortTooltip: false,
 
         },
         {
             title: 'Mã hóa đơn',
             dataIndex: 'ma',
             center: "true",
-       
+
             sorter: (a, b) => a.ma - b.ma,
         },
         {
@@ -91,7 +92,7 @@ export default function HoaDon() {
                     value: 'New York',
                 },
             ],
-      
+
             onFilter: (value, record) => record.address.indexOf(value) === 0,
         },
         {
@@ -125,10 +126,45 @@ export default function HoaDon() {
             onFilter: (value, record) => record.address.indexOf(value) === 0,
         },
         {
+            title: 'Loại HĐ',
+            dataIndex: 'loaiHD',
+            render: (trangThai) => (
+                <>
+                    {
+                        (trangThai == 0) ?
+                            (
+                                <Tag color="#00cc00">
+                                    Online
+                                </Tag>
+                            ) :
+
+                            (
+                                <Tag color="#FFD700">
+                                    Tại quầy
+                                </Tag>
+                            )
+                    }
+                </>),
+            filters: [
+                {
+                    text: 'London',
+                    value: 'London',
+                },
+                {
+                    text: 'New York',
+                    value: 'New York',
+                },
+
+            ],
+            onFilter: (value, record) => record.address.indexOf(value) === 0,
+        },
+        {
             title: 'Ngày mua',
 
             dataIndex: 'ngayMua',
-   
+            render: (ngayMua) => (
+                <>{moment(ngayMua).format("hh:mm:ss DD/MM/YYYY")}</>
+            ),
             filters: [
                 {
                     text: 'London',
@@ -202,14 +238,14 @@ export default function HoaDon() {
                                                 (trangThai == 6) ?
                                                     (
                                                         <Tag color="#ff0000">
-                                                           Hủy
+                                                            Hủy
                                                         </Tag>
                                                     ) :
-                                (
-                                    <Tag color="">
-                                        Đã thanh toán
-                                    </Tag>
-                                )
+                                                    (
+                                                        <Tag color="">
+                                                            Đã thanh toán
+                                                        </Tag>
+                                                    )
                     }
                 </>),
             filters: [
@@ -239,7 +275,7 @@ export default function HoaDon() {
     const onChange = (key) => {
         console.log(key);
     };
-    const items= [
+    const items = [
         {
             key: '1',
             label: 'Tất cả',
@@ -274,32 +310,85 @@ export default function HoaDon() {
             key: '7',
             label: 'Hoàn thành',
             children: <Table dataSource={hoaDonXN} columns={columns} />,
-        }, 
+        },
         {
             key: '8',
             label: 'Hủy',
             children: <Table dataSource={hoaDonXN} columns={columns} />,
         },
     ];
- 
 
-  return (
-    <div className='container'>
-          <div>
-              <div className='container-fluid'>
-                  <h4 className='text-center pt-1' >Danh sách hóa đơn</h4>
+    const [componentSize, setComponentSize] = useState('default');
+    const onFormLayoutChange = ({ size }) => {
+        setComponentSize(size);
+    };
+    return (
+        <div className='container'>
+            {/* lọc hóa đơn */}
+            <div className='container-fluid row'>
+                <h4 className='pt-1' >Lọc</h4>
+                <Form className="row col-md-12"
+                    labelCol={{
+                        span: 6,
+                    }}
+                    wrapperCol={{
+                        span: 14,
+                    }}
+                    layout="horizontal"
+                    initialValues={{
+                        size: componentSize,
+                    }}
+                    onValuesChange={onFormLayoutChange}
+                    size={componentSize}
+                    style={{
+                        maxWidth: 1600,
 
-                  <div className='container-fluid mt-4'>
-                      <div>
-                          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-                     
-                      </div>
-                  </div>
-              </div>
-          </div>
-         
-        
-    </div>
-  )
-  
+                    }}
+                >
+                    <div className="col-md-6">
+                        <Form.Item label="Tìm kiếm">
+                            <Input />
+                        </Form.Item>
+                        <Form.Item label="Phương thức">
+                            <Select >
+                                <Select.Option value="Tại quầy">Tại quầy</Select.Option>
+                                <Select.Option value="Online">Online</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    </div>
+                    <div className='col-md-6'>
+                        <Form.Item label="Ngày bắt đầu">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                        <Form.Item label="Ngày kết thúc">
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    </div>
+                 
+                    <Form.Item className='text-end '>
+                            <Button type="primary" >Tìm kiếm</Button>
+                        </Form.Item>
+                 
+
+
+                </Form>
+
+            </div>
+            {/* bảng hóa đơn */}
+            <div className='container-fluid'>
+                <h4 className='' >Danh sách hóa đơn</h4>
+
+                <div className='container-fluid mt-2'>
+                    <div>
+                        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    )
+
 }
