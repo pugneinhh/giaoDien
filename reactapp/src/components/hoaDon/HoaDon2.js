@@ -128,6 +128,7 @@ export default function HoaDon() {
         {
             title: 'Loại HĐ',
             dataIndex: 'loaiHD',
+            key: 'loaiHD',
             render: (trangThai) => (
                 <>
                     {
@@ -147,16 +148,16 @@ export default function HoaDon() {
                 </>),
             filters: [
                 {
-                    text: 'London',
-                    value: 'London',
+                    text: 'Online',
+                    value: '0',
                 },
                 {
-                    text: 'New York',
-                    value: 'New York',
+                    text: 'Tại quầy',
+                    value: '1',
                 },
 
             ],
-            onFilter: (value, record) => record.address.indexOf(value) === 0,
+            onFilter: (value, record) => record.loaiHD.indexOf(value) === 0,
         },
         {
             title: 'Ngày mua',
@@ -251,14 +252,14 @@ export default function HoaDon() {
             filters: [
                 {
                     text: 'London',
-                    value: 'London',
+                    value: '0',
                 },
                 {
                     text: 'New York',
-                    value: 'New York',
+                    value: '1',
                 },
             ],
-            onFilter: (value, record) => record.address.indexOf(value) === 0,
+            onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
         },
         {
             title: 'Action',
