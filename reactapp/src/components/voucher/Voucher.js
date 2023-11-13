@@ -14,15 +14,12 @@ import {MdDeleteForever} from 'react-icons/md';
 import {IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
-const onChange = (value) => {
-    console.log('changed', value);
-  };
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
 };
 
-const Voucher = ()=>{
+const Voucher = ({onAddItem})=>{
     //của form voucher
     const [selectedValue, setSelectedValue] = useState('Tiền mặt');
     const handleChange = (value) => {
@@ -35,6 +32,47 @@ const Voucher = ()=>{
     const onFormLayoutChange = ({ size }) => {
       setComponentSize(size);
     };
+
+    const [ma,setMa]=useState('');
+    const [phuongThuc,setPhuongThuc]=useState('Tiền mặt');
+    const [mucDo,setMucDo]=useState('');
+    const [giamToiDa,setGiamToiDa]=useState('');
+    const [dieuKien,setDieuKien]=useState('');
+    const [ngayBatDau,setNgayBatDau]=useState('');
+    const [ngayKetThuc,setNgayKetThuc]=useState('');
+    const [trangThai,setTrangThai]=useState(0);
+    const [form] = Form.useForm();
+    const handleSubmit = (value) => {
+    
+       // Khởi tạo 1 đối tượng mới
+       const newVoucher = {
+        ma,
+        phuongThuc,
+        mucDo,
+        giamToiDa,
+        dieuKien,
+        ngayBatDau,
+        ngayKetThuc,
+        trangThai
+    };
+      // Send a POST request to the backend
+      axios.post('http://localhost:8080/voucher/add',value)
+      .then(response => {
+          // Update the list of items
+          onAddItem(response.data);
+          form.resetFields();
+          // Clear the form
+          // setMa('');
+          // setPhuongThuc('Tiền mặt');
+          // setMucDo('');
+          // setGiamToiDa('');
+          // setDieuKien('');
+          // setNgayBatDau('');
+          // setNgayKetThuc('');
+          // setTrangThai('0');
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
     ///call api
 
     const[voucher,setVouchers]=useState([])
@@ -155,7 +193,6 @@ const columns = [
     const [size] = useState('large');
     const [expandable] = useState(undefined);
     const [showHeader] = useState(true);
-    const [rowSelection] = useState({});
     const [hasData] = useState(true);
     const [tableLayout] = useState();
     const [top] = useState('none');
@@ -208,27 +245,29 @@ const columns = [
       style={{
         maxWidth: 1600,
       }}
+      onFinish={handleSubmit}
+      form={form}
     >
         <div className="col-md-4">
-      <Form.Item label="Mã Voucher">
-        <Input />
+      <Form.Item label="Mã Voucher" name='ma'  >
+        <Input  required/>
       </Form.Item>
-      <Form.Item label="Phương thức">
-        <Select value={selectedValue} onChange={handleChange}>
+      <Form.Item label="Phương thức"  name='phuongThuc'>
+        <Select  value={selectedValue} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
       </div>
       <div className='col-md-4'>
-      <Form.Item label="Mức độ">
+      <Form.Item label="Mức độ" name='mucDo'>
           {selectedValue==='Tiền mặt'?
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
     :
     <InputNumber
@@ -237,43 +276,43 @@ const columns = [
       max={100}
       formatter={(value) => `${value}%`}
       parser={(value) => value.replace('%', '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
           }
       </Form.Item>
-      <Form.Item label="Giảm tối đa">
+      <Form.Item label="Giảm tối đa" name='giamToiDa'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+       
     />
       </Form.Item>
-      <Form.Item label="Điều kiện">
+      <Form.Item label="Điều kiện" name='dieuKien'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
         
       </Form.Item>
       </div>
       <div className='col-md-4'>
       
-      <Form.Item label="Ngày bắt đầu">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày bắt đầu" name='ngayBatDau'>
+      <DatePicker style={{width:'100%'}}    />
       </Form.Item>
-      <Form.Item label="Ngày kết thúc">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc'>
+      <DatePicker style={{width:'100%'}}  />
       </Form.Item>
       </div>
       
       <Form.Item className='text-center'>
-      <Button type="primary">Thêm</Button>
+      <Button type="primary" htmlType='submit'>Thêm</Button>
       </Form.Item>
       
     </Form>
