@@ -6,16 +6,18 @@ import {
   Form,
   Input,
   InputNumber,
+  Modal,
   Select,
   Space, 
    Table,
    Tag,
 } from 'antd';
 import {MdDeleteForever} from 'react-icons/md';
-import {IoInformation} from 'react-icons/io5';
+import {IoAddSharp, IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
+import { FaFilter } from 'react-icons/fa6';
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
@@ -61,8 +63,24 @@ const Voucher = ()=>{
     useEffect(()=>{
         loadVoucher();
     },[]);
-
-     
+    
+     //tìm kiếm
+     const timKiem = (values) => {
+      
+    
+      // Send a POST request to the backend
+      axios.get(`http://localhost:8080/voucher/tim-voucher/${values.key}/${moment(values.ngayBD).format('YYYY-MM-DD')}/${moment(values.ngayKT).format('YYYY-MM-DD')}`)
+      .then(response => {
+          // Update the list of items
+          console.log('hehehe',values.key);
+          console.log(response.data);
+          setVouchers(response.data)
+          
+          
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+  
 
     //loadvoucher
     const loadVoucher=async()=>{
@@ -167,7 +185,7 @@ const columns = [
     ),
   },
 ];
-
+    const [open, setOpen] = useState(false);
     const [bordered] = useState(false);
     const [size] = useState('large');
     const [expandable] = useState(undefined);
@@ -205,25 +223,93 @@ const columns = [
     };
 
     return (
-        <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
+        <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
             
-            <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
-            <Collapse
+            <div className=' bg-light m-2 p-3 pt-2' style={{borderRadius:20}}>
+            <Collapse ghost expandIcon={({ isActive }) => <FaFilter size={25}/>}
       items={[
         {
           key: '1',
-          label: 'This is default size panel header',
-          children: <p>hehehe</p>,
+          label: <b className='h4'>Bộ lọc</b>,
+          children: <div className='container-fluid row'>
+          
+          <Form className="row col-md-12"
+              labelCol={{
+                  span: 6,
+              }}
+              wrapperCol={{
+                  span: 14,
+              }}
+              layout="horizontal"
+              initialValues={{
+                  size: componentSize,
+              }}
+              onValuesChange={onFormLayoutChange}
+              size={componentSize}
+              style={{
+                  maxWidth: 1600,
+
+              }}
+              onFinish={timKiem}
+              form={form}
+          >
+              <div className="col-md-6">
+                  <Form.Item label="Tìm kiếm" name='key'>
+                      <Input className='rounded-pill'/>
+                  </Form.Item>
+                  <Form.Item label="Phương thức" className='rounded-pill'>
+                      <Select className='rounded-pill'>
+                          <Select.Option  className='rounded-pill'value="Tại quầy">Tại quầy</Select.Option>
+                          <Select.Option className='rounded-pill' value="Online">Online</Select.Option>
+                      </Select>
+                  </Form.Item>
+              </div>
+              <div className='col-md-6'>
+                  <Form.Item label="Ngày bắt đầu" name='ngayBD'>
+                      <DatePicker className='rounded-pill' style={{ width: '100%' }} />
+                  </Form.Item>
+                  <Form.Item label="Ngày kết thúc" name='ngayKT'>
+                      <DatePicker className='rounded-pill' style={{ width: '100%' }} />
+                  </Form.Item>
+              </div>
+           
+              <Form.Item className='text-end '>
+                      <Button type="primary" htmlType='submit'>Tìm kiếm</Button>
+                  </Form.Item>
+           
+
+
+          </Form>
+        </div>,
         },
       ]}
     />
-            <Form className=" row col-md-12"
+    <hr/>
+           
+    </div>
+     {/* hết form Voucher */}
+     <div className='col text-end mb-3 mt-2'>
+             
+             <>
+               <Button type="primary" onClick={() => setOpen(true)}>
+                + Thêm
+               </Button>
+               <Modal
+                 title="Thêm voucher"
+                 centered
+                 open={open}
+                 onOk={() => setOpen(false)}
+                 onCancel={() => setOpen(false)}
+                 width={1000}
+               >
+                 {/* form add voucher */}
+                 <Form className="row col-md-12 mt-3"
       labelCol={{
-        span: 6,
+        span: 10,
       }}
       wrapperCol={{
-        span: 14,
+        span: 20,
       }}
       layout="horizontal"
       initialValues={{
@@ -232,7 +318,7 @@ const columns = [
       onValuesChange={onFormLayoutChange}
       size={componentSize}
       style={{
-        maxWidth: 1600,
+        maxWidth: 1000,
       }}
       onFinish={handleSubmit}
       form={form}
@@ -306,9 +392,11 @@ const columns = [
       </Form.Item>
       
     </Form>
-    </div>
-     {/* hết form Voucher */}
-
+               </Modal>
+             </>
+   
+         
+         </div>
      <>
       <Table
         {...tableProps}
