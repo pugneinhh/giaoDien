@@ -25,6 +25,7 @@ import {
     SubMenu,
     SidebarHeader,
     SidebarFooter,
+    
 } from 'react-pro-sidebar';
 
 
@@ -36,7 +37,6 @@ const SideBar=(props)=>{
     const {collapsed,toggled,handleToggleSidebar}=props;
     return(
         <ProSidebar  className='nav-sidebar'
-
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
@@ -55,6 +55,7 @@ const SideBar=(props)=>{
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
+                            
                         }}
                     >
                         <div className='logo_slibar'>

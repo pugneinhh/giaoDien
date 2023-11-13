@@ -7,16 +7,11 @@ import Admin from '../components/admin/Admin';
 const App=() => {
   return (
     <div className='d-flex'>
-
       <div className='col-auto'>
-      { <Admin /> }
-
-      <div className='col'>
         <Admin />
-
       </div>
       <div>
-          {/* <Outlet></Outlet> */}
+        {/* <Outlet></Outlet> */}
       </div>
       <FloatButton.BackTop />
     </div>
