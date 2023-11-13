@@ -12,23 +12,31 @@ import { FaCartShopping, FaMoneyBills } from 'react-icons/fa6';
 import { PiTrademarkFill } from 'react-icons/pi';
 import { LuBadgePercent } from 'react-icons/lu';
 import {Link} from "react-router-dom";
+import Badge from 'react-bootstrap/Badge';
+import {Image } from 'antd';
+import { RiAccountCircleFill } from 'react-icons/ri';
+import logoShop from '../../assets/images/logo.png';
+import './sidebar.scss'
+
 import {
     ProSidebar,
     Menu,
     MenuItem,
     SubMenu,
     SidebarHeader,
-    SidebarContent,
     SidebarFooter,
 } from 'react-pro-sidebar';
 
-import { RiAccountCircleFill } from 'react-icons/ri';
-import { Image } from 'antd';
 
 
-const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
+
+
+
+const SideBar=(props)=>{
+    const {collapsed,toggled,handleToggleSidebar}=props;
     return(
         <ProSidebar  className='nav-sidebar'
+
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
@@ -39,6 +47,9 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
             <SidebarHeader>
                     <div
                         style={{
+                            alignItems : 'center',
+                            display : 'flex',   
+                            flexDirection : 'column ',
                             padding: '24px',
                             textTransform: 'uppercase',
                             fontWeight: 'bold',
@@ -50,12 +61,14 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                         }}
                     >
                         <div className='logo_slibar'>
-                            {!collapsed ? <Image className='img_logo_slibar' src='../../assets/images/logo.jpg' /> : <Image className='img_logo_slibar' src='../../assets/images/logo.jpg' rounded />}
+                            {!collapsed ? <Image width={100} src={logoShop} /> : <Image src={logoShop} rounded />}
+
                         </div>
                         <span> Mi Shoes</span>
                     </div>
                 </SidebarHeader>
                 <Menu iconShape="circle">
+          
                         <MenuItem
                             icon={<RxDashboard color='#f7faf9' size={20} />}
                         >
@@ -125,7 +138,7 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                     <Menu iconShape="circle">
                         <MenuItem
                             icon={<FaMoneyBills color='#f7faf9' size={20}/>}
-                            suffix={<span className='badge red'>New</span>}
+                            suffix={<Badge pill bg="light" text="dark">New</Badge>}
                         >
                             Hóa Đơn
                             <Link to='/hoa-don'></Link>
@@ -143,6 +156,7 @@ const SideBar=({collapsed,toggled,handleToggleSidebar})=>{
                             icon={<FaTag color='#f7faf9'size={20} />}
                         >
                             Voucher
+                            <Link to='/voucher'></Link>
                         </MenuItem>
                     </Menu>
 
