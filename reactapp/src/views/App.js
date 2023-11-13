@@ -9,13 +9,6 @@ const App=() => {
 
       <div className='col-auto'>
       { <Admin /> }
-<<<<<<< HEAD
-=======
-
-      <div className='col'>
-        <Admin />
-
->>>>>>> developer
       </div>
       <div>
         {/* <Outlet></Outlet> */}
