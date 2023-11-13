@@ -75,38 +75,22 @@ export default function KhuyenMai() {
     {
       title: "Khuyến mại tối đa",
       dataIndex: "khuyen_mai_toi_da",
-      key: "khuyen_mai_toi_da",
-      render: (khuyen_mai_toi_da) => (
+      key:  "khuyen_mai_toi_da",
+      render: (khuyen_mai_toi_da,x) => (
         <>
-
           {     
-          khuyenMai.loai === "Tiền Mặt"
-            ? (console.log("Loại" + khuyenMai.loai),
+          x.loai === "Tiền Mặt" || x.loai === "Tiền mặt"
+            ? (console.log("Loại" + x.loai),
               new Intl.NumberFormat("vi-Vi", {
                 style: "currency",
                 currency: "VND",
               }).format(khuyen_mai_toi_da))
-            : (console.log("Loại" + khuyenMai.loai), khuyen_mai_toi_da + "%")}
+            : (
+              console.log("Loại" + x.loai), 
+              khuyen_mai_toi_da + "%")
+              }
         </>
       ),
-      // render : (loai,khuyen_mai_toi_da) => (
-      //   <>
-      //   {
-      //     (loai === ("Tiền mặt")) ? (
-      //       khuyen_mai_toi_da + "VND"
-      //     ) : (
-      //       <NumericFormat
-      //       value={khuyen_mai_toi_da}
-      //       displayType={'text'}
-      //       thousandSeparator={true}
-      //       prefix={'$'}
-      //       renderText={formattedValue => <Text>{formattedValue}</Text>} // <--- Don't forget this!
-      //     />
-
-      //     )
-      //   }
-      //   </>
-      // ),
       filters: [
         {
           text: "London",
@@ -216,7 +200,7 @@ export default function KhuyenMai() {
           </div>
           <div className="container-fluid mt-4">
             <div>
-              <Table dataSource={khuyenMai} columns={columns} />
+              <Table dataSource={khuyenMai} columns={columns} pagination='5'/>
             </div>
           </div>
         </div>
