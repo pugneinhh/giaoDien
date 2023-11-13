@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import {DownOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   DatePicker,
@@ -7,45 +6,120 @@ import {
   Input,
   InputNumber,
   Select,
-  Space,
-  Radio,
-   Switch, 
+  Space, 
    Table,
+   Tag,
 } from 'antd';
-const onChange = (value) => {
-    console.log('changed', value);
-  };
-//table
+import {MdDeleteForever} from 'react-icons/md';
+import {IoInformation} from 'react-icons/io5';
+import {BsPencilSquare} from 'react-icons/bs';
+import axios from 'axios';
+
+const defaultExpandable = {
+  expandedRowRender: (record) => <p>{record.description}</p>,
+};
+
+const Voucher = ({onAddItem})=>{
+    //của form voucher
+    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
+    const handleChange = (value) => {
+        console.log(`Selected value: ${value}`);
+        setSelectedValue(value);
+      };
+    
+
+    const [componentSize, setComponentSize] = useState('default');
+    const onFormLayoutChange = ({ size }) => {
+      setComponentSize(size);
+    };
+
+    const [ma,setMa]=useState('');
+    const [phuongThuc,setPhuongThuc]=useState('Tiền mặt');
+    const [mucDo,setMucDo]=useState('');
+    const [giamToiDa,setGiamToiDa]=useState('');
+    const [dieuKien,setDieuKien]=useState('');
+    const [ngayBatDau,setNgayBatDau]=useState('');
+    const [ngayKetThuc,setNgayKetThuc]=useState('');
+    const [trangThai,setTrangThai]=useState(0);
+    const [form] = Form.useForm();
+    const handleSubmit = (value) => {
+    
+       // Khởi tạo 1 đối tượng mới
+       const newVoucher = {
+        ma,
+        phuongThuc,
+        mucDo,
+        giamToiDa,
+        dieuKien,
+        ngayBatDau,
+        ngayKetThuc,
+        trangThai
+    };
+      // Send a POST request to the backend
+      axios.post('http://localhost:8080/voucher/add',value)
+      .then(response => {
+          // Update the list of items
+          onAddItem(response.data);
+          form.resetFields();
+          // Clear the form
+          // setMa('');
+          // setPhuongThuc('Tiền mặt');
+          // setMucDo('');
+          // setGiamToiDa('');
+          // setDieuKien('');
+          // setNgayBatDau('');
+          // setNgayKetThuc('');
+          // setTrangThai('0');
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+    ///call api
+
+    const[voucher,setVouchers]=useState([])
+    useEffect(()=>{
+        loadVoucher();
+       
+    },[]);
+  
+    const loadVoucher=async()=>{
+       
+        const result = await axios.get('http://localhost:8080/voucher', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setVouchers(result.data); 
+        }  
+    
+      
+    };
+    //của table
+    //table
 
 
 const columns = [
   {
+    title: 'STT',
+    dataIndex: 'id',
+    key: 'id',
+    render: (id,record,index) => {++index; return index},
+    showSortTooltip:false,
+
+},
+  {
     title: 'Mã Voucher',
-    dataIndex: 'name',
+    dataIndex: 'ma',
+    sorter: (a, b) => a.ma - b.ma,
   },
   {
     title: 'Phương thức',
-    dataIndex: 'age',
-    sorter: (a, b) => a.age - b.age,
-  },
-  {
-    title: 'Mức độ',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    dataIndex: 'phuongThuc',
+    sorter: (a, b) => a.phuongThuc - b.phuongThuc,
   },
   {
     title: 'Ngày bắt đầu',
-    dataIndex: 'address',
+    dataIndex: 'ngayBatDau',
     filters: [
       {
         text: 'London',
@@ -60,22 +134,29 @@ const columns = [
   },
   {
     title: 'Ngày kết thúc',
-    dataIndex: 'address',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    dataIndex: 'ngayKetThuc',
+    sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
   },
   {
     title: 'Trạng thái',
-    dataIndex: 'address',
+    dataIndex: 'trangThai',
+    key: 'trangThai',
+            render: (trangThai) => (
+                <>
+                    {
+                        (trangThai == 0) ?
+                            (
+                                <Tag color="green">
+                                    Hoạt động
+                                </Tag>
+                            ) :
+                            
+                                    <Tag color="red">
+                                        Ngừng hoạt động
+                                    </Tag>
+                              
+                    }
+                </>),
     filters: [
       {
         text: 'Hoạt động',
@@ -94,79 +175,32 @@ const columns = [
     sorter: true,
     render: () => (
       <Space size="middle">
-        <a>Delete</a>
         <a>
-          <Space>
-            More actions
-            <DownOutlined />
-          </Space>
+        <Button  danger shape="circle" icon={<IoInformation size={22} />}  />
+        </a>
+        <a>
+        <Button success shape="circle" icon={<BsPencilSquare size={22} />}  />
+        </a>
+        <a>
+          <Button type="primary" danger shape="circle" icon={<MdDeleteForever size={20} />}  />
         </a>
       </Space>
     ),
   },
 ];
-const data = [];
-for (let i = 1; i <= 10; i++) {
-  data.push({
-    key: i,
-    name: 'John Brown',
-    age: Number(`${i}2`),
-    address: `New York No. ${i} Lake Park`,
-    description: `My name is John Brown, I am ${i}2 years old, living in New York No. ${i} Lake Park.`,
-  });
-}
-const defaultExpandable = {
-  expandedRowRender: (record) => <p>{record.description}</p>,
-};
 
-const Voucher = ()=>{
-    //của form voucher
-    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
-    const handleChange = (value) => {
-        console.log(`Selected value: ${value}`);
-        setSelectedValue(value);
-      };
+    const [bordered] = useState(false);
+    const [size] = useState('large');
+    const [expandable] = useState(undefined);
+    const [showHeader] = useState(true);
+    const [hasData] = useState(true);
+    const [tableLayout] = useState();
+    const [top] = useState('none');
+    const [bottom] = useState('bottomCenter');
+    const [ellipsis] = useState(false);
+    const [yScroll] = useState(false);
+    const [xScroll] = useState();
     
-
-    const [componentSize, setComponentSize] = useState('default');
-    const onFormLayoutChange = ({ size }) => {
-      setComponentSize(size);
-    };
-
-    //của table
-    const [bordered, setBordered] = useState(false);
-    const [size, setSize] = useState('large');
-    const [expandable, setExpandable] = useState(undefined);
-    const [showHeader, setShowHeader] = useState(true);
-    const [rowSelection, setRowSelection] = useState({});
-    const [hasData, setHasData] = useState(true);
-    const [tableLayout, setTableLayout] = useState();
-    const [top, setTop] = useState('none');
-    const [bottom, setBottom] = useState('bottomCenter');
-    const [ellipsis, setEllipsis] = useState(false);
-    const [yScroll, setYScroll] = useState(false);
-    const [xScroll, setXScroll] = useState();
-    
-    const handleSizeChange = (e) => {
-      setSize(e.target.value);
-    };
-    const handleTableLayoutChange = (e) => {
-      setTableLayout(e.target.value);
-    };
-   
-
-    const handleRowSelectionChange = (enable) => {
-      setRowSelection(enable ? {} : undefined);
-    };
-    const handleYScrollChange = (enable) => {
-      setYScroll(enable);
-    };
-    const handleXScrollChange = (e) => {
-      setXScroll(e.target.value);
-    };
-    const handleDataChange = (newHasData) => {
-      setHasData(newHasData);
-    };
     const scroll = {};
     if (yScroll) {
       scroll.y = 240;
@@ -187,7 +221,6 @@ const Voucher = ()=>{
       size,
       expandable,
       showHeader,
-      rowSelection,
       scroll,
       tableLayout,
     };
@@ -212,27 +245,29 @@ const Voucher = ()=>{
       style={{
         maxWidth: 1600,
       }}
+      onFinish={handleSubmit}
+      form={form}
     >
         <div className="col-md-4">
-      <Form.Item label="Mã Voucher">
-        <Input />
+      <Form.Item label="Mã Voucher" name='ma'  >
+        <Input  required/>
       </Form.Item>
-      <Form.Item label="Phương thức">
-        <Select value={selectedValue} onChange={handleChange}>
+      <Form.Item label="Phương thức"  name='phuongThuc'>
+        <Select  value={selectedValue} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
       </div>
       <div className='col-md-4'>
-      <Form.Item label="Mức độ">
+      <Form.Item label="Mức độ" name='mucDo'>
           {selectedValue==='Tiền mặt'?
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
     :
     <InputNumber
@@ -241,43 +276,43 @@ const Voucher = ()=>{
       max={100}
       formatter={(value) => `${value}%`}
       parser={(value) => value.replace('%', '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
           }
       </Form.Item>
-      <Form.Item label="Giảm tối đa">
+      <Form.Item label="Giảm tối đa" name='giamToiDa'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+       
     />
       </Form.Item>
-      <Form.Item label="Điều kiện">
+      <Form.Item label="Điều kiện" name='dieuKien'>
       <InputNumber
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
         
       </Form.Item>
       </div>
       <div className='col-md-4'>
       
-      <Form.Item label="Ngày bắt đầu">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày bắt đầu" name='ngayBatDau'>
+      <DatePicker style={{width:'100%'}}    />
       </Form.Item>
-      <Form.Item label="Ngày kết thúc">
-      <DatePicker style={{width:'100%'}}/>
+      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc'>
+      <DatePicker style={{width:'100%'}}  />
       </Form.Item>
       </div>
       
       <Form.Item className='text-center'>
-      <Button type="primary">Thêm</Button>
+      <Button type="primary" htmlType='submit'>Thêm</Button>
       </Form.Item>
       
     </Form>
@@ -291,7 +326,7 @@ const Voucher = ()=>{
           position: [top, bottom],
         }}
         columns={tableColumns}
-        dataSource={hasData ? data : []}
+        dataSource={hasData ? voucher : []}
         scroll={scroll}
       />
     </>

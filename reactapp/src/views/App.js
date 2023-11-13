@@ -1,4 +1,3 @@
-
 import { FloatButton } from 'antd';
 import './App.scss';
 import Admin from '../components/admin/Admin';

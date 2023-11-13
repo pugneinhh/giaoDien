@@ -15,7 +15,7 @@ import {Link} from "react-router-dom";
 import Badge from 'react-bootstrap/Badge';
 import {Image } from 'antd';
 import { RiAccountCircleFill } from 'react-icons/ri';
-import logoShop from '../../assets/images/logo.jpg';
+import logoShop from '../../assets/images/logo.png';
 import './sidebar.scss'
 
 import {
@@ -47,6 +47,9 @@ const SideBar=(props)=>{
             <SidebarHeader>
                     <div
                         style={{
+                            alignItems : 'center',
+                            display : 'flex',   
+                            flexDirection : 'column ',
                             padding: '24px',
                             textTransform: 'uppercase',
                             fontWeight: 'bold',

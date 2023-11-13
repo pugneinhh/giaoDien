@@ -1,0 +1,44 @@
+.admin-sidebar {
+  //  height: auto;
+    .pro-sidebar {
+    bottom: 0;
+    top: 0;
+    }
+}
+ .admin-contents{
+   // padding-left: 270px;
+
+ }
+
+ .pro-sidebar-footer{
+     .sidebar-btn-wrapper{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        
+
+    }
+ }
+
+ .admin-container .admin-sidebar{
+    height: auto !important;
+ }
+
+
+ @media screen and (max-width:768px){
+    .admin-contents {
+       padding-left: 270px;
+    }
+    .admin-sidebar{
+        &.md{
+            left: 0;
+        }
+     .pro-sidebar.md{
+        left: 0;
+     }
+    }
+    .ant-btn{
+
+    }
+ }
