@@ -8,10 +8,12 @@ import moment from "moment";
 
 
 export default function KhuyenMai() {
+
   const [khuyenMai, setKhuyenMais] = useState([]);
   useEffect(() => {
     loadKhuyenMai();
   }, []);
+
   const loadKhuyenMai = async () => {
     const result = await axios.get("http://localhost:8080/khuyen-mai", {
       validateStatus: () => {
@@ -22,6 +24,7 @@ export default function KhuyenMai() {
       setKhuyenMais(result.data);
     } 
   };
+  
   const columns = [
     {
       title: "#",
@@ -193,7 +196,6 @@ export default function KhuyenMai() {
     <div className="container">
       <div>
         <div className="container-fluid">
-
           <h4 className="text-center pt-1">Danh sách khuyến mại</h4>
           <div className = "text-center">
             <a name="" id="" class="btn btn-primary" href="#" role="button">Thêm khuyến mại</a>
