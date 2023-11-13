@@ -1,5 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './views/App';
@@ -12,17 +16,37 @@ import KhuyenMai from './components/khuyenMai/KhuyenMai';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path = '/' element = {<App/>}>
-          <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
-        <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
-          <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
-          <Route path='voucher' element = {<Voucher/>}></Route>
+  <
+  BrowserRouter >
+  <
+  Routes >
+  <
+  Route path = '/'
+  element = {
+    < App / >
+  } >
+  <
+  Route path = 'hoa-don'
+  element = {
+    < HoaDon / >
+  } > < /Route> <
+  Route path = 'hoa-don-detail'
+  element = {
+    < HoaDonDetail / >
+  } > < /Route> <
+  Route path = 'khuyen-mai'
+  element = {
+    < KhuyenMai / >
+  } > < /Route> <
+  Route path = 'voucher'
+  element = {
+    < Voucher / >
+  } > < /Route>
 
-        </Route>
-      </Routes>
-    </BrowserRouter>
+  <
+  /Route> <
+  /Routes> <
+  /BrowserRouter>
 
   // {/* </React.StrictMode> */}
 );
