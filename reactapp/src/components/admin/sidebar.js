@@ -25,7 +25,9 @@ import {
     SubMenu,
     SidebarHeader,
     SidebarFooter,
+    
 } from 'react-pro-sidebar';
+import { useEffect, useState } from 'react';
 
 
 
@@ -33,16 +35,19 @@ import {
 
 
 const SideBar=(props)=>{
-    const {collapsed,toggled,handleToggleSidebar}=props;
-    return(
-        <ProSidebar  className='nav-sidebar'
 
+    const {collapsed,toggled,handleToggleSidebar}=props;
+    
+    return(
+        <>
+        <ProSidebar  className={`nav-sidebar`}
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
         breakPoint="md"
         onToggle={handleToggleSidebar}
         image='https://i.pinimg.com/564x/40/81/08/4081083e8895a9a620ada4b0fac3d436.jpg?fbclid=IwAR0HZwn_m42pqnvest56DrS32EKJXbpfIQvedmzUNReYtTiipdjSBjz6r-o'
+    
         >
             <SidebarHeader>
                     <div
@@ -58,6 +63,7 @@ const SideBar=(props)=>{
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
                             whiteSpace: 'nowrap',
+                            
                         }}
                     >
                         <div className='logo_slibar'>
@@ -91,30 +97,31 @@ const SideBar=(props)=>{
                         >
                             <MenuItem icon={<FaTshirt color='#f7faf9' size={20}/>}>
                                 Sản Phẩm
-                                
+                                <Link to='/san-pham'></Link>
                             </MenuItem>
                             <MenuItem icon={<BiSolidCategory color='#f7faf9' size={20} />}>
                                 Danh Mục
-                                
+                                <Link to='/danh-muc'></Link>
                             </MenuItem>
                             <MenuItem icon={<AiOutlineColumnHeight color='#f7faf9' size={20} />}>
                                 Độ cao
-                                
+                                <Link to='/do-cao'></Link>
                             </MenuItem>
                             <MenuItem icon={<GiMaterialsScience color='#f7faf9' size={20}/>}>
                                 Chất Liệu
-                                
+                                <Link to='/chat-lieu'></Link>
                             </MenuItem>
                             <MenuItem icon={<GoNumber color='#f7faf9' size={20} />}>
                                 Kích thước
-                               
+                                <Link to='/kich-thuoc'></Link>
                             </MenuItem>
                             <MenuItem icon={<IoColorPalette color='#f7faf9' size={20}/>}>
                                 Màu Sắc
-                                
+                                <Link to='/mau-sac'></Link>
                             </MenuItem>
                             <MenuItem icon={<PiTrademarkFill color='#f7faf9' size={20} />}>
                                 Hãng
+                                <Link to='/hang'></Link>
                             </MenuItem>
                             
                         </SubMenu>
@@ -191,6 +198,8 @@ const SideBar=(props)=>{
                     </div>
                 </SidebarFooter>
         </ProSidebar>
+        
+        </>
     )
 }
 export default SideBar;

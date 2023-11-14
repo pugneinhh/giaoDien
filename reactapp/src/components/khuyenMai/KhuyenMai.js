@@ -21,6 +21,7 @@ expandedRowRender: (record) => <p>{record.description}</p>,
 
 export default function KhuyenMai() {
 
+
   const [selectedValue, setSelectedValue] = useState('Tiền mặt');
   const handleChange = (value) => {
       console.log(`Selected value: ${value}`);
@@ -32,10 +33,12 @@ export default function KhuyenMai() {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+
   const [khuyenMai, setKhuyenMais] = useState([]);
   useEffect(() => {
     loadKhuyenMai();
   }, []);
+
   const loadKhuyenMai = async () => {
     const result = await axios.get("http://localhost:8080/khuyen-mai", {
       validateStatus: () => {
@@ -46,6 +49,7 @@ export default function KhuyenMai() {
       setKhuyenMais(result.data);
     }
   };
+  
   const columns = [
     {
       title: "#",
