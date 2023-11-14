@@ -66,33 +66,33 @@ const Voucher = ()=>{
     
      //tìm kiếm
      const timKiem = (values) => {
-      
-    
+      if(values.key!==undefined&&values.key!==null&&values.ngayBD!==undefined&&values.ngayBD!==null&&values.ngayKT!==undefined&&values.ngayKT!==null){
+       console.log(values);
       // Send a POST request to the backend
       axios.get(`http://localhost:8080/voucher/tim-voucher/${values.key}/${moment(values.ngayBD).format('YYYY-MM-DD')}/${moment(values.ngayKT).format('YYYY-MM-DD')}`)
       .then(response => {
           // Update the list of items
-          console.log('hehehe',values.key);
-          console.log(response.data);
-          setVouchers(response.data)
-          
+          setVouchers(response.data);
+          form.resetFields();
           
       })
       .catch(error => console.error('Error adding item:', error));
+    }else{
+      loadVoucher();
+  
+    }
     }
   
 
     //loadvoucher
     const loadVoucher=async()=>{
        
-        const result = await axios.get('http://localhost:8080/voucher', {
-            validateStatus: () => {
-                return true;
-            },
-        });
-        if (result.status === 302) {
-            setVouchers(result.data); 
-        }  
+        await axios.get('http://localhost:8080/voucher')
+        .then(response => {
+          // Update the list of items
+          setVouchers(response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
     
       
     };
@@ -258,8 +258,8 @@ const columns = [
                   <Form.Item label="Tìm kiếm" name='key'>
                       <Input className='rounded-pill'/>
                   </Form.Item>
-                  <Form.Item label="Phương thức" className='rounded-pill'>
-                      <Select className='rounded-pill'>
+                  <Form.Item label="Phương thức" className='rounded-pill' > 
+                      <Select className='rounded-pill' style={{borderRadius:'20px',borderColor: '#fadb14'}}>
                           <Select.Option  className='rounded-pill'value="Tại quầy">Tại quầy</Select.Option>
                           <Select.Option className='rounded-pill' value="Online">Online</Select.Option>
                       </Select>

@@ -27,6 +27,7 @@ import {
     SidebarFooter,
     
 } from 'react-pro-sidebar';
+import { useEffect, useState } from 'react';
 
 
 
@@ -34,15 +35,19 @@ import {
 
 
 const SideBar=(props)=>{
+
     const {collapsed,toggled,handleToggleSidebar}=props;
+    
     return(
-        <ProSidebar  className='nav-sidebar'
+        <>
+        <ProSidebar  className={`nav-sidebar`}
         //image={sidebarBg}
         collapsed={collapsed}
         toggled={toggled}
         breakPoint="md"
         onToggle={handleToggleSidebar}
         image='https://i.pinimg.com/564x/40/81/08/4081083e8895a9a620ada4b0fac3d436.jpg?fbclid=IwAR0HZwn_m42pqnvest56DrS32EKJXbpfIQvedmzUNReYtTiipdjSBjz6r-o'
+    
         >
             <SidebarHeader>
                     <div
@@ -193,6 +198,8 @@ const SideBar=(props)=>{
                     </div>
                 </SidebarFooter>
         </ProSidebar>
+        
+        </>
     )
 }
 export default SideBar;

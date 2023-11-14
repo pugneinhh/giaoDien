@@ -11,7 +11,7 @@ import { Header } from "antd/es/layout/layout";
 const Admin = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const [isHeaderFixed, setIsHeaderFixed] = useState(false);
-
+  
   useEffect(() => {
     const handleScroll = () => {
       // Khi người dùng cuộn trang, kiểm tra vị trí cuộn so với vị trí của sidebar
@@ -35,7 +35,8 @@ const Admin = (props) => {
     return(
         <div className={`admin-container ${isHeaderFixed ? 'fixed' : ''}`}>
            <div class="admin-sidebar">
-                <SideBar collapsed={collapsed}/>
+                <SideBar collapsed={collapsed} />
+                
             </div>
             <div className="admin-contents">
                
