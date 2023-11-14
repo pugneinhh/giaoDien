@@ -8,12 +8,32 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import Input from 'antd/es/input/Input';
 export default function HoaDon() {
+ 
+    // tìm kiếm
+
+    const handleSubmit = (values) => {
+
+
+        // Send a POST request to the backend
+        axios.get(`http://localhost:8080/hoa-don/tim-kiem/${values.hehe}/${values.loaiHD}/${moment(values.BD).format('YYYY-MM-DD')}/${moment(values.KT).format('YYYY-MM-DD')}`
+        
+        )
+            .then(response => {
+                // Update the list of items
+                console.log(response.data);
+                setHoaDons(response.data);
+                form.resetFields();
+            })
+            .catch(error => console.error('Error adding item:', error));
+        console.log(moment(values.BD).format('YYYY-MM-DD'));
+    }
+
     const [hoaDon, setHoaDons] = useState([])
     useEffect(() => {
         loadHoaDon();
 
     }, []);
-
+    // load full hóa đơn
     const loadHoaDon = async () => {
 
         const result = await axios.get('http://localhost:8080/hoa-don', {
@@ -128,6 +148,7 @@ export default function HoaDon() {
         {
             title: 'Loại HĐ',
             dataIndex: 'loaiHD',
+            key: 'loaiHD',
             render: (trangThai) => (
                 <>
                     {
@@ -147,16 +168,16 @@ export default function HoaDon() {
                 </>),
             filters: [
                 {
-                    text: 'London',
-                    value: 'London',
+                    text: 'Online',
+                    value: '0',
                 },
                 {
-                    text: 'New York',
-                    value: 'New York',
+                    text: 'Tại quầy',
+                    value: '1',
                 },
 
             ],
-            onFilter: (value, record) => record.address.indexOf(value) === 0,
+            onFilter: (value, record) => record.loaiHD.indexOf(value) === 0,
         },
         {
             title: 'Ngày mua',
@@ -251,14 +272,14 @@ export default function HoaDon() {
             filters: [
                 {
                     text: 'London',
-                    value: 'London',
+                    value: '0',
                 },
                 {
                     text: 'New York',
-                    value: 'New York',
+                    value: '1',
                 },
             ],
-            onFilter: (value, record) => record.address.indexOf(value) === 0,
+            onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
         },
         {
             title: 'Action',
@@ -322,6 +343,11 @@ export default function HoaDon() {
     const onFormLayoutChange = ({ size }) => {
         setComponentSize(size);
     };
+    // tìm kiếm trong from
+    const [form] = Form.useForm();
+
+
+  
     return (
         <div className='container'>
             {/* lọc hóa đơn */}
@@ -342,31 +368,33 @@ export default function HoaDon() {
                     size={componentSize}
                     style={{
                         maxWidth: 1600,
-
                     }}
+                    onFinish={handleSubmit}
+                    form={form}
                 >
                     <div className="col-md-6">
-                        <Form.Item label="Tìm kiếm">
-                            <Input />
+                        <Form.Item label="Tìm kiếm"  name='hehe'>
+                            <Input required className="rounded-pill border-warning" />
                         </Form.Item>
-                        <Form.Item label="Phương thức">
-                            <Select >
-                                <Select.Option value="Tại quầy">Tại quầy</Select.Option>
-                                <Select.Option value="Online">Online</Select.Option>
+                        <Form.Item label="Loại HD" className="rounded-pill border-warning" name='loaiHD'>
+                            <Select className="rounded-pill border-warning" >
+                                <Select.Option className="rounded-pill border-warning" value="1">Tại quầy</Select.Option>
+                                <Select.Option className="rounded-pill border-warning" value="0">Online</Select.Option>
                             </Select>
                         </Form.Item>
                     </div>
                     <div className='col-md-6'>
-                        <Form.Item label="Ngày bắt đầu">
-                            <DatePicker style={{ width: '100%' }} />
+                        <Form.Item label="Ngày bắt đầu" name='BD'>
+                            <DatePicker style={{ width: '100%' }} className="rounded-pill border-warning" />
                         </Form.Item>
-                        <Form.Item label="Ngày kết thúc">
-                            <DatePicker style={{ width: '100%' }} />
+                        <Form.Item label="Ngày kết thúc" name='KT'>
+                            <DatePicker style={{ width: '100%' }} className="rounded-pill border-warning" />
+                            
                         </Form.Item>
                     </div>
-                 
+               
                     <Form.Item className='text-end '>
-                            <Button type="primary" >Tìm kiếm</Button>
+                        <Button type="primary" htmlType='submit' >Tìm kiếm</Button>
                         </Form.Item>
                  
 
