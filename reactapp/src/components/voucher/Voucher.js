@@ -14,11 +14,7 @@ import {
 } from 'antd';
 import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
 import {MdDeleteForever} from 'react-icons/md';
-<<<<<<< HEAD
-import {IoInformation } from 'react-icons/io5';
-=======
 import {IoAddSharp, IoInformation} from 'react-icons/io5';
->>>>>>> a93797f90d80066c4fd61127000ed4fe8a0087a8
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
