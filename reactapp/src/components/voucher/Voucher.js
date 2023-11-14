@@ -12,8 +12,13 @@ import {
    Table,
    Tag,
 } from 'antd';
+import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
 import {MdDeleteForever} from 'react-icons/md';
+<<<<<<< HEAD
+import {IoInformation } from 'react-icons/io5';
+=======
 import {IoAddSharp, IoInformation} from 'react-icons/io5';
+>>>>>>> a93797f90d80066c4fd61127000ed4fe8a0087a8
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
@@ -223,6 +228,20 @@ const columns = [
     };
 
     return (
+
+      //   <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
+      // <div className="container">
+      // <div>
+      //   <div className="container-fluid">
+          
+      //       <h3 className="text-center mt-2">Quản lý Voucher</h3>
+      //       <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
+      //       <div className="text-first fw-bold" style={{marginTop:-10}}>
+      //     <FilterFilled/> Bộ lọc
+      //     <hr/>
+      //         </div>
+      //       <Form className=" row col-md-12"
+
         <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
             
@@ -305,6 +324,7 @@ const columns = [
                >
                  {/* form add voucher */}
                  <Form className="row col-md-12 mt-3"
+
       labelCol={{
         span: 10,
       }}
@@ -386,17 +406,29 @@ const columns = [
       <DatePicker style={{width:'100%'}}  />
       </Form.Item>
       </div>
-      
+      <div className="col-md-4"></div>
+      <div className="col-md-1"></div>
+      <div className="col-md-4">
       <Form.Item className='text-center'>
       <Button type="primary" htmlType='submit'>Thêm</Button>
       </Form.Item>
-      
+      </div>
     </Form>
+     {/* hết form Voucher */}
+    {/* </div>
+     }
+     <br/>
+     <div className="text-first fw-bold">
+            <p><UnorderedListOutlined /> Danh sách khuyến mại</p>
+          </div>
+           <hr/> */}
+
                </Modal>
              </>
    
          
          </div>
+
      <>
       <Table
         {...tableProps}
@@ -409,8 +441,9 @@ const columns = [
       />
     </>
         </div>
-
-       
+// </div>
+// </div>
+//       </div> 
           
 
     );
