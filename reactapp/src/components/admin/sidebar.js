@@ -149,6 +149,7 @@ const SideBar=(props)=>{
                             icon={<LuBadgePercent color='#f7faf9' size={25} />}
                         >
                             Khuyến Mại
+                            <Link to = '/khuyen-mai'></Link>
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
@@ -177,12 +178,14 @@ const SideBar=(props)=>{
                         </a> : <a
                             href="#"
                             target="_blank"
-                            className="sidebar-btn"
+                            className="sidebar-btn link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
                             rel="noopener noreferrer"
+
                         >
-                            <FaGithub color='#f7faf9'size={20}/>
-                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',color:'white', textDecoration:'none' }}>
-                                Mi Shoes
+                            <FaGithub color='#f7faf9'size={20} className='text-center'/>
+                            &ensp;
+                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',color:'white', }} >
+                                  Mi Shoes
                             </span>
                         </a>}
                     </div>

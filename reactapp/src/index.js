@@ -9,6 +9,7 @@ import HoaDonDetail from './components/hoaDon/HoaDonDetail';
 import Voucher from './components/voucher/Voucher';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import KhuyenMai from './components/khuyenMai/KhuyenMai';
+import ThemKhuyenMai from './components/khuyenMai/ThemKhuyenMai'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -18,6 +19,7 @@ root.render(
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
         <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
+          <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
 
         </Route>
