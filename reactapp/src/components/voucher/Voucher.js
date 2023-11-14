@@ -20,6 +20,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { FaFilter } from 'react-icons/fa6';
 import {} from '@ant-design/icons';
+import "./Voucher.scss";
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
@@ -226,19 +227,21 @@ const columns = [
 
         <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
       <div className="container">
-      
+      <div>
          <div className="container-fluid">
-        <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
+      {/* <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}> */}
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
             
             <div className=' bg-light m-2 p-3 pt-2' style={{borderRadius:20}}>
-            <Collapse ghost expandIcon={({ isActive }) => <FaFilter size={25}/>}
+            <Collapse ghost expandIcon={({ isActive }) => <FilterFilled size={25}/>}
       items={[
         {
           key: '1',
-          label: <b className='text-first fw-bold'>Bộ lọc</b>,
+          label: <b className='text-first fw-bold'> Bộ lọc</b>,
           children: <div className='container-fluid row'>
+                    
           
+
           <Form className="row col-md-12"
               labelCol={{
                   span: 8,
@@ -420,7 +423,7 @@ const columns = [
  </div>
  </div>
       </div> 
-          
+          // </div>
 
     );
 }
