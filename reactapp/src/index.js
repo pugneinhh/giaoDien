@@ -9,12 +9,14 @@ import HoaDonDetail from './components/hoaDon/HoaDonDetail';
 import Voucher from './components/voucher/Voucher';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import KhuyenMai from './components/khuyenMai/KhuyenMai';
+import ThemKhuyenMai from './components/khuyenMai/ThemKhuyenMai'
 import DanhMuc from './components/danhMuc/DanhMuc';
 import DoCao from './components/doCao/DoCao';
 import ChatLieu from './components/chatLieu/ChatLieu';
 import KichThuoc from './components/kichThuoc/KichThuoc';
 import MauSac from './components/mauSac/MauSac';
 import Hang from './components/hang/Hang';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -25,6 +27,7 @@ root.render(
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
           <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
+          <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
           <Route path='danh-muc' element = {<DanhMuc/>}></Route>
           <Route path='do-cao' element = {<DoCao/>}></Route>
