@@ -12,13 +12,14 @@ import {
    Table,
    Tag,
 } from 'antd';
+import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
 import {MdDeleteForever} from 'react-icons/md';
 import {IoAddSharp, IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
 import { FaFilter } from 'react-icons/fa6';
-import { PlusCircleOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import {} from '@ant-design/icons';
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
@@ -222,6 +223,11 @@ const columns = [
     };
 
     return (
+
+        <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
+      <div className="container">
+      
+         <div className="container-fluid">
         <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
             
@@ -230,7 +236,7 @@ const columns = [
       items={[
         {
           key: '1',
-          label: <b className='h4'>Bộ lọc</b>,
+          label: <b className='text-first fw-bold'>Bộ lọc</b>,
           children: <div className='container-fluid row'>
           
           <Form className="row col-md-12"
@@ -300,6 +306,7 @@ const columns = [
                >
                  {/* form add voucher */}
                  <Form className="row col-md-12 mt-3"
+
       labelCol={{
         span: 10,
       }}
@@ -381,17 +388,20 @@ const columns = [
       <DatePicker style={{width:'100%'}}  />
       </Form.Item>
       </div>
-      
+      <div className="col-md-4"></div>
+      <div className="col-md-1"></div>
+      <div className="col-md-4">
       <Form.Item className='text-center'>
       <Button type="primary" htmlType='submit'>Thêm</Button>
       </Form.Item>
-      
+      </div>
     </Form>
                </Modal>
              </>
    
          
          </div>
+
          <div className="text-first fw-bold">
             <p><UnorderedListOutlined /> Danh sách Voucher </p>
           </div>
@@ -407,8 +417,9 @@ const columns = [
       />
     </>
         </div>
-
-       
+ </div>
+ </div>
+      </div> 
           
 
     );
