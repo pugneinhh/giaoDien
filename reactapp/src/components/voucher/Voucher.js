@@ -258,8 +258,8 @@ const columns = [
                   <Form.Item label="Tìm kiếm" name='key'>
                       <Input className='rounded-pill'/>
                   </Form.Item>
-                  <Form.Item label="Phương thức" className='rounded-pill'>
-                      <Select className='rounded-pill'>
+                  <Form.Item label="Phương thức" className='rounded-pill' > 
+                      <Select className='rounded-pill' style={{borderRadius:'20px',borderColor: '#fadb14'}}>
                           <Select.Option  className='rounded-pill'value="Tại quầy">Tại quầy</Select.Option>
                           <Select.Option className='rounded-pill' value="Online">Online</Select.Option>
                       </Select>
