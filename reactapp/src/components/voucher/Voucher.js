@@ -14,15 +14,12 @@ import {
 } from 'antd';
 import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
 import {MdDeleteForever} from 'react-icons/md';
-<<<<<<< HEAD
-import {IoInformation } from 'react-icons/io5';
-=======
 import {IoAddSharp, IoInformation} from 'react-icons/io5';
->>>>>>> a93797f90d80066c4fd61127000ed4fe8a0087a8
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
 import { FaFilter } from 'react-icons/fa6';
+import {} from '@ant-design/icons';
 
 const defaultExpandable = {
   expandedRowRender: (record) => <p>{record.description}</p>,
@@ -178,14 +175,12 @@ const columns = [
     render: () => (
       <Space size="middle">
         <a>
-        <Button  danger shape="circle" icon={<IoInformation size={22} />}  />
+        <Button type='primary' danger shape="circle" icon={<IoInformation size={15} />}  />
         </a>
         <a>
-        <Button success shape="circle" icon={<BsPencilSquare size={22} />}  />
+        <Button type='primary' className='btn btn-success text-center' shape="circle" icon={<BsPencilSquare size={15} />}  />
         </a>
-        <a>
-          <Button type="primary" danger shape="circle" icon={<MdDeleteForever size={20} />}  />
-        </a>
+        
       </Space>
     ),
   },
@@ -229,19 +224,10 @@ const columns = [
 
     return (
 
-      //   <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
-      // <div className="container">
-      // <div>
-      //   <div className="container-fluid">
-          
-      //       <h3 className="text-center mt-2">Quản lý Voucher</h3>
-      //       <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
-      //       <div className="text-first fw-bold" style={{marginTop:-10}}>
-      //     <FilterFilled/> Bộ lọc
-      //     <hr/>
-      //         </div>
-      //       <Form className=" row col-md-12"
-
+        <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
+      <div className="container">
+      
+         <div className="container-fluid">
         <div className=" border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
             <h3 className="text-center mt-2">Quản lý Voucher</h3>
             
@@ -250,12 +236,12 @@ const columns = [
       items={[
         {
           key: '1',
-          label: <b className='h4'>Bộ lọc</b>,
+          label: <b className='text-first fw-bold'>Bộ lọc</b>,
           children: <div className='container-fluid row'>
           
           <Form className="row col-md-12"
               labelCol={{
-                  span: 6,
+                  span: 8,
               }}
               wrapperCol={{
                   span: 14,
@@ -273,21 +259,17 @@ const columns = [
               onFinish={timKiem}
               form={form}
           >
-              <div className="col-md-6">
+              <div className="col-md-4">
                   <Form.Item label="Tìm kiếm" name='key'>
                       <Input className='rounded-pill'/>
                   </Form.Item>
-                  <Form.Item label="Phương thức" className='rounded-pill' > 
-                      <Select className='rounded-pill' style={{borderRadius:'20px',borderColor: '#fadb14'}}>
-                          <Select.Option  className='rounded-pill'value="Tại quầy">Tại quầy</Select.Option>
-                          <Select.Option className='rounded-pill' value="Online">Online</Select.Option>
-                      </Select>
-                  </Form.Item>
               </div>
-              <div className='col-md-6'>
+              <div className='col-md-4'>
                   <Form.Item label="Ngày bắt đầu" name='ngayBD'>
                       <DatePicker className='rounded-pill' style={{ width: '100%' }} />
                   </Form.Item>
+                  </div>
+                  <div className='col-md-4'>
                   <Form.Item label="Ngày kết thúc" name='ngayKT'>
                       <DatePicker className='rounded-pill' style={{ width: '100%' }} />
                   </Form.Item>
@@ -311,8 +293,8 @@ const columns = [
      <div className='col text-end mb-3 mt-2'>
              
              <>
-               <Button type="primary" onClick={() => setOpen(true)}>
-                + Thêm
+               <Button type="primary" className='fw-bold nut-them rounded-pill' onClick={() => setOpen(true)}>
+               + Thêm
                </Button>
                <Modal
                  title="Thêm voucher"
@@ -414,21 +396,15 @@ const columns = [
       </Form.Item>
       </div>
     </Form>
-     {/* hết form Voucher */}
-    {/* </div>
-     }
-     <br/>
-     <div className="text-first fw-bold">
-            <p><UnorderedListOutlined /> Danh sách khuyến mại</p>
-          </div>
-           <hr/> */}
-
                </Modal>
              </>
    
          
          </div>
 
+         <div className="text-first fw-bold">
+            <p><UnorderedListOutlined /> Danh sách Voucher </p>
+          </div>
      <>
       <Table
         {...tableProps}
@@ -441,9 +417,9 @@ const columns = [
       />
     </>
         </div>
-// </div>
-// </div>
-//       </div> 
+ </div>
+ </div>
+      </div> 
           
 
     );
