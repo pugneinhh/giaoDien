@@ -6,7 +6,7 @@ import { EyeOutlined , PlusCircleOutlined ,UnorderedListOutlined , FilterFilled 
 import { LuBadgePercent } from 'react-icons/lu';
 import moment from "moment";
 import {Link} from "react-router-dom";
-import { MdMargin } from "react-icons/md";
+import { MdMargin, MdWidthNormal } from "react-icons/md";
 import ThemKhuyenMai from "./ThemKhuyenMai";
 
 const onChange = (value) => {
@@ -164,7 +164,7 @@ export default function KhuyenMai() {
       render: () => (
         <Space size="middle">
           <a>
-            <EyeOutlined color="#ffec3d"/>
+            <Button success shape="circle"><EyeOutlined color="#ffec3d" /></Button>
           </a>
         </Space>
       ),
@@ -276,7 +276,7 @@ export default function KhuyenMai() {
            <hr/>
           <div className="container-fluid mt-4" >
             <div>
-              <Table dataSource={khuyenMai} columns={columns} />
+              <Table dataSource={khuyenMai} columns={columns} id="bang"/>
             </div>
           </div>
         </div>
