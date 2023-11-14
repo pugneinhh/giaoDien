@@ -92,30 +92,31 @@ const SideBar=(props)=>{
                         >
                             <MenuItem icon={<FaTshirt color='#f7faf9' size={20}/>}>
                                 Sản Phẩm
-                                
+                                <Link to='/san-pham'></Link>
                             </MenuItem>
                             <MenuItem icon={<BiSolidCategory color='#f7faf9' size={20} />}>
                                 Danh Mục
-                                
+                                <Link to='/danh-muc'></Link>
                             </MenuItem>
                             <MenuItem icon={<AiOutlineColumnHeight color='#f7faf9' size={20} />}>
                                 Độ cao
-                                
+                                <Link to='/do-cao'></Link>
                             </MenuItem>
                             <MenuItem icon={<GiMaterialsScience color='#f7faf9' size={20}/>}>
                                 Chất Liệu
-                                
+                                <Link to='/chat-lieu'></Link>
                             </MenuItem>
                             <MenuItem icon={<GoNumber color='#f7faf9' size={20} />}>
                                 Kích thước
-                               
+                                <Link to='/kich-thuoc'></Link>
                             </MenuItem>
                             <MenuItem icon={<IoColorPalette color='#f7faf9' size={20}/>}>
                                 Màu Sắc
-                                
+                                <Link to='/mau-sac'></Link>
                             </MenuItem>
                             <MenuItem icon={<PiTrademarkFill color='#f7faf9' size={20} />}>
                                 Hãng
+                                <Link to='/hang'></Link>
                             </MenuItem>
                             
                         </SubMenu>
@@ -150,6 +151,7 @@ const SideBar=(props)=>{
                             icon={<LuBadgePercent color='#f7faf9' size={25} />}
                         >
                             Khuyến Mại
+                            <Link to = '/khuyen-mai'></Link>
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
@@ -178,12 +180,14 @@ const SideBar=(props)=>{
                         </a> : <a
                             href="#"
                             target="_blank"
-                            className="sidebar-btn"
+                            className="sidebar-btn link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
                             rel="noopener noreferrer"
+
                         >
-                            <FaGithub color='#f7faf9'size={20}/>
-                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',color:'white', textDecoration:'none' }}>
-                                Mi Shoes
+                            <FaGithub color='#f7faf9'size={20} className='text-center'/>
+                            &ensp;
+                            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',color:'white', }} >
+                                  Mi Shoes
                             </span>
                         </a>}
                     </div>

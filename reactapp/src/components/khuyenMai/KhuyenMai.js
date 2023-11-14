@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Space, Table, Tag , Form , Input , Select , InputNumber , Button , DatePicker} from "antd";
+import { Space, Table, Tag , Form , Input , Select , InputNumber , Button , DatePicker , Divider} from "antd";
 import "./KhuyenMai.scss";
-import { DeleteOutlined } from "@ant-design/icons";
+import { EyeOutlined , PlusCircleOutlined ,UnorderedListOutlined , FilterFilled , SearchOutlined} from "@ant-design/icons";
+import { LuBadgePercent } from 'react-icons/lu';
 import moment from "moment";
+import {Link} from "react-router-dom";
+import { MdMargin } from "react-icons/md";
+import ThemKhuyenMai from "./ThemKhuyenMai";
 
 const onChange = (value) => {
   console.log('changed', value);
@@ -17,6 +21,7 @@ expandedRowRender: (record) => <p>{record.description}</p>,
 
 export default function KhuyenMai() {
 
+
   const [selectedValue, setSelectedValue] = useState('Tiền mặt');
   const handleChange = (value) => {
       console.log(`Selected value: ${value}`);
@@ -28,10 +33,12 @@ export default function KhuyenMai() {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+
   const [khuyenMai, setKhuyenMais] = useState([]);
   useEffect(() => {
     loadKhuyenMai();
   }, []);
+
   const loadKhuyenMai = async () => {
     const result = await axios.get("http://localhost:8080/khuyen-mai", {
       validateStatus: () => {
@@ -42,6 +49,7 @@ export default function KhuyenMai() {
       setKhuyenMais(result.data);
     }
   };
+  
   const columns = [
     {
       title: "#",
@@ -58,28 +66,16 @@ export default function KhuyenMai() {
       dataIndex: "ma",
       center: "true",
 
-      sorter: (a, b) => a.ma - b.ma,
+      sorter: (a, b) => a.ma.slice(2) - b.ma.slice(2),
     },
     {
       title: "Tên",
       dataIndex: "ten",
-      filters: [
-        {
-          text: "London",
-          value: "London",
-        },
-        {
-          text: "New York",
-          value: "New York",
-        },
-      ],
-
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
       title: "Loại",
       dataIndex: "loai",
-
+      key : "loai",
       filters: [
         {
           text: "Tiền Mặt",
@@ -87,10 +83,10 @@ export default function KhuyenMai() {
         },
         {
           text: "Phần Trăm",
-          value: "Phầm Trăm",
+          value: "Phần Trăm",
         },
       ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
+      onFilter: (value, record) => record.loai.indexOf(value) === 0,
     },
     {
       title: "Khuyến mại tối đa",
@@ -107,17 +103,6 @@ export default function KhuyenMai() {
             : (console.log("Loại" + x.loai), khuyen_mai_toi_da + "%")}
         </>
       ),
-      filters: [
-        {
-          text: "London",
-          value: "London",
-        },
-        {
-          text: "New York",
-          value: "New York",
-        },
-      ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
       title: "Ngày bắt đầu",
@@ -125,17 +110,7 @@ export default function KhuyenMai() {
       render: (ngay_bat_dau) => (
         <>{moment(ngay_bat_dau).format("DD/MM/YYYY, hh:mm:ss")}</>
       ),
-      filters: [
-        {
-          text: "London",
-          value: "London",
-        },
-        {
-          text: "New York",
-          value: "New York",
-        },
-      ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
+
     },
     {
       title: "Ngày kết thúc ",
@@ -143,17 +118,7 @@ export default function KhuyenMai() {
       render: (ngay_ket_thuc) => (
         <>{moment(ngay_ket_thuc).format("DD/MM/YYYY, hh:mm:ss")}</>
       ),
-      filters: [
-        {
-          text: "London",
-          value: "London",
-        },
-        {
-          text: "New York",
-          value: "New York",
-        },
-      ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
+
     },
     {
       title: "Trạng thái",
@@ -176,21 +141,25 @@ export default function KhuyenMai() {
               Đang diễn ra
             </Tag>
           ) : (
-            <Tag color="#ff0000">Đã hết hạn</Tag>
+            <Tag color="#ff0000">Đã kết thúc</Tag>
           )}
         </>
       ),
       filters: [
         {
-          text: "London",
-          value: "London",
+          text: "Sắp bắt đầu",
+          value: "0",
         },
         {
-          text: "New York",
-          value: "New York",
+          text: "Đang diễn ra",
+          value: "1",
+        },
+        {
+          text: "Đã kết thúc",
+          value :"2",
         },
       ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
+      onFilter: (value, record) => record.trang_thai === parseInt(value) ,
     },
     {
       title: "Action",
@@ -199,7 +168,7 @@ export default function KhuyenMai() {
       render: () => (
         <Space size="middle">
           <a>
-            <DeleteOutlined />
+            <EyeOutlined color="#ffec3d"/>
           </a>
         </Space>
       ),
@@ -209,9 +178,14 @@ export default function KhuyenMai() {
     <div className="container">
       <div>
         <div className="container-fluid">
-          <h4 className="text-center pt-1">Danh sách khuyến mại</h4>
+          
+          <Divider orientation="left" color="none"><h4 className="text-first pt-1 fw-bold"><LuBadgePercent/> Quản lý khuyến mại</h4></Divider>
 
-          <div className="bg-light m-2 p-3 pt-5" style={{ borderRadius: 20 }}>
+          <div className="bg-light m-2 p-3" style={{ borderRadius: 20 }}>
+          <div className="text-first fw-bold" >
+          <FilterFilled/> Bộ lọc
+          <hr/>
+              </div>
             <Form
               className=" row col-md-12"
               labelCol={{
@@ -232,18 +206,20 @@ export default function KhuyenMai() {
             >
               <div className="col-md-4">
                 <Form.Item label="Mã KM">
-                  <Input placeholder="Mã khuyến mại"/>
+                  <Input placeholder="Mã khuyến mại" className="rounded-pill border-warning"/>
                 </Form.Item>
-                <Form.Item label="Phương thức">
-                  <Select value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
-                    <Select.Option value="Phần trăm">Phần trăm</Select.Option>
-                  </Select>
+                <Form.Item label="Loại">
+                  <select value={selectedValue} onChange={handleChange} className="rounded-pill border-warning" id="abc">
+                    <option value="Tất cả">Tất cả</option>
+                    <option value="Tiền mặt" >Tiền mặt</option>
+                    <option value="Phần trăm" >Phần trăm</option>
+                  </select>
                 </Form.Item>
               </div>
               <div className="col-md-4">
+
               <Form.Item label="Tên KM" >
-              <Input placeholder = "Tên khuyến mại "/>
+              <Input placeholder = "Tên khuyến mại " className="rounded-pill border-warning"/>
                 </Form.Item>
                 <Form.Item label="Giảm Tối Đa" >
                   {selectedValue === "Tiền mặt" ? (
@@ -255,8 +231,9 @@ export default function KhuyenMai() {
                       parser={(value) => value.replace(/\VND\s?|(,*)/g, "")}
                       onChange={onChange}
                       style={{ width: "100%" }}
+                      className="rounded-pill border-warning"
                     />
-                  ) : (
+                  ) : selectedValue === "Phần trăm"  ?(
                     <InputNumber
                       defaultValue={0}
                       min={0}
@@ -265,34 +242,43 @@ export default function KhuyenMai() {
                       parser={(value) => value.replace("%", "")}
                       onChange={onChange}
                       style={{ width: "100%" }}
+                      className="rounded-pill border-warning"
                     />
-                  )}
+                  ) : <Input className="rounded-pill border-warning" disabled></Input>}
                 </Form.Item>
 
               </div>
-              <div className="col-md-4">
-                <Form.Item label="Ngày bắt đầu">
-                  <DatePicker style={{ width: "100%" }} placeholder="Ngày bắt đầu"/>
+              <div className="col-md-4" >
+                <Form.Item label="Ngày bắt đầu" >
+                  <DatePicker style={{ width: "100%" }} placeholder="Ngày bắt đầu" className="rounded-pill border-warning"/>
                 </Form.Item>
                 <Form.Item label="Ngày kết thúc">
-                  <DatePicker style={{ width: "100%" }} placeholder="Ngày kết thúc"/>
+                  <DatePicker style={{ width: "100%" }} placeholder="Ngày kết thúc" className="rounded-pill border-warning"/>
                 </Form.Item>
               </div>
-              <div className="text-center">
+              <div className="col-md-4"></div>
+              <div className="col-md-1"></div>
+              <div className="col-md-4" >
               <Form.Item className="text-center">
-                <Button type="primary">Thêm</Button>
+              {/* <Button className="btn btn-warning nut-tim-kiem">Tìm kiếm</Button> */}
+              <button className="btn btn-warning nut-tim-kiem rounded-pill fw-bold" ><SearchOutlined /> Tìm kiếm</button>
               </Form.Item>
               </div>
+
             </Form>
           </div>
 
-          <div className="text-center">
-            <a name="" id="" class="btn btn-primary" href="#" role="button">
-              Thêm khuyến mại
-            </a>
+          <div className="text-end">
+            {/* <a name="" id="" class="btn btn-warning bg-gradient fw-bold nut-them" role="button">                
+            </a> */}
+            <br/>
+              <Link to='/frm-khuyen-mai' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> <PlusCircleOutlined /> Thêm khuyến mại </Link>
           </div>
-
-          <div className="container-fluid mt-4">
+          <div className="text-first fw-bold">
+            <p><UnorderedListOutlined /> Danh sách khuyến mại</p>
+          </div>
+           <hr/>
+          <div className="container-fluid mt-4" >
             <div>
               <Table dataSource={khuyenMai} columns={columns} />
             </div>
