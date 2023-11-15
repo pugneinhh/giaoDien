@@ -15,7 +15,7 @@ import {
    Tag,
    message,
 } from 'antd';
-import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
+import {FilterFilled , SoundTwoTone, UnorderedListOutlined}  from "@ant-design/icons";
 import {MdDeleteForever} from 'react-icons/md';
 import {IoAddSharp, IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
@@ -27,10 +27,8 @@ import "./Voucher.scss";
 import { LuBadgePercent } from 'react-icons/lu';
 import Swal from "sweetalert2";
 import FormItem from 'antd/es/form/FormItem';
+import ModelAddVoucher from "./ModelAddVoucher";
 
-const defaultExpandable = {
-  expandedRowRender: (record) => <p>{record.description}</p>,
-};
 
 const Voucher = ()=>{
     //của form voucher
@@ -48,16 +46,8 @@ const Voucher = ()=>{
 
   
     const [form] = Form.useForm();
-
-    const confirm = (e: React.MouseEvent<HTMLElement>) => {
-      console.log(e);
-      message.success('Click on Yes');
-    };
     
-    const cancel = (e: React.MouseEvent<HTMLElement>) => {
-      console.log(e);
-      message.error('Click on No');
-    };
+    
 
     
     const handleSubmit = (value) => {
@@ -136,7 +126,7 @@ const Voucher = ()=>{
     //loadvoucher
     const loadVoucher=async()=>{
        
-        await axios.get('http://localhost:8080/voucher')
+        await axios.get('http://localhost:8080/voucher/hien-thi')
         .then(response => {
           // Update the list of items
           setVouchers(response.data);
@@ -279,15 +269,44 @@ const columns = [
 
     //khai  báo form update
     const editVoucher=(row)=>{
-      setOpenUpdate(true);
       setMyVoucher(row);
+      setOpenUpdate(true);
+      console.log('id',id);
       console.log('voucher',myVoucher);
       console.log(row);
     }
-    const editVoucherOff=()=>{
-      setOpenUpdate(false);
+    const resetMyVoucher=()=>{
+      setID('');
       setMyVoucher({});
+      setOpenUpdate(false);
     }
+    
+    const getVoucherByID = async(id) => {
+      await axios.get(`http://localhost:8080/voucher/detail/${id}`)
+      .then(response => {
+        // Update the list of items
+        setMyVoucher(response.data);
+    })
+    .catch(error => console.error('Error adding item:', error));
+  
+    
+    };
+    const [id,setID]=useState('');
+    // // useEffect(()=>{
+    // //   if(openUpdate&&id!==null&&id!==undefined){
+    // //     getVoucherByID(id);
+
+    // //   }else{
+    // //     return()=>{
+    // //     resetMyVoucher();
+         
+    // //     }
+       
+      
+    // //   }
+      
+        
+    // },[id,getVoucherByID]);
     
     //update voucher
     const handleUpdateVoucher=(value)=>{
@@ -302,7 +321,7 @@ const columns = [
       .catch(error => console.error('Error adding item:', error));
       
     }
-    const customFormat = value => `custom format: ${value.format("YYYY-MM-DD")}`;
+    
 
     return (
 
@@ -511,136 +530,7 @@ const columns = [
       />
     </>
     {/* hết table voucher */}
-    <Modal
-                 title="Cập nhật voucher"
-                 centered
-                 open={openUpdate}
-                 onCancel={() => editVoucherOff()}
-                 width={1000}
-               >
-                 
-                 <Form className="row col-md-12 mt-3"
-
-      labelCol={{
-        span: 10,
-      }}
-      wrapperCol={{
-        span: 20,
-      }}
-      layout="horizontal"
-      initialValues={{
-        // size: componentSize,
-        id:myVoucher.id,
-        ma:myVoucher.ma,
-        phuongThuc:myVoucher.phuongThuc,
-        mucDo:myVoucher.mucDo,
-        giamToiDa:myVoucher.giamToiDa,
-        dieuKien:myVoucher.dieuKien,
-        ngayKetThuc: moment(myVoucher.ngayKetThuc, 'YYYY-MM-DD'),
-        ngayBatDau: moment(myVoucher.ngayBatDau, 'YYYY-MM-DD')
-      }}
-      onValuesChange={onFormLayoutChange}
-      size={componentSize}
-      style={{
-        maxWidth: 1000,
-      }}
-      onFinish={handleUpdateVoucher}
-      form={form}
-      
-    >
-        <div className="col-md-4">
-          
-      <Form.Item label="Mã Voucher" name='ma'  hasFeedback
-      rules={[
-        {
-          required: true,
-          message: 'Vui lòng không để trống mã!',
-        },
-      ]} >
-        <Input  placeholder='Mã giảm giá'/>
-      </Form.Item>
-      <Form.Item label="Phương thức" name='phuongThuc'>
-        <Select >
-          <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
-          <Select.Option value="Phần trăm">Phần trăm</Select.Option>
-        </Select>
-      </Form.Item>
-      </div>
-      <div className='col-md-4'>
-      <Form.Item label="Mức độ" name='mucDo'>
-          {selectedValue==='Tiền mặt'?
-      <InputNumber
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
-    :
-    <InputNumber
-      defaultValue={0}
-      min={0}
-      max={100}
-      formatter={(value) => `${value}%`}
-      parser={(value) => value.replace('%', '')}
-      style={{width:'100%'}}
-      
-    />
-          }
-      </Form.Item>
-      <Form.Item label="Giảm tối đa" name='giamToiDa'>
-      <InputNumber
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-       
-    />
-      </Form.Item>
-      <Form.Item label="Điều kiện" name='dieuKien'>
-      <InputNumber
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
-        
-      </Form.Item>
-      </div>
-      <div className='col-md-4'>
-      
-      <Form.Item label="Ngày bắt đầu" name='ngayBatDau'>
-      <DatePicker style={{width:'100%'}}  placeholder='Ngày bắt đầu'  format={"YYYY-MM-DD"}/>
-      </Form.Item>
-      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc'>
-      <DatePicker style={{width:'100%'}} placeholder='Ngày kết thúc' format={"YYYY-MM-DD"}/>
-      </Form.Item>
-      </div>
-      <div className="col-md-4"></div>
-      <div className="col-md-1"></div>
-      <div className="col-md-4">
-      <Form.Item className='text-center'>
-      
-      
-    <Button type="primary"  onClick={() => {
-        Modal.confirm({
-          title: 'Thông báo',
-          content: 'Bạn có chắc chắn muốn thêm không?',
-          onOk: () => {form.submit();},
-          footer: (_, { OkBtn, CancelBtn }) => (
-            <>
-              <CancelBtn/>
-              <OkBtn />
-            </>
-          ),
-        });
-      }}>Cập nhật</Button>
-   
-      </Form.Item>
-      </div>
-    </Form>
-               </Modal>
+    <ModelAddVoucher  openUpdate={openUpdate} myVoucher={myVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
         </div>
  </div>
      
