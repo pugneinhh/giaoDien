@@ -28,7 +28,8 @@ import { LuBadgePercent } from 'react-icons/lu';
 import Swal from "sweetalert2";
 import FormItem from 'antd/es/form/FormItem';
 import ModelAddVoucher from "./ModelAddVoucher";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Voucher = ()=>{
     //của form voucher
@@ -83,8 +84,19 @@ const Voucher = ()=>{
           //       confirmButtonText: "OK",
           //     }).then((result) => {
                 console.log(response.data);
+                toast('✔️ Thêm thành công!', {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  });
                 loadVoucher();
                 form.resetFields();
+                
           //     });
       })
       .catch(error => console.error('Error adding item:', error));
@@ -531,6 +543,20 @@ const columns = [
     </>
     {/* hết table voucher */}
     <ModelAddVoucher  openUpdate={openUpdate} myVoucher={myVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+    <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
+{/* Same as */}
+<ToastContainer />
         </div>
  </div>
      
