@@ -25,6 +25,7 @@
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
+    "react-sweetalert2": "^0.6.0",
     "sass": "^1.69.5",
     "stream-http": "^3.2.0",
     "until": "^0.1.1",
