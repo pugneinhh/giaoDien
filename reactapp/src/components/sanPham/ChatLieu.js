@@ -134,26 +134,28 @@ export default function ChatLieu() {
           >
             <div className="col-md-5">
               <Form.Item label="Tên & Mã">
-                <Input />
+                <Input className="rounded-pill border" />
               </Form.Item>
             </div>
             <div className='col-md-5'>
               <Form.Item label="Trạng Thái">
-                <Select value={selectedValue} onChange={handleChange}>
+                <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
                   <Select.Option value="1">Còn Bán</Select.Option>
                   <Select.Option value="0">Dừng Bán</Select.Option>
                 </Select>
               </Form.Item>
             </div>
-            <Form.Item className='ms-3'>
-              <Button type='primary' size='large'><MdSearch/>  Tìm Kiếm</Button>
+            <div className='container-fluid'>
+            <Form.Item className='text-center'>
+              <Button type='primary' size='large' className="rounded-pill border-primary"><MdSearch/>  Tìm Kiếm</Button>
             </Form.Item>
+            </div>
           </Form>
         </div>
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách chất liệu</h4>
           <div className="ms-3">
-            <a name="" id="" class="btn btn-success mt-2" href="#" role="button"> <PlusCircleFilled />  Thêm chất liệu</a>
+            <a name="" id="" class="btn btn-success mt-2 rounded-pill border-success" href="#" role="button"> <PlusCircleFilled />  Thêm chất liệu</a>
           </div>
           <div className="container-fluid mt-4">
             <div>
