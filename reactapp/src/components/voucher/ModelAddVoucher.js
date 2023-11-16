@@ -2,6 +2,7 @@ import { Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Select
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from 'moment';
+import { toast } from "react-toastify";
 
 
 const ModelAddVoucher=(props)=>{
@@ -44,7 +45,16 @@ const handleUpdateVoucher=(value)=>{
       
   axios.put(`http://localhost:8080/voucher/update/${myVoucher.id}`,value)
   .then(response => {
-            
+    toast('✔️ Cập nhật thành công!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
             props.loadVoucher();
             form2.resetFields();
             handleClose();
@@ -87,6 +97,22 @@ const validateDateBD = (_, value) => {
       centered
       open={openUpdate}
       onCancel={handleClose}
+      footer={[
+        <Button onClick={handleClose}>Hủy</Button>,
+        <Button type="primary"  onClick={() => {
+          Modal.confirm({
+            title: 'Thông báo',
+            content: 'Bạn có chắc chắn muốn cập nhật không?',
+            onOk: () => {form2.submit();},
+            footer: (_, { OkBtn, CancelBtn }) => (
+              <>
+                <CancelBtn/>
+                <OkBtn />
+              </>
+            ),
+          });
+        }}>Cập nhật</Button>
+      ]}
       width={1000}
     >
       
@@ -220,24 +246,7 @@ message: 'Vui lòng chọn ngày kết thúc!',
 <div className="col-md-4"></div>
 <div className="col-md-1"></div>
 <div className="col-md-4">
-<Form.Item className='text-center'>
 
-
-<Button type="primary"  onClick={() => {
-Modal.confirm({
-title: 'Thông báo',
-content: 'Bạn có chắc chắn muốn thêm không?',
-onOk: () => {form2.submit();},
-footer: (_, { OkBtn, CancelBtn }) => (
- <>
-   <CancelBtn/>
-   <OkBtn />
- </>
-),
-});
-}}>Cập nhật</Button>
-
-</Form.Item>
 </div>
 </Form>
     </Modal>
