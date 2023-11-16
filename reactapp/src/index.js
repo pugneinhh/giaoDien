@@ -18,7 +18,7 @@ import MauSac from './components/sanPham/MauSac';
 import Hang from './components/sanPham/Hang';
 import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
-
+import BanHang from './components/banHang/BanHang';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -39,6 +39,7 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
+          <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

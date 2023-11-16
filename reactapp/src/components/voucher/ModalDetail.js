@@ -28,7 +28,7 @@ const ModalDetail=(props)=>{
 
     return(
       <Modal
-      title={<h4 className="text-center mb-3">Thông tin phiếu giảm giá</h4>}
+      title={<h5>Thông tin phiếu giảm giá</h5>}
       centered
       open={openDetail}
       onOk={handleClose}
