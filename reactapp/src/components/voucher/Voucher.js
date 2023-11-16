@@ -429,6 +429,22 @@ const columns = [
                  open={open}
                  onOk={() => setOpen(false)}
                  onCancel={() => setOpen(false)}
+                 footer={[
+                  <Button onClick={()=>setOpen(false)}>Hủy</Button>,
+                  <Button type="primary"  onClick={() => {
+                    Modal.confirm({
+                      title: 'Thông báo',
+                      content: 'Bạn có chắc chắn muốn thêm không?',
+                      onOk: () => {form.submit();},
+                      footer: (_, { OkBtn, CancelBtn }) => (
+                        <>
+                          <CancelBtn/>
+                          <OkBtn />
+                        </>
+                      ),
+                    });
+                  }}>Thêm</Button>
+                ]}
                  width={1000}
                >
                  {/* form add voucher */}
@@ -550,24 +566,7 @@ message: 'Vui lòng chọn ngày kết thúc!',
       <div className="col-md-4"></div>
       <div className="col-md-1"></div>
       <div className="col-md-4">
-      <Form.Item className='text-center'>
       
-      
-    <Button type="primary"  onClick={() => {
-        Modal.confirm({
-          title: 'Thông báo',
-          content: 'Bạn có chắc chắn muốn thêm không?',
-          onOk: () => {form.submit();},
-          footer: (_, { OkBtn, CancelBtn }) => (
-            <>
-              <CancelBtn/>
-              <OkBtn />
-            </>
-          ),
-        });
-      }}>Thêm</Button>
-   
-      </Form.Item>
       </div>
     </Form>
                </Modal>
