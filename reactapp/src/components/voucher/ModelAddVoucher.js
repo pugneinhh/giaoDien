@@ -1,4 +1,4 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Select } from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Select, Switch } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from 'moment';
@@ -10,7 +10,10 @@ const ModelAddVoucher=(props)=>{
   const [form2]=Form.useForm();
   const [selectedValue, setSelectedValue] = useState('Tiền mặt');
   const [dataUpdate, setDataUpdate] = useState({});
-    
+  const [gioiHan,setGioiHan]=useState(false);
+  const handleChangeSwitch=(value)=>{
+    setGioiHan(value);
+  };
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -26,11 +29,20 @@ phuongThuc:myVoucher.phuongThuc,
 mucDo:myVoucher.mucDo,
 giamToiDa:myVoucher.giamToiDa,
 dieuKien:myVoucher.dieuKien,
-ngayKetThuc: moment(myVoucher.ngayKetThuc, 'YYYY-MM-DD'),
-ngayBatDau: moment(myVoucher.ngayBatDau, 'YYYY-MM-DD')
+ngayKetThuc: moment(myVoucher.ngayKetThuc, 'YYYY-MM-DD HH:mm:ss'),
+ngayBatDau: moment(myVoucher.ngayBatDau, 'YYYY-MM-DD HH:mm:ss'),
+loaiVoucher:myVoucher.loaiVoucher,
+soLuong:myVoucher.soLuong
     });
     setDataUpdate(myVoucher);
-
+    if(myVoucher.loaiVoucher==='true'){
+      setGioiHan(true);
+    }else{
+      setGioiHan(false);
+      
+    }
+    
+    
   },[myVoucher,form2]);
   
   const handleClose = () => {
@@ -67,29 +79,23 @@ const handleUpdateVoucher=(value)=>{
  ///validate ngày 
  const validateDateKT = (_, value) => {
   const { getFieldValue } = form2;
-  const newDate = new Date();
   const startDate = getFieldValue('ngayBatDau');
-  // if(startDate && value && value.isAfter(moment)){
-  //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
-  // }
-  if (startDate && value &&startDate.isAfter(value)) {
+  if (startDate && value &&value.isBefore(startDate)) {
     return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
   }
   return Promise.resolve();
 };
 const [checkNgay,setCheckNgay]=useState(false);
 const validateDateBD = (_, value) => {
-  const newDate = new Date();
-  // if(startDate && value && value.isAfter(moment)){
-  //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
-  // }
-
-  if ( value && value<newDate) {
-    setCheckNgay(true);
-    return Promise.reject('Ngày bắt phải sau ngày hiện tại');
+  const { getFieldValue } = form2;
+  const endDate = getFieldValue('ngayKetThuc');
+  if(endDate && value && value.isAfter(endDate)){
+    return Promise.reject('Ngày bắt đầu phải trước ngày kết thúc');
   }
+
   return Promise.resolve();
 };
+
 
     return(
       <Modal
@@ -168,6 +174,15 @@ message: 'Vui lòng chọn phương thức!',
 <Select.Option value="Phần trăm">Phần trăm</Select.Option>
 </Select>
 </Form.Item>
+<Form.Item label="Giới hạn" name='loaiVoucher' valuePropName={gioiHan}>
+        <Switch checked={gioiHan} onChange={handleChangeSwitch}/>
+      </Form.Item>
+      {gioiHan===true?
+      <Form.Item label="Số lượng" name='soLuong'>
+      <InputNumber defaultValue={'1'} min={1}/>
+    </Form.Item>
+    :<></>
+      }
 </div>
 <div className='col-md-4'>
 <Form.Item label="Mức độ" name='mucDo'>
@@ -228,9 +243,10 @@ style={{width:'100%'}}
 required: true,
 message: 'Vui lòng chọn ngày bắt đầu!',
 },
+{validator:validateDateBD}
 ]}>
   
-<DatePicker style={{width:'100%'}}  placeholder='Ngày bắt đầu'  format={"YYYY-MM-DD"}/>
+<DatePicker showTime style={{width:'100%'}}  placeholder='Ngày bắt đầu'  format={"YYYY-MM-DD HH:mm:ss"}/>
 
 </Form.Item>
 <Form.Item label="Ngày kết thúc"  name='ngayKetThuc' hasFeedback rules={[
@@ -240,7 +256,7 @@ message: 'Vui lòng chọn ngày kết thúc!',
 },
 {validator:validateDateKT}
 ]} >
-<DatePicker style={{width:'100%'}} placeholder='Ngày kết thúc' format={"YYYY-MM-DD"}/>
+<DatePicker showTime style={{width:'100%'}} placeholder='Ngày kết thúc' format={"YYYY-MM-DD HH:mm:ss"}/>
 </Form.Item>
 </div>
 <div className="col-md-4"></div>

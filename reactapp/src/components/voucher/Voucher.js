@@ -11,25 +11,21 @@ import {
   Popconfirm,
   Select,
   Space, 
+   Switch, 
    Table,
    Tag,
-   message,
 } from 'antd';
-import {FilterFilled , SoundTwoTone, UnorderedListOutlined}  from "@ant-design/icons";
-import {MdDeleteForever} from 'react-icons/md';
-import {IoAddSharp, IoInformation} from 'react-icons/io5';
+import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
+import { IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
-import { FaFilter } from 'react-icons/fa6';
 import {} from '@ant-design/icons';
 import "./Voucher.scss";
-import { LuBadgePercent } from 'react-icons/lu';
 import ModelAddVoucher from "./ModelAddVoucher";
 import ModalDetail from "./ModalDetail";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { set } from 'date-fns';
 
 
 const Voucher = ()=>{
@@ -100,7 +96,11 @@ const Voucher = ()=>{
     const[voucher,setVouchers]=useState([])
     const [myVoucher,setMyVoucher]=useState({});
     useEffect(()=>{
+      loadVoucher();
+      setInterval(()=>{
         loadVoucher();
+      },60000);
+      return () => clearInterval();
     },[]);
     
      //tìm kiếm
@@ -330,25 +330,33 @@ const columns = [
     ///validate ngày 
     const validateDateKT = (_, value) => {
       const { getFieldValue } = form;
-      const newDate = new Date();
       const startDate = getFieldValue('ngayBatDau');
-      // if(startDate && value && value.isAfter(moment)){
-      //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
-      // }
-      if (startDate && value &&startDate.isAfter(value)) {
+      if (startDate && value &&value.isBefore(startDate)) {
         return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
       }
       return Promise.resolve();
     };
+    const [checkNgay,setCheckNgay]=useState(false);
+
     const validateDateBD = (_, value) => {
       const newDate = new Date();
       // if(startDate && value && value.isAfter(moment)){
       //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
       // }
+      const { getFieldValue } = form;
+      const endDate = getFieldValue('ngayKetThuc');
+      if(endDate && value && value.isAfter(endDate)){
+        return Promise.reject('Ngày bắt đầu phải trước ngày kết thúc');
+      }
       if ( value && value<newDate) {
         return Promise.reject('Ngày bắt phải sau ngày hiện tại');
       }
       return Promise.resolve();
+    };
+    //hiển thị số lượng
+    const [gioiHan,setGioiHan]=useState(false);
+    const handleChangeSwitch=(value)=>{
+      setGioiHan(value);
     };
 
     return (
@@ -489,6 +497,17 @@ message: 'Vui lòng chọn phương thức!',
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
+
+      <Form.Item label="Giới hạn" name='loaiVoucher' valuePropName="checked">
+        <Switch onChange={handleChangeSwitch}/>
+      </Form.Item>
+      {gioiHan==true?
+      <Form.Item label="Số lượng" name='soLuong'>
+      <InputNumber defaultValue={'1'} min={1}/>
+    </Form.Item>
+    :<></>
+    }
+      
       </div>
       <div className='col-md-4'>
       <Form.Item label="Mức độ" name='mucDo'>
@@ -551,7 +570,7 @@ message: 'Vui lòng chọn ngày bắt đầu!',
 },
 {validator:validateDateBD}
 ]} >
-      <DatePicker style={{width:'100%'}} className='border-warning' placeholder='Ngày bắt đầu'  />
+      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày bắt đầu'  />
       </Form.Item>
       <Form.Item label="Ngày kết thúc"  name='ngayKetThuc' hasFeedback rules={[
 {
@@ -560,7 +579,7 @@ message: 'Vui lòng chọn ngày kết thúc!',
 },
 {validator:validateDateKT}
 ]} >
-      <DatePicker style={{width:'100%'}} className='border-warning' placeholder='Ngày kết thúc' />
+      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày kết thúc' />
       </Form.Item>
       </div>
       <div className="col-md-4"></div>
