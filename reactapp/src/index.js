@@ -27,7 +27,7 @@ root.render(
       <Routes>
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
-          <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
+        <Route path='detail-hoa-don/:id' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
