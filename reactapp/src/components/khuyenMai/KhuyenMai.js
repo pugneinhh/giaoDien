@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , Text , View} from "react";
 import axios from "axios";
 import { Space, Table, Tag , Form , Input , Select , InputNumber , Button , DatePicker , Divider} from "antd";
 import "./KhuyenMai.scss";
@@ -6,7 +6,6 @@ import { EyeOutlined , PlusCircleOutlined ,UnorderedListOutlined , FilterFilled 
 import { LuBadgePercent } from 'react-icons/lu';
 import moment from "moment";
 import {Link} from "react-router-dom";
-import { MdMargin, MdWidthNormal } from "react-icons/md";
 import ThemKhuyenMai from "./ThemKhuyenMai";
 
 const onChange = (value) => {
@@ -182,10 +181,11 @@ export default function KhuyenMai() {
           <Divider orientation="left" color="none"><h4 className="text-first pt-1 fw-bold"><LuBadgePercent/> Quản lý khuyến mại</h4></Divider>
 
           <div className="bg-light m-2 p-3" style={{ borderRadius: 20 }}>
+
           <div className="text-first fw-bold" >
-          <FilterFilled/> Bộ lọc
-          <hr/>
-              </div>
+            <FilterFilled/> Bộ lọc
+          </div>
+              <hr/>
             <Form
               className=" row col-md-12"
               labelCol={{
@@ -261,7 +261,7 @@ export default function KhuyenMai() {
               <div className="col-md-4" >
               <Form.Item className="text-center">
               {/* <Button className="btn btn-warning nut-tim-kiem">Tìm kiếm</Button> */}
-              <button className="btn btn-warning nut-tim-kiem rounded-pill fw-bold" ><SearchOutlined /> Tìm kiếm</button>
+              <button className="btn btn-warning nut-tim-kiem rounded-pill fw-bold" ><SearchOutlined />Tìm kiếm</button>
               </Form.Item>
               </div>
 
@@ -272,7 +272,10 @@ export default function KhuyenMai() {
             {/* <a name="" id="" class="btn btn-warning bg-gradient fw-bold nut-them" role="button">                
             </a> */}
             <br/>
-              <Link to='/frm-khuyen-mai' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> <PlusCircleOutlined /> Thêm khuyến mại </Link>
+            
+              <Link to='/frm-khuyen-mai' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> 
+              <PlusCircleOutlined/> Thêm khuyến mại 
+              </Link>
           </div>
           <div className="text-first fw-bold">
             <p><UnorderedListOutlined /> Danh sách khuyến mại</p>
@@ -280,7 +283,7 @@ export default function KhuyenMai() {
            <hr/>
           <div className="container-fluid mt-4" >
             <div>
-              <Table dataSource={khuyenMai} columns={columns} id="bang"/>
+              <Table dataSource={khuyenMai} columns={columns} id="bang" pagination={{defaultPageSize:5}}/>
             </div>
           </div>
         </div>

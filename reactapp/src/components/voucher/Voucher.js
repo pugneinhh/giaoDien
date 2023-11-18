@@ -11,25 +11,22 @@ import {
   Popconfirm,
   Select,
   Space, 
+   Switch, 
    Table,
    Tag,
-   message,
 } from 'antd';
-import {FilterFilled , SoundTwoTone, UnorderedListOutlined}  from "@ant-design/icons";
-import {MdDeleteForever} from 'react-icons/md';
-import {IoAddSharp, IoInformation} from 'react-icons/io5';
+import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
+import { IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
-import { FaFilter } from 'react-icons/fa6';
 import {} from '@ant-design/icons';
 import "./Voucher.scss";
-import { LuBadgePercent } from 'react-icons/lu';
-import Swal from "sweetalert2";
-import FormItem from 'antd/es/form/FormItem';
 import ModelAddVoucher from "./ModelAddVoucher";
+import ModalDetail from "./ModalDetail";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 const Voucher = ()=>{
     //của form voucher
@@ -75,14 +72,6 @@ const Voucher = ()=>{
           axios.post('http://localhost:8080/voucher/add',value)
       .then(response => {
           // Update the list of items
-         
-          // Swal.fire({
-          //       title: "Thành công!",
-          //       text: "Bản đã mở hoạt động thành công!",
-          //       icon: "success",
-          //       confirmButtonColor: "#3085d6",
-          //       confirmButtonText: "OK",
-          //     }).then((result) => {
                 console.log(response.data);
                 toast('✔️ Thêm thành công!', {
                   position: "top-right",
@@ -96,14 +85,9 @@ const Voucher = ()=>{
                   });
                 loadVoucher();
                 form.resetFields();
-                
-          //     });
+          
       })
       .catch(error => console.error('Error adding item:', error));
-      //   }
-      // })
-       
-      // Send a POST request to the backend
       
     }
   
@@ -112,7 +96,11 @@ const Voucher = ()=>{
     const[voucher,setVouchers]=useState([])
     const [myVoucher,setMyVoucher]=useState({});
     useEffect(()=>{
+      loadVoucher();
+      setInterval(()=>{
         loadVoucher();
+      },60000);
+      return () => clearInterval();
     },[]);
     
      //tìm kiếm
@@ -225,7 +213,7 @@ const columns = [
       
       <Space size="middle">
         <a>
-        <Button type='primary' danger shape="circle" icon={<IoInformation size={15} />}  />
+        <Button type='primary' danger shape="circle" icon={<IoInformation size={15} />} onClick={()=>{detailVoucher(record)}} />
         </a>
         <a>
         <Button type='primary' className='btn btn-success text-center' shape="circle" icon={<BsPencilSquare size={15} />} onClick={()=>{editVoucher(record)}}/>
@@ -243,6 +231,7 @@ const columns = [
   
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
+    const [openDetail, setOpenDetail] = useState(false);
     const [bordered] = useState(false);
     const [size] = useState('large');
     const [expandable] = useState(undefined);
@@ -282,15 +271,19 @@ const columns = [
     //khai  báo form update
     const editVoucher=(row)=>{
       setMyVoucher(row);
+      setID(row.id);
       setOpenUpdate(true);
-      console.log('id',id);
-      console.log('voucher',myVoucher);
-      console.log(row);
+     
     }
     const resetMyVoucher=()=>{
-      setID('');
+      // setID('');
       setMyVoucher({});
-      setOpenUpdate(false);
+    }
+    //mở form detail
+    const detailVoucher=(row)=>{
+      setMyVoucher(row);
+      setOpenDetail(true);
+      console.log('voucher',myVoucher);
     }
     
     const getVoucherByID = async(id) => {
@@ -321,19 +314,50 @@ const columns = [
     // },[id,getVoucherByID]);
     
     //update voucher
-    const handleUpdateVoucher=(value)=>{
+    // const handleUpdateVoucher=(value)=>{
       
-      axios.put(`http://localhost:8080/voucher/update/${myVoucher.id}`,value)
-      .then(response => {
+    //   axios.put(`http://localhost:8080/voucher/update/${myVoucher.id}`,value)
+    //   .then(response => {
                 
-                loadVoucher();
-                form.resetFields();
+    //             loadVoucher();
+    //             form.resetFields();
                 
-      })
-      .catch(error => console.error('Error adding item:', error));
+    //   })
+    //   .catch(error => console.error('Error adding item:', error));
       
-    }
+    // }
     
+    ///validate ngày 
+    const validateDateKT = (_, value) => {
+      const { getFieldValue } = form;
+      const startDate = getFieldValue('ngayBatDau');
+      if (startDate && value &&value.isBefore(startDate)) {
+        return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
+      }
+      return Promise.resolve();
+    };
+    const [checkNgay,setCheckNgay]=useState(false);
+
+    const validateDateBD = (_, value) => {
+      const newDate = new Date();
+      // if(startDate && value && value.isAfter(moment)){
+      //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
+      // }
+      const { getFieldValue } = form;
+      const endDate = getFieldValue('ngayKetThuc');
+      if(endDate && value && value.isAfter(endDate)){
+        return Promise.reject('Ngày bắt đầu phải trước ngày kết thúc');
+      }
+      if ( value && value<newDate) {
+        return Promise.reject('Ngày bắt phải sau ngày hiện tại');
+      }
+      return Promise.resolve();
+    };
+    //hiển thị số lượng
+    const [gioiHan,setGioiHan]=useState(false);
+    const handleChangeSwitch=(value)=>{
+      setGioiHan(value);
+    };
 
     return (
 
@@ -345,6 +369,7 @@ const columns = [
          {/* form tìm kiếm */}
             <div className=' bg-light m-2 p-3 pt-2' style={{borderRadius:20}}>
             <Collapse ghost expandIcon={({ isActive }) =><FilterFilled size={30}/>}
+
       items={[
         {
           key: '1',
@@ -412,6 +437,22 @@ const columns = [
                  open={open}
                  onOk={() => setOpen(false)}
                  onCancel={() => setOpen(false)}
+                 footer={[
+                  <Button onClick={()=>setOpen(false)}>Hủy</Button>,
+                  <Button type="primary"  onClick={() => {
+                    Modal.confirm({
+                      title: 'Thông báo',
+                      content: 'Bạn có chắc chắn muốn thêm không?',
+                      onOk: () => {form.submit();},
+                      footer: (_, { OkBtn, CancelBtn }) => (
+                        <>
+                          <CancelBtn/>
+                          <OkBtn />
+                        </>
+                      ),
+                    });
+                  }}>Thêm</Button>
+                ]}
                  width={1000}
                >
                  {/* form add voucher */}
@@ -437,20 +478,41 @@ const columns = [
     
     >
         <div className="col-md-4">
-      <Form.Item label="Mã Voucher" name='ma'  >
-        <Input  placeholder='Mã giảm giá'  required/>
+      <Form.Item label="Mã Voucher" name='ma' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng không để trống mã!',
+},
+]}   >
+        <Input  placeholder='Mã giảm giá' className='border-warning'/>
       </Form.Item>
-      <Form.Item label="Phương thức" name='phuongThuc'>
-        <Select defaultValue={selectedValue}  onChange={handleChange}>
+      <Form.Item label="Phương thức" name='phuongThuc' style={{borderColor:'yellow'}} rules={[
+{
+required: true,
+message: 'Vui lòng chọn phương thức!',
+},
+]} >
+        <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
+
+      <Form.Item label="Giới hạn" name='loaiVoucher' valuePropName="checked">
+        <Switch onChange={handleChangeSwitch}/>
+      </Form.Item>
+      {gioiHan==true?
+      <Form.Item label="Số lượng" name='soLuong'>
+      <InputNumber defaultValue={'1'} min={1}/>
+    </Form.Item>
+    :<></>
+    }
+      
       </div>
       <div className='col-md-4'>
       <Form.Item label="Mức độ" name='mucDo'>
           {selectedValue==='Tiền mặt'?
-      <InputNumber
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
@@ -458,7 +520,7 @@ const columns = [
       
     />
     :
-    <InputNumber
+    <InputNumber className='border-warning'
       defaultValue={0}
       min={0}
       max={100}
@@ -469,8 +531,13 @@ const columns = [
     />
           }
       </Form.Item>
-      <Form.Item label="Giảm tối đa" name='giamToiDa'>
-      <InputNumber
+      <Form.Item label="Giảm tối đa" name='giamToiDa' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng nhập giá trị giảm tối đa!',
+},
+]} >
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
@@ -478,8 +545,13 @@ const columns = [
        
     />
       </Form.Item>
-      <Form.Item label="Điều kiện" name='dieuKien'>
-      <InputNumber
+      <Form.Item label="Điều kiện" name='dieuKien' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng nhập điều kiện giảm!',
+},
+]} >
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
@@ -491,34 +563,29 @@ const columns = [
       </div>
       <div className='col-md-4'>
       
-      <Form.Item label="Ngày bắt đầu" name='ngayBatDau'>
-      <DatePicker style={{width:'100%'}}  placeholder='Ngày bắt đầu'  />
+      <Form.Item label="Ngày bắt đầu" name='ngayBatDau' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng chọn ngày bắt đầu!',
+},
+{validator:validateDateBD}
+]} >
+      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày bắt đầu'  />
       </Form.Item>
-      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc'>
-      <DatePicker style={{width:'100%'}} placeholder='Ngày kết thúc' />
+      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng chọn ngày kết thúc!',
+},
+{validator:validateDateKT}
+]} >
+      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày kết thúc' />
       </Form.Item>
       </div>
       <div className="col-md-4"></div>
       <div className="col-md-1"></div>
       <div className="col-md-4">
-      <Form.Item className='text-center'>
       
-      
-    <Button type="primary"  onClick={() => {
-        Modal.confirm({
-          title: 'Thông báo',
-          content: 'Bạn có chắc chắn muốn thêm không?',
-          onOk: () => {form.submit();},
-          footer: (_, { OkBtn, CancelBtn }) => (
-            <>
-              <CancelBtn/>
-              <OkBtn />
-            </>
-          ),
-        });
-      }}>Thêm</Button>
-   
-      </Form.Item>
       </div>
     </Form>
                </Modal>
@@ -542,7 +609,10 @@ const columns = [
       />
     </>
     {/* hết table voucher */}
-    <ModelAddVoucher  openUpdate={openUpdate} myVoucher={myVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+    <ModelAddVoucher id={id}  openUpdate={openUpdate} setOpenUpdate={setOpenUpdate} myVoucher={myVoucher} setMyVoucher={setMyVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+
+    <ModalDetail  openDetail={openDetail} setOpenDetail={setOpenDetail} myVoucher={myVoucher} setMyVoucher={setMyVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+    
     <ToastContainer
 position="top-right"
 autoClose={5000}

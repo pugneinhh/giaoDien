@@ -83,6 +83,78 @@ export default function HoaDon() {
         // console.log(result.data);
 
     };
+    const [hoaDonCVC, setHoaDonCVC] = useState([])
+    useEffect(() => {
+        loadHoaDonCVC();
+
+    }, []);
+    const loadHoaDonCVC = async () => {
+
+        const result = await axios.get('http://localhost:8080/hoa-don/2', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setHoaDonCVC(result.data);
+        }
+        // console.log(result.data);
+
+    };
+    const [hoaDonVC, setHoaDonVC] = useState([])
+    useEffect(() => {
+        loadHoaDonVC();
+
+    }, []);
+    const loadHoaDonVC = async () => {
+
+        const result = await axios.get('http://localhost:8080/hoa-don/3', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setHoaDonVC(result.data);
+        }
+        // console.log(result.data);
+
+    };
+    const [hoaDonTT, setHoaDonTT] = useState([])
+    useEffect(() => {
+        loadHoaDonTT();
+
+    }, []);
+    const loadHoaDonTT = async () => {
+
+        const result = await axios.get('http://localhost:8080/hoa-don/4', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setHoaDonTT(result.data);
+        }
+        // console.log(result.data);
+
+    };
+    const [hoaDonHT, setHoaDonHT] = useState([])
+    useEffect(() => {
+        loadHoaDonHT();
+
+    }, []);
+    const loadHoaDonHT = async () => {
+
+        const result = await axios.get('http://localhost:8080/hoa-don/5', {
+            validateStatus: () => {
+                return true;
+            },
+        });
+        if (result.status === 302) {
+            setHoaDonHT(result.data);
+        }
+        // console.log(result.data);
+
+    };
     const columns = [
         {
             title: 'STT',
@@ -222,48 +294,49 @@ export default function HoaDon() {
                     {
                         (trangThai == 0) ?
                             (
-                                <Tag color="#00cc00">
+                                
+                                <Tag color="red">
                                     Chờ xác nhận
                                 </Tag>
                             ) :
                             (trangThai == 1) ?
                                 (
-                                    <Tag color="#ff0000">
+                                    <Tag color="purple">
                                         Xác nhận
                                     </Tag>
                                 ) :
                                 (trangThai == 2) ?
                                     (
-                                        <Tag color="#ff0000">
+                                        <Tag color="geekblue">
                                             Chờ vận chuyển
                                         </Tag>
                                     ) :
                                     (trangThai == 3) ?
                                         (
-                                            <Tag color="#ff0000">
+                                            <Tag color="blue">
                                                 Vận chuyển
                                             </Tag>
                                         ) :
                                         (trangThai == 4) ?
                                             (
-                                                <Tag color="#ff0000">
+                                                <Tag color="cyan">
                                                     Thanh toán
                                                 </Tag>
                                             ) :
                                             (trangThai == 5) ?
                                                 (
-                                                    <Tag color="#ff0000">
+                                                    <Tag color="green">
                                                         Hoàn thành
                                                     </Tag>
                                                 ) :
                                                 (trangThai == 6) ?
                                                     (
-                                                        <Tag color="#ff0000">
+                                                        <Tag color="lime">
                                                             Hủy
                                                         </Tag>
                                                     ) :
                                                     (
-                                                        <Tag color="">
+                                                        <Tag color="gold">
                                                             Đã thanh toán
                                                         </Tag>
                                                     )
@@ -284,10 +357,11 @@ export default function HoaDon() {
         {
             title: 'Action',
             key: 'action',
-
-            render: () => (
+            dataIndex: 'idHD',
+            
+            render: (title) => (
                 <Space size="middle">
-                    <Link to='/hoa-don-detail' className='btn btn-danger'><BsFillEyeFill /></Link>
+                    <Link to={`/detail-hoa-don/${title}`} className='btn btn-danger'><BsFillEyeFill /></Link>
                 </Space>
             ),
         },
@@ -315,22 +389,22 @@ export default function HoaDon() {
         {
             key: '4',
             label: 'Chờ vận chuyển',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonCVC} columns={columns} />,
         },
         {
             key: '5',
             label: 'Vận chuyển',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonVC} columns={columns} />,
         },
         {
             key: '6',
             label: 'Thanh toán',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonTT} columns={columns} />,
         },
         {
             key: '7',
             label: 'Hoàn thành',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonHT} columns={columns} />,
         },
         {
             key: '8',
