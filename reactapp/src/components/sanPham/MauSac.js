@@ -9,6 +9,7 @@ import {
   Space,
   Table,
   Tag,
+  Modal
 } from 'antd';
 import { InfoCircleFilled } from "@ant-design/icons";
 import { DeleteFilled } from "@ant-design/icons";
@@ -17,6 +18,11 @@ import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
 import {MdSearch} from 'react-icons/md';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Swal from "sweetalert2";
+import FormItem from 'antd/es/form/FormItem';
+
 export default function MauSac() {
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
@@ -24,12 +30,37 @@ export default function MauSac() {
     console.log(`Selected value: ${value}`);
     setSelectedValue(value);
   };
-
-
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  const [form] = Form.useForm();
+   //Ấn Add
+   const [open, setOpen] = useState(false);
+   const [openUpdate, setOpenUpdate] = useState(false);
+   const [bordered] = useState(false);
+   const addMauSac = (value) => {
+     console.log(value);
+     axios.post('http://localhost:8080/mau-sac/add', value)
+       .then(response => {
+         console.log(response.data);
+         toast('✔️ Thêm thành công!', {
+           position: "top-right",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "light",
+         });
+         loadMauSac();
+         form.resetFields();
+ 
+       })
+       .catch(error => console.error('Error adding item:', error));
+ 
+   }
   //Table
   const [mauSac, setMauSacs] = useState([]);
 
@@ -153,16 +184,84 @@ export default function MauSac() {
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách màu sắc</h4>
           <div className="ms-3">
-            <a name="" id="" class="btn btn-success mt-2" href="#" role="button"> <PlusCircleFilled />  Thêm màu sắc</a>
+            {/* Add ms */}
+            <a name="" id="" class="btn btn-success mt-2" href="#" role="button" onClick={() => setOpen(true)}> <PlusCircleFilled />  Thêm màu sắc</a>
+            <Modal
+              title="Thêm Màu Sắc"
+              centered
+              open={open}
+              onOk={() => setOpen(false)}
+              onCancel={() => setOpen(false)}
+              footer={[
+                <Button onClick={() => setOpen(false)}>Hủy</Button>,
+                <Button type="primary" onClick={() => {
+                  Modal.confirm({
+                    title: 'Thông báo',
+                    content: 'Bạn có chắc chắn muốn thêm không?',
+                    onOk: () => { form.submit(); },
+                    footer: (_, { OkBtn, CancelBtn }) => (
+                      <>
+                        <CancelBtn />
+                        <OkBtn />
+                      </>
+                    ),
+                  });
+                }}>Thêm</Button>
+              ]}
+              width={1000}
+            >
+              <Form
+                initialValues={{
+                  size: componentSize,
+                }}
+                onValuesChange={onFormLayoutChange}
+                size={componentSize}
+                style={{
+                  maxWidth: 1000,
+                }}
+                onFinish={addMauSac}
+                form={form}>
+
+                <div className='row'>
+                  <div className="col-md-6">
+                    <Form.Item label="Tên" name='ten' hasFeedback rules={[{ required: true, message: 'Vui lòng không để trống tên!', },]} >
+                      <Input className="border" />
+                    </Form.Item>
+                  </div>
+                  <div className='col-md-6'>
+                    <Form.Item label="Trạng thái" name='trangThai' hasFeedback rules={[{ required: true, message: 'Vui lòng không để trống trạng thái!', },]}>
+                      <Select className="border" value={selectedValue} onChange={handleChange}>
+                        <Select.Option value="1" >Còn Bán</Select.Option>
+                        <Select.Option value="0">Dừng Bán</Select.Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+              </Form>
+            </Modal>
           </div>
           <div className="container-fluid mt-4">
             <div>
-              <Table className='text-center' dataSource={mauSac} columns={columns} pagination='5' />
+              <Table className='text-center' dataSource={mauSac} columns={columns} pagination={{ defaultPageSize: 5 }} />
             </div>
           </div>
         </div>
 
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      {/* Same as */}
+      <ToastContainer />
     </div>
   )
 }

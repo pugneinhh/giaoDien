@@ -2,36 +2,55 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   DatePicker,
+  Modal,
   Form,
   Input,
   InputNumber,
   Select,
+  Slider,
   Space,
   Table,
   Tag,
 } from 'antd';
 import { InfoCircleFilled } from "@ant-design/icons";
+import { UndoOutlined } from "@ant-design/icons";
 import { DeleteFilled } from "@ant-design/icons";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
-import {MdSearch} from 'react-icons/md';
+import { EyeOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import { GrUpdate } from "react-icons/gr";
 import axios from 'axios';
 export default function CTSP() {
+  //Mở detail ctsp
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   //Form
   const [selectedValue, setSelectedValue] = useState('1');
   const handleChange = (value) => {
     console.log(`Selected value: ${value}`);
     setSelectedValue(value);
   };
-
-
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  //Load kich thước
+  const { Option } = Select;
+  const FormItem = Form.Item;
   //Table
   const [cTSP, setCTSPs] = useState([]);
 
@@ -39,7 +58,6 @@ export default function CTSP() {
     loadCTSP();
   }, []);
   const { uuid } = useParams();
-    console.log('UUID:', uuid);
   const loadCTSP = async () => {
     const result = await axios.get(`http://localhost:8080/ctsp/showct/${uuid}`, {
       validateStatus: () => {
@@ -67,7 +85,7 @@ export default function CTSP() {
       dataIndex: "tenSP",
       center: "true",
       sorter: (a, b) => a.ma - b.ma,
-    }, 
+    },
     {
       title: "Kích Thước",
       dataIndex: "tenKT",
@@ -108,17 +126,11 @@ export default function CTSP() {
       render: (trang_thai) => (
         <>
           {trang_thai === 0 ? (
-            <Tag
-              color="#f50
-                "
-            >
+            <Tag color="green">
               Dừng Bán
             </Tag>
           ) : (
-            <Tag
-              color="#87d068
-                "
-            >
+            <Tag color="red">
               Còn Bán
             </Tag>
           )}
@@ -132,10 +144,22 @@ export default function CTSP() {
       render: () => (
         <Space size="middle">
           <a>
-            <Button type="primary" primary shape="circle" icon={<InfoCircleFilled size={20} />} />
-          </a>
-          <a>
-            <Button type="primary" danger shape="circle" icon={<DeleteFilled size={20} />} />
+            <Button type="primary" shape='round' className='bg-success text-white' icon={<EyeOutlined />} onClick={showModal} />
+            <Modal
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              footer={[]}>
+              <div className='text-center mb-3'>
+                <h3>Chi Tiết Sản Phẩm</h3>
+              </div>
+              <div className='row'>
+                <div className='container text-center'>
+                  <Button className='bg-primary text-light rounded-pill border'>Hủy</Button>,
+                  <Button className='bg-warning text-dark rounded-pill border'><GrUpdate className='me-1' />Cập Nhật</Button>
+                </div>
+              </div>
+            </Modal>
           </a>
         </Space>
       ),
@@ -147,7 +171,7 @@ export default function CTSP() {
       <div className="container-fluid">
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><FilterFilled /> Bộ lọc</h4>
-          <Form className="row"
+          <Form
             labelCol={{
               span: 6,
             }}
@@ -164,30 +188,96 @@ export default function CTSP() {
               maxWidth: 1600,
             }}
           >
-            <div className="col-md-5">
-              <Form.Item label="Tên & Mã">
-                <Input className="rounded-pill border" />
-              </Form.Item>
+
+            {/* Form tìm kiếm */}
+            <div className='row'>
+              <div className='col-md-6'>
+                <Form.Item className='text-start'>
+                  <Button type='primary' size='large' className="rounded-pill border ms-3"><SearchOutlined />  Tìm Kiếm</Button>
+                  <Button size='large' className=" text-white bg-danger rounded-pill border ms-3"><UndoOutlined />  Đặt lại tìm kiếm</Button>
+                </Form.Item>
+              </div>
+
             </div>
-            <div className='col-md-5'>
-              <Form.Item label="Trạng Thái">
+            <div className='row'>
+              <div className="col-md-3">
+                <Form.Item label="Tên & Mã">
+                  <Input className="rounded-pill border" />
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Kích Thước">
                 <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                  <Select.Option value="1">Còn Bán</Select.Option>
-                  <Select.Option value="0">Dừng Bán</Select.Option>
-                </Select>
-              </Form.Item>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Màu Sắc">
+                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Chất Liệu">
+                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
             </div>
+            <div className='row'>
+              <div className='col-md-3'>
+                <Form.Item label="Độ Cao">
+                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Danh Mục">
+                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Hãng">
+                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
+                    <Select.Option value="1">Còn Bán</Select.Option>
+                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className='col-md-3'>
+                <Form.Item label="Số Lượng">
+                  <Slider
+                    min={100000}
+                    max={90000000}
+                  />
+                </Form.Item>
+              </div>
+            </div>
+            {/* Hết form tìm kiếm */}
+
+
             <div className='container-fluid'>
-            <Form.Item className='text-center'>
-              <Button type='primary' size='large' className="rounded-pill border-primary"><MdSearch/>  Tìm Kiếm</Button>
-            </Form.Item>
+
             </div>
           </Form>
         </div>
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách Chi Tiết Sản Phẩm</h4>
           <div className="ms-3">
-            <a name="" id="" class="btn btn-success mt-2 rounded-pill border-success" href="#" role="button"> <PlusCircleFilled />  Thêm Chi Tiết Sản Phẩm</a>
+            <a size='large' class="btn bg-success text-white mt-2 rounded-pill border" href="#">
+              <PlusCircleFilled /> Thêm Chi Tiết Sản Phẩm
+            </a>
           </div>
           <div className="container-fluid mt-4">
             <div>
