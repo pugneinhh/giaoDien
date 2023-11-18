@@ -10,15 +10,15 @@ import Voucher from './components/voucher/Voucher';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import KhuyenMai from './components/khuyenMai/KhuyenMai';
 import ThemKhuyenMai from './components/khuyenMai/ThemKhuyenMai'
-import DanhMuc from './components/danhMuc/DanhMuc';
-import DoCao from './components/doCao/DoCao';
-import ChatLieu from './components/chatLieu/ChatLieu';
-import KichThuoc from './components/kichThuoc/KichThuoc';
-import MauSac from './components/mauSac/MauSac';
-import Hang from './components/hang/Hang';
-import { ToastContainer } from 'react-toastify';
-// import { ToastContainer, toast } from 'react-toastify';
-
+import DanhMuc from './components/sanPham/DanhMuc';
+import DoCao from './components/sanPham/DoCao';
+import ChatLieu from './components/sanPham/ChatLieu';
+import KichThuoc from './components/sanPham/KichThuoc';
+import MauSac from './components/sanPham/MauSac';
+import Hang from './components/sanPham/Hang';
+import SanPham from './components/sanPham/SanPham';
+import ChiTietSanPham from './components/sanPham/CTSP';
+import BanHang from './components/banHang/BanHang';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -37,22 +37,11 @@ root.render(
           <Route path='kich-thuoc' element = {<KichThuoc/>}></Route>
           <Route path='mau-sac' element = {<MauSac/>}></Route>
           <Route path='hang' element = {<Hang/>}></Route>
+          <Route path='san-pham' element = {<SanPham/>}></Route>
+          <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
+          <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
         </Route>
       </Routes>
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-    />
-
-    <ToastContainer />
     </BrowserRouter>
 
   // {/* </React.StrictMode> */}
