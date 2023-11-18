@@ -16,6 +16,8 @@ import ChatLieu from './components/chatLieu/ChatLieu';
 import KichThuoc from './components/kichThuoc/KichThuoc';
 import MauSac from './components/mauSac/MauSac';
 import Hang from './components/hang/Hang';
+import { ToastContainer } from 'react-toastify';
+// import { ToastContainer, toast } from 'react-toastify';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -25,7 +27,7 @@ root.render(
       <Routes>
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
-          <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
+        <Route path='detail-hoa-don/:id' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
@@ -37,6 +39,20 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
         </Route>
       </Routes>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
+
+    <ToastContainer />
     </BrowserRouter>
 
   // {/* </React.StrictMode> */}
