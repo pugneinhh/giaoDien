@@ -7,6 +7,7 @@ import { BsFillEyeFill } from 'react-icons/bs';
 import { Link } from "react-router-dom";
 import moment from "moment";
 import Input from 'antd/es/input/Input';
+import { top } from '@popperjs/core';
 export default function HoaDon() {
  
     // tìm kiếm
@@ -289,6 +290,7 @@ export default function HoaDon() {
             title: 'Trạng thái',
             dataIndex: 'trangThai',
             key: 'trangThai',
+            center: 'true',
             render: (trangThai) => (
                 <>
                     {
@@ -353,6 +355,7 @@ export default function HoaDon() {
                 },
             ],
             onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
+           
         },
         {
             title: 'Action',
@@ -364,7 +367,9 @@ export default function HoaDon() {
                     <Link to={`/detail-hoa-don/${title}`} className='btn btn-danger'><BsFillEyeFill /></Link>
                 </Space>
             ),
+            center: 'true',
         },
+       
     ];
 
     const onChange = (key) => {
@@ -374,42 +379,42 @@ export default function HoaDon() {
         {
             key: '1',
             label: 'Tất cả',
-            children: <Table dataSource={hoaDon} columns={columns} />,
+            children: <Table dataSource={hoaDon} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '2',
             label: 'Chờ xác nhận',
-            children: <Table dataSource={hoaDonCho} columns={columns} />,
+            children: <Table dataSource={hoaDonCho} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '3',
             label: 'Xác nhận',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonXN} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '4',
             label: 'Chờ vận chuyển',
-            children: <Table dataSource={hoaDonCVC} columns={columns} />,
+            children: <Table dataSource={hoaDonCVC} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '5',
             label: 'Vận chuyển',
-            children: <Table dataSource={hoaDonVC} columns={columns} />,
+            children: <Table dataSource={hoaDonVC} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '6',
             label: 'Thanh toán',
-            children: <Table dataSource={hoaDonTT} columns={columns} />,
+            children: <Table dataSource={hoaDonTT} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '7',
             label: 'Hoàn thành',
-            children: <Table dataSource={hoaDonHT} columns={columns} />,
+            children: <Table dataSource={hoaDonHT} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '8',
             label: 'Hủy',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonXN} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
     ];
 
