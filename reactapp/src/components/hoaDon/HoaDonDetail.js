@@ -266,6 +266,7 @@ export default function HoaDonDetail() {
   const [sdtKH, setsdtKH] = useState([])
   const [diaChiKH, setdiaChiKH] = useState([])
   const [thanhTienHD, setThanhTienHD] = useState([])
+  const [ghiChuHD, setGhiChuHD] = useState([])
   const { id } = useParams();
 
   useEffect(() => {
@@ -278,6 +279,7 @@ export default function HoaDonDetail() {
         setsdtKH(response.data.sdt);
         setdiaChiKH(response.data.diaChiKH)
         setThanhTienHD(response.data.thanhTien)
+        setGhiChuHD(response.data.ghiChuHD)
       })
       .catch(error => {
         // Xử lý lỗi
@@ -301,7 +303,7 @@ export default function HoaDonDetail() {
               <Flex horizontal>
                 <TimelineEvent
                   color='#25f55c'
-                  icon={icon[trangThai ]}
+                  icon={icon[trangThai]}
                   index={trangThai }
                   values={trangThai}
                   // indexClick={({ trangThai }) => setValue({ trangThai })}
@@ -311,6 +313,7 @@ export default function HoaDonDetail() {
                 />
                 <TimelineEvent
                   color='#e6e3e3'
+                 
                 />
                 <TimelineEvent
                   color='#e6e3e3'
@@ -604,8 +607,15 @@ export default function HoaDonDetail() {
                 <Form
                   form={form}
                   onFinish={handleSubmit}
+            
                 >
-                  <Form.Item name='moTaHoatDong'>
+                <Form.Item name='moTaHoatDong' hasFeedback
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Vui lòng không để trống ghi chú!',
+                    },
+                  ]}>
                     <TextArea rows={4} />
                   </Form.Item>
 
@@ -759,7 +769,7 @@ export default function HoaDonDetail() {
               onCancel={() => setOpen(false)}
               width={800}
             >
-              <Table dataSource={LichSuHoaDon} columns={columns} style={{ marginTop: '25px' }} />
+              <Table dataSource={LichSuHoaDon} columns={columns} style={{ marginTop: '25px' }} pagination={{}} />
             </Modal>
           </>
 
@@ -857,7 +867,7 @@ export default function HoaDonDetail() {
             <p>{sdtKH}</p>
           </div>
           <div className='mt-4'>
-            <p>{thanhTienHD}</p>
+            <p>{ghiChuHD}</p>
           </div>
         </div>
 

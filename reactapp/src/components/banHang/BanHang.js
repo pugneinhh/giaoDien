@@ -1,10 +1,12 @@
 import { Button, Empty, Input, Modal, Space, Switch, Tabs, Tag } from "antd";
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast,ToastContainer } from "react-toastify";
 import { BsQrCodeScan } from "react-icons/bs";
 import { FaList } from "react-icons/fa";
 import {QrReader} from 'react-qr-reader';
 import { MdOutlinePayments, MdOutlineShoppingCartCheckout } from "react-icons/md";
+import axios from "axios";
+
 const BanHang=()=>{
     const [activeKey, setActiveKey] = useState(1);
     const [items, setItems] = useState([]);
@@ -15,6 +17,32 @@ const BanHang=()=>{
       setActiveKey(key);
     };
     
+
+  const [maHD, setmaHD] = useState([])
+  const [hoaDon, setHoaDons] = useState([])
+  // const maHoaDon = maHD.map((item) => item.maHD);
+  useEffect(() => {
+    loadHoaDon();
+
+  }, []);
+  // load full hóa đơn
+  const loadHoaDon = async () => {
+
+    const result = await axios.get('http://localhost:8080/ban-hang', {
+      validateStatus: () => {
+        return true;
+      },
+    });
+    if (result.status === 302) {
+      setHoaDons(result.data);
+      setmaHD(result.data.maHD);
+      console.log(maHD)
+      
+      console.log(hoaDon)
+    }
+
+
+  };
     //add và remove tab
     const add = () => {
         if(demTab.current>=5){
