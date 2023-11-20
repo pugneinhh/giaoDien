@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import HoaDon from './components/hoaDon/HoaDon2';
 import HoaDonDetail from './components/hoaDon/HoaDonDetail';
 import Voucher from './components/voucher/Voucher';
+import NhanVien from './components/nhanVien/NhanVien'; 
+import KhachHang from './components/khachHang/KhachHang';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import KhuyenMai from './components/khuyenMai/KhuyenMai';
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,7 +21,8 @@ root.render(
         <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
-
+          <Route path='nhan-vien' element={<NhanVien/>}></Route>
+          <Route path='khach-hang' element={<KhachHang/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -4,22 +4,22 @@ import { Table, Tag, Space } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 
-export default function NhanVien() {
-  const [nhanVien, setNhanVien] = useState([]);
+export default function KhachHang() {
+  const [khachHang, setKhachHang] = useState([]);
 
   useEffect(() => {
-    loadNhanVien();
+    loadKhachHang();
   }, []);
 
-  const loadNhanVien = async () => {
+  const loadKhachHang = async () => {
 
-    const result = await axios.get('http://localhost:8080/nhan-vien', {
+    const result = await axios.get('http://localhost:8080/khach-hang', {
         validateStatus: () => {
             return true;
         },
     });
     if (result.status === 302) {
-        setNhanVien(result.data);
+        setKhachHang(result.data);
     }
     console.log(result.data);
 
@@ -28,19 +28,19 @@ export default function NhanVien() {
   const columns = [
     {
       title: 'STT',
-      dataIndex: 'idNV',
-      key: 'idNV',
+      dataIndex: 'idKH',
+      key: 'idKH',
       render: (id,record,index) => {++index; return index},
       showSortTooltip:false,
     },
     {
-      title: 'Mã Nhân Viên',
-      dataIndex: 'maNV',
+      title: 'Mã Khách Hàng',
+      dataIndex: 'maKH',
       sorter: (a, b) => a.ma - b.ma,
     },
     {
-      title: 'Tên Nhân Viên',
-      dataIndex: 'tenNV',
+      title: 'Tên Khách Hàng',
+      dataIndex: 'tenKH',
       sorter: (a, b) => a.ten - b.ten,
     },
     {
@@ -52,11 +52,6 @@ export default function NhanVien() {
       title: 'SĐT',
       dataIndex: 'sdt',
       sorter: (a, b) => a.SDT - b.SDT,
-    },
-    {
-      title: 'Chức vụ',
-      dataIndex: 'maCV',
-      sorter: (a, b) => a.maCV - b.maCV,
     },
   ];
 
@@ -102,10 +97,10 @@ export default function NhanVien() {
   return (
     <div className="container">
       <div className="container-fluid">
-        <h4 className="text-center pt-1">Danh sách nhân viên</h4>
+        <h4 className="text-center pt-1">Danh sách Khách Hàng</h4>
         <div className="text-center">
           <a className="btn btn-primary" href="#" role="button">
-            Thêm nhân viên
+            Thêm Khách Hàng
           </a>
         </div>
         <div className="container-fluid mt-4">
@@ -116,7 +111,7 @@ export default function NhanVien() {
                 position: [top, bottom],
                 }}
                 columns={tableColumns}
-                dataSource={hasData ? nhanVien : []}
+                dataSource={hasData ? khachHang : []}
                 scroll={scroll}
       />
 
