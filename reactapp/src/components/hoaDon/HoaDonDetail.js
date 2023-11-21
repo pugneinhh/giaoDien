@@ -5,7 +5,7 @@ import { RiTruckFill } from "react-icons/ri";
 import { SlNotebook } from "react-icons/sl";
 import { GiNotebook, GiPiggyBank } from "react-icons/gi";
 import { FaTruckFast } from "react-icons/fa6";
-import { Button, Modal, Table, Tag, Input, Flex, Form, Popconfirm, Image } from 'antd';
+import { Button, Modal, Table, Tag, Input, Flex, Form, Image } from 'antd';
 import axios from "axios";
 import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,6 +14,7 @@ import './HoaDonDetail.scss'
 import moment from 'moment';
 import {useReactToPrint} from 'react-to-print';
 import logo from '../../assets/images/logo.png';
+import { FormattedNumber, IntlProvider } from 'react-intl';
 export default function HoaDonDetail() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
@@ -125,10 +126,8 @@ export default function HoaDonDetail() {
     await axios.get(`http://localhost:8080/ngay-hoa-don-time-line/${id}`)
       .then(response => {
         // Update the list of items
-        // console.log("2222", response.json());
-
         setngayTimeLine(response.data);
-        console.log("2222", ngay[0]);
+      
       })
       .catch(error => console.error('Error adding item:', error));
   };
@@ -285,7 +284,22 @@ export default function HoaDonDetail() {
         // Xử lý lỗi
       });
   }, [id]);
+  const [listSanPhams, setlistSanPhams] = useState([])
+  useEffect(() => {
+    loadListSanPhams();
+  },[]);
 
+  const loadListSanPhams = async () => {
+    await axios.get(`http://localhost:8080/hoa-don-san-pham/${id}`)
+      .then(response => {
+        // Update the list of items
+        setlistSanPhams(response.data);
+     
+
+      })
+      .catch(error => console.error('Error adding item:', error));
+
+  };
 
   const VALUES = ['Chờ xác nhận', 'Xác nhận', 'Chờ vận chuyển', 'Đang vận chuyển', 'Đã thanh toán', 'Thành công'];
   const textButton = ['Xác nhận', 'Chờ vận chuyển', 'Đang vận chuyển', 'Đã thanh toán', 'Thành công'];
@@ -740,12 +754,95 @@ export default function HoaDonDetail() {
                       {(loaiHD == 0) ? (<Tag color="orange">Online</Tag>) : (<Tag color="red">Tại quầy</Tag>)}
                     </div>
                     <div className='mt-4'>
-                      <p>{thanhTienHD}</p>
+                      <p>  <IntlProvider locale='vi-VN'>
+                        <div>
+                          <FormattedNumber
+                            value={thanhTienHD}
+                            style="currency"
+                            currency="VND"
+                            minimumFractionDigits={0}
+                          />
+                        </div>
+                      </IntlProvider>
+                      </p>
                     </div>
                   </div>
-           
+                  <div className='container-fuild mt-3 row  radius'>
+                    <div>
+                      {
+                        listSanPhams.map((listSanPham, index) => (
+                          <tr className='pt-3 row'>
+                            <div className='col-md-4'>   <img src={require(`../../assets/images/${listSanPham.tenHA}`)} style={{ width: 100, height: 100, marginLeft: 40 }} /> </div>
+                            <div className='col-md-6 '>
+                              <div className='mt-4'><h6>{listSanPham.tenHang}  {listSanPham.tenSP}  {listSanPham.tenMauSac}</h6></div>
+                              <div className='text-danger'><h6>   
+                                 <IntlProvider locale='vi-VN'>
+                                <div>
+                                  <FormattedNumber
+                                    value={listSanPham.giaBanSP}
+                                    style="currency"
+                                    currency="VND"
+                                    minimumFractionDigits={0}
+                                  />
+                                </div>
+                              </IntlProvider></h6></div>
+                              <div>Size:{listSanPham.tenKichThuoc}</div>
+                              <div>x{listSanPham.soLuongSP}</div>
+                            </div>
+
+                            <div className='col-md-2 text-danger mt-5'><h6>  
+                                <IntlProvider locale='vi-VN'>
+                              <div>
+                                <FormattedNumber
+                                  value={listSanPham.thanhTienSP}
+                                  style="currency"
+                                  currency="VND"
+                                  minimumFractionDigits={0}
+                                />
+                              </div>
+                            </IntlProvider></h6></div>
+                         
+                          </tr>
+
+                        ))
+                      }
+                    </div>
+                    <hr></hr>
+                    <tr className='pt-3 row'>
+                      <div className='col-md-6'></div>
+                      <div className='col-md-3'></div>
+                      <div className='col-md-3'>
+                        <div className='d-flex'><h6 className='col-md-6'>Tiền hàng:</h6 >  <p className='col-md-6' >
+                          <IntlProvider locale='vi-VN'>
+                            <div>
+                              <FormattedNumber
+                                value={thanhTienHD}
+                                style="currency"
+                                currency="VND"
+                                minimumFractionDigits={0}
+                              />
+                            </div>
+                          </IntlProvider></p> </div>
+                        <div className='d-flex'><h6 className='col-md-6'>Phí vận chuyển:</h6 >  <p className='col-md-6' >0 VND</p> </div>
+                        <div className='d-flex'><h6 className='col-md-6'>Tổng tiền giảm:</h6 >  <p className='col-md-6' >0 VND</p> </div>
+                        <div className='d-flex'><h6 className='col-md-6'>Tổng giảm:</h6 >  <p className='col-md-6' > 
+                           <IntlProvider locale='vi-VN'>
+                          <div>
+                            <FormattedNumber
+                              value={thanhTienHD}
+                              style="currency"
+                              currency="VND"
+                              minimumFractionDigits={0}
+                            />
+                          </div>
+                        </IntlProvider></p> </div>
+                      </div>
+                    </tr>
+                  </div>
+
                 </div>
-        
+           
+
                 <button className='bg-primary text-light rounded-pill mt-5 fs-5' style={{marginLeft:420}} onClick={handlePrint}>Xuất hóa đơn</button>
                 </>
             </Modal>
@@ -872,19 +969,112 @@ export default function HoaDonDetail() {
         </div>
 
       </div>
+       {/* detail hóa đơn */}
       <div className='container-fuild mt-3 row bg-light radius'>
-        <div className='col-md-3'>
-
-        </div>
-        <div className='col-md-3'>
-
-        </div>
-        <div className='col-md-3'>
-
+        <div>
+          {
+            listSanPhams.map((listSanPham, index) => (
+              <tr className='pt-3 row'>
+                
+                <div className='col-md-3'>  
+                  <Image src={require(`../../assets/images/${listSanPham.tenHA}`)} style={{ width: 150, height: 150, marginLeft: 15 }} /> 
+                 
+                 </div>
+                <div className='col-md-5 '> 
+                  <div className='mt-4'><h6>{listSanPham.tenHang}  {listSanPham.tenSP}  {listSanPham.tenMauSac}</h6></div> 
+                  <div className='text-danger'>
+                    <h6>
+                      <IntlProvider locale='vi-VN'>
+                        <div>
+                          <FormattedNumber
+                            value={listSanPham.giaBanSP}
+                            style="currency"
+                            currency="VND"
+                            minimumFractionDigits={0}
+                          />
+                        </div>
+                      </IntlProvider></h6></div> 
+                <div>Size:{listSanPham.tenKichThuoc}</div>
+                  <div>x{listSanPham.soLuongSP}</div>
+                </div>
+                
+                <div className='col-md-2 text-danger mt-5'><h6>     
+                  <IntlProvider locale='vi-VN'>
+                  <div>
+                    <FormattedNumber
+                        value={listSanPham.thanhTienSP}
+                      style="currency"
+                      currency="VND"
+                      minimumFractionDigits={0}
+                    />
+                  </div>
+                </IntlProvider>
+               </h6></div>
+                <div className='col-md-2 text-danger mt-5'><Tag color="red">Trả hàng</Tag></div>
+              </tr>
+             
+            ))
+          }
         </div>
         <hr></hr>
-
+        <tr className='pt-3 row'>
+          <div className='col-md-6'></div>
+          <div className='col-md-3'></div>
+          <div className='col-md-3'>
+            <div className='d-flex'><h6 className='col-md-8'>Tiền hàng:</h6 > 
+              <p className='col-md-4' >
+                <IntlProvider locale='vi-VN'>
+                  <div>
+                    <FormattedNumber
+                      value={thanhTienHD}
+                      style="currency"
+                      currency="VND"
+                      minimumFractionDigits={0}
+                    />
+                  </div>
+                </IntlProvider>
+              
+              </p> 
+             
+             </div>
+            <div className='d-flex'><h6 className='col-md-8'>Phí vận chuyển:</h6 >  <p className='col-md-4' >  <IntlProvider locale='vi-VN'>
+              <div>
+                <FormattedNumber
+                  value={0}
+                  style="currency"
+                  currency="VND"
+                  minimumFractionDigits={0}
+                />
+              </div>
+            </IntlProvider></p> </div>
+            <div className='d-flex'><h6 className='col-md-8'>Tổng tiền giảm:</h6 >  <p className='col-md-4' >  <IntlProvider locale='vi-VN'>
+              <div>
+                <FormattedNumber
+                  value={0}
+                  style="currency"
+                  currency="VND"
+                  minimumFractionDigits={0}
+                />
+              </div>
+            </IntlProvider></p> </div>
+            <div className='d-flex'><h6 className='col-md-8'>Tổng giảm:</h6 >  <p className='col-md-4' >       
+            <IntlProvider locale='vi-VN'>
+              <div>
+                <FormattedNumber
+                  value={thanhTienHD}
+                  style="currency"
+                  currency="VND"
+                  minimumFractionDigits={0}
+                />
+              </div>
+            </IntlProvider></p> </div>
+          </div>
+        </tr>
       </div>
+
+    
+       
+
       <ToastContainer
         position="top-right"
         autoClose={5000}

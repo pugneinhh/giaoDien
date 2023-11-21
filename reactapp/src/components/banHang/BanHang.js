@@ -9,7 +9,35 @@ import axios from "axios";
 
 const BanHang=()=>{
     const [activeKey, setActiveKey] = useState(1);
-    const [items, setItems] = useState([]);
+  const [hoaDon, setHoaDons] = useState([])
+  useEffect(() => {
+    loadHoaDons();
+ 
+  }, []);
+  // load full hóa đơn
+  const loadHoaDons = async () => {
+    await axios.get(`http://localhost:8080/ban-hang`)
+      .then(response => {
+        // Update the list of items
+        setHoaDons(response.data);
+        console.log("res" + response.data.maHD);
+        console.log("mã" + maHoaDon[1]);
+        setItems([
+          ...maHoaDon,
+          {
+            label: ` ${maHoaDon[1]}`,
+            children: `Hóa đơn ${maHoaDon[1]}`,
+            key: `${idHD}`,
+          },
+        ]);
+      })
+      .catch(error => console.error('Error adding item:', error));
+
+  };
+  const maHoaDon = hoaDon.map((item) => item.maHD);
+  const idHD = hoaDon.map((item) => item.idHD);
+
+  const [items, setItems] = useState([]);
     const newTabIndex = useRef(0);
     const demTab=useRef(0);
     
@@ -17,32 +45,6 @@ const BanHang=()=>{
       setActiveKey(key);
     };
     
-
-  const [maHD, setmaHD] = useState([])
-  const [hoaDon, setHoaDons] = useState([])
-  // const maHoaDon = maHD.map((item) => item.maHD);
-  useEffect(() => {
-    loadHoaDon();
-
-  }, []);
-  // load full hóa đơn
-  const loadHoaDon = async () => {
-
-    const result = await axios.get('http://localhost:8080/ban-hang', {
-      validateStatus: () => {
-        return true;
-      },
-    });
-    if (result.status === 302) {
-      setHoaDons(result.data);
-      setmaHD(result.data.maHD);
-      console.log(maHD)
-      
-      console.log(hoaDon)
-    }
-
-
-  };
     //add và remove tab
     const add = () => {
         if(demTab.current>=5){
@@ -58,18 +60,18 @@ const BanHang=()=>{
                 });
 
         }
-        const newActiveKey = `${newTabIndex.current++}`;
+      const idHD = `${maHoaDon.current++}`;
         setItems([
           ...items,
           {
-            label: `Hóa đơn ${newTabIndex.current}`,
-            children: `New Tab ${newTabIndex.current}`,
-            key: newActiveKey,
+            label: ` ${maHoaDon[1]}`,
+            children: `Hóa đơn ${maHoaDon[1]}`,
+            key: `${idHD}`,
           },
         ]);
-        console.log('kkkkkkkk',newActiveKey);
+      console.log('kkkkkkkk', idHD);
         demTab.current++;
-        setActiveKey(newActiveKey);
+      setActiveKey(idHD);
       };
       const remove = (targetKey) => {
         const targetIndex = items.findIndex((pane) => pane.key === targetKey);
@@ -124,7 +126,7 @@ const BanHang=()=>{
             {/* hết tab hóa đơn */}
         <div className="d-flex justify-content-between align-items-center">
              <div className="text-start">
-                <h4><FaList/> Danh sách</h4>
+                <h4><FaList/> Danh sách </h4>
             </div>
             <div className="text-end">
                 <Button type="primary" icon={<BsQrCodeScan />} onClick={()=>setOpenScan(true)}>Quét QR sản phẩm</Button>
