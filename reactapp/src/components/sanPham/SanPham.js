@@ -159,7 +159,7 @@ export default function SanPham() {
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách sản phẩm</h4>
           <div className="ms-3">
-            <a name="" id="" class="btn btn-success mt-2" href="#" role="button"> <PlusCircleFilled />  Thêm sản phẩm</a>
+            <a name="" id="" class="btn btn-success mt-2" href="/them-san-pham" role="button"> <PlusCircleFilled />  Thêm sản phẩm</a>
           </div>
           <div className="container-fluid mt-4">
             <div>

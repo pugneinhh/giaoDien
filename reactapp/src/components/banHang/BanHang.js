@@ -108,7 +108,9 @@ const BanHang = () => {
 
   return (
     <div className="container border-1">
-<div className="text-end mt-3 me-4 mb-3">
+
+      <div className="text-end mt-3 me-4 mb-3">
+
         <Button type="primary" onClick={add} >Tạo hóa đơn</Button>
       </div>
 
@@ -199,7 +201,9 @@ const BanHang = () => {
           onScan={handleScan}
           onResult={(result, error) => {
             if (!!result) {
-setQrData(result?.text);
+
+              setQrData(result?.text);
+
             }
 
             if (!!error) {

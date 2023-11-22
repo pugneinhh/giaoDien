@@ -103,6 +103,7 @@ const Voucher = ()=>{
       loadVoucher();
   
     }
+       console.log(moment(values.ngayKT).format('YYYY-MM-DD'));
     }
   
 
