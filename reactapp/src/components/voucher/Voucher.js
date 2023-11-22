@@ -20,22 +20,50 @@ import { IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
 import moment from 'moment';
-import {} from '@ant-design/icons';
+import {PlusCircleOutlined} from '@ant-design/icons';
 import "./Voucher.scss";
-import ModelAddVoucher from "./ModelAddVoucher";
+import ModelAddVoucher from "./ModelUpdateVoucher";
 import ModalDetail from "./ModalDetail";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { render } from '@testing-library/react';
+import { FaTag } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { da } from 'date-fns/locale';
 
 
 const Voucher = ()=>{
-    //của form voucher
-    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
-    const handleChange = (value) => {
-        console.log(`Selected value: ${value}`);
-        setSelectedValue(value);
-      };
-    
+    // const [dataSearch,setDataSearch]=useState({
+    //   tenVoucher:"",
+    //   trangThaiVoucher:"",
+    //   loaiVoucher:"",
+    //   phuongThucVoucher:"",
+    //   ngayBDVoucher:"",
+    //   ngayKTVoucher:"",
+    // });
+     const [dataSearch,setDataSearch]=useState({});
+    const onChangeFilter=(changedValues, allValues)=>{
+      
+      console.log("hi",changedValues);
+      // console.log("gtri",value);
+      setDataSearch(allValues);
+      // setDataSearch(e);
+      console.log(dataSearch);
+      timKiemVoucher(dataSearch);
+    }
+    //call api tìm kiếm
+    const timKiemVoucher=(dataSearch)=>{
+      axios.post('http://localhost:8080/voucher/search-voucher',dataSearch)
+      .then(response => {
+          // Update the list of items
+          setVouchers(response.data);
+          console.log("tìm kím:",response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+
+
+
 
     const [componentSize, setComponentSize] = useState('default');
     const onFormLayoutChange = ({ size }) => {
@@ -44,64 +72,19 @@ const Voucher = ()=>{
 
   
     const [form] = Form.useForm();
-    
-    
-
-    
-    const handleSubmit = (value) => {
-      // Swal.fire({
-      //   title: "Thông báo",
-      //   text: "Bạn muốn thêm voucher!",
-      //   icon: "infor",
-      //   showCancelButton: true,
-      //   confirmButtonColor: "#3085d6",
-      //   cancelButtonColor: "#d33",
-      //   confirmButtonText: "Có",
-      //   cancelButtonText: "Hủy",
-      // }).then((result) => {
-      //   if (result.isConfirmed) {
-          // promotionService
-          //   .changeStatusPromotion(row.promotionID)
-          //   .then((res) => {
-          //     
-          //   })
-          //   .catch((err) => {
-          //     console.log(err);
-          //   });
-          console.log(value);
-          axios.post('http://localhost:8080/voucher/add',value)
-      .then(response => {
-          // Update the list of items
-                console.log(response.data);
-                toast('✔️ Thêm thành công!', {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  });
-                loadVoucher();
-                form.resetFields();
-          
-      })
-      .catch(error => console.error('Error adding item:', error));
-      
-    }
-  
+ 
     ///call api
 
     const[voucher,setVouchers]=useState([])
     const [myVoucher,setMyVoucher]=useState({});
     useEffect(()=>{
       loadVoucher();
-      setInterval(()=>{
-        loadVoucher();
-      },60000);
-      return () => clearInterval();
-    },[]);
+      // setInterval(()=>{
+      //   loadVoucher();
+      // },60000);
+      // return () => clearInterval();
+      timKiemVoucher(dataSearch);
+    },[dataSearch]);
     
      //tìm kiếm
      const timKiem = (values) => {
@@ -150,6 +133,11 @@ const columns = [
   {
     title: 'Mã Voucher',
     dataIndex: 'ma',
+    sorter: (a, b) => a.ma - b.ma,
+  },
+  {
+    title: 'Tên Voucher',
+    dataIndex: 'ten',
     sorter: (a, b) => a.ma - b.ma,
   },
   {
@@ -297,35 +285,7 @@ const columns = [
     
     };
     const [id,setID]=useState('');
-    // // useEffect(()=>{
-    // //   if(openUpdate&&id!==null&&id!==undefined){
-    // //     getVoucherByID(id);
-
-    // //   }else{
-    // //     return()=>{
-    // //     resetMyVoucher();
-         
-    // //     }
-       
-      
-    // //   }
-      
-        
-    // },[id,getVoucherByID]);
     
-    //update voucher
-    // const handleUpdateVoucher=(value)=>{
-      
-    //   axios.put(`http://localhost:8080/voucher/update/${myVoucher.id}`,value)
-    //   .then(response => {
-                
-    //             loadVoucher();
-    //             form.resetFields();
-                
-    //   })
-    //   .catch(error => console.error('Error adding item:', error));
-      
-    // }
     
     ///validate ngày 
     const validateDateKT = (_, value) => {
@@ -358,25 +318,21 @@ const columns = [
     const handleChangeSwitch=(value)=>{
       setGioiHan(value);
     };
-
+    
     return (
 
         <div className="container" style={{borderRadius:20}}>
       
       
          <div className="container-fluid">
-         <Divider orientation="left" color="none"><h4 className="text-first pt-1 fw-bold"> Quản lý Voucher</h4></Divider>
+         <Divider orientation="left" color="#d0aa73"><h4 className="text-first pt-1 fw-bold"> <FaTag size={20} />Quản lý phiếu giảm giá</h4></Divider>
          {/* form tìm kiếm */}
-            <div className=' bg-light m-2 p-3 pt-2' style={{borderRadius:20}}>
-            <Collapse ghost expandIcon={({ isActive }) =><FilterFilled size={30}/>}
-
-      items={[
-        {
-          key: '1',
-          label: <b className='text-first fw-bold'>  Bộ lọc</b>,
-          children:
-        
-          <Form className="row col-md-12"
+            <div className=' bg-light m-2 p-3 pt-2' style={{border: '1px solid #ddd', // Border color
+    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.1)', // Box shadow
+    borderRadius: '8px'}}>
+            <h5><FilterFilled size={30}/> Bộ lọc</h5>
+            <hr/>
+            <Form className="row col-md-12"
               labelCol={{
                   span: 8,
               }}
@@ -387,227 +343,95 @@ const columns = [
               initialValues={{
                   size: componentSize,
               }}
-              onValuesChange={onFormLayoutChange}
+              onValuesChange={onChangeFilter}
               size={componentSize}
               style={{
                   maxWidth: 1400,
 
               }}
-              onFinish={timKiem}
               form={form}
           >
               <div className="col-md-4">
-                  <Form.Item label="Tìm kiếm" name='key'>
-                      <Input className='rounded-pill border-warning' placeholder='Mã giảm giá'/>
+                  <Form.Item label="Tìm kiếm" name='tenVoucher'>
+                      <Input className='rounded-pill border-warning' placeholder='Nhập mã hoặc tên hoặc mức độ giảm giá'/>
                   </Form.Item>
+                  <Form.Item label="Hình thức" name='phuongThucVoucher'>
+                  <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}}  >
+                      <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
+                      <Select.Option value="Phần trăm">Phần trăm</Select.Option>
+                  </Select>
+                  </Form.Item> 
               </div>
+
               <div className='col-md-4'>
-                  <Form.Item label="Ngày bắt đầu" name='ngayBD'>
-                      <DatePicker className='rounded-pill border-warning' placeholder='Ngày bắt đầu' style={{ width: '100%' }} />
-                  </Form.Item>
+              <Form.Item label="Loại" name='loaiVoucher' >
+                  <Select defaultValue={'Tất cả'} style={{borderColor:'yellow'}}>
+                      <Select.Option value="true">Giới hạn</Select.Option>
+                      <Select.Option value="false">Không giới hạn</Select.Option>
+                  </Select>
+                  </Form.Item> 
+                  <Form.Item label="Trạng thái" name='trangThaiVoucher' >
+                  <Select defaultValue={'Tất cả'} style={{borderColor:'yellow'}}>
+                      <Select.Option value="0">Sắp diễn ra</Select.Option>
+                      <Select.Option value="1">Hoạt động</Select.Option>
+                      <Select.Option value="2">Ngừng hoạt động</Select.Option>
+                  </Select>
+                  </Form.Item> 
+                 
                   </div>
                   <div className='col-md-4'>
-                  <Form.Item label="Ngày kết thúc" name='ngayKT'>
+                  <Form.Item label="Ngày bắt đầu" name='ngayBDVoucher' >
+                      <DatePicker className='rounded-pill border-warning' placeholder='Ngày bắt đầu' style={{ width: '100%' }} />
+                  </Form.Item>
+                  <Form.Item label="Ngày kết thúc" name='ngayKTVoucher'>
                       <DatePicker className='rounded-pill border-warning' placeholder='Ngày kết thúc' style={{ width: '100%' }} />
                   </Form.Item>
               </div>
            
               <Form.Item className='text-end '>
-                      <Button type="primary" htmlType='submit'>Tìm kiếm</Button>
+                      <Button type="primary" htmlType='reset'>Làm mới</Button>
                   </Form.Item>
           </Form>
-        ,
-        },
-      ]}
-    />
-    <hr/>
+      
+    
            
     </div>
     {/* hết form tìm kiếm */}
      {/* view add voucher */}
      <div className=' text-end mt-3'>
              
-             
-               <Button type="primary" className='fw-bold nut-them rounded-pill' onClick={() => setOpen(true)}>
-               + Thêm
-               </Button>
-               <Modal
-                 title="Thêm voucher"
-                 centered
-                 open={open}
-                 onOk={() => setOpen(false)}
-                 onCancel={() => setOpen(false)}
-                 footer={[
-                  <Button onClick={()=>setOpen(false)}>Hủy</Button>,
-                  <Button type="primary"  onClick={() => {
-                    Modal.confirm({
-                      title: 'Thông báo',
-                      content: 'Bạn có chắc chắn muốn thêm không?',
-                      onOk: () => {form.submit();},
-                      footer: (_, { OkBtn, CancelBtn }) => (
-                        <>
-                          <CancelBtn/>
-                          <OkBtn />
-                        </>
-                      ),
-                    });
-                  }}>Thêm</Button>
-                ]}
-                 width={1000}
-               >
-                 {/* form add voucher */}
-                 <Form className="row col-md-12 mt-3"
-
-      labelCol={{
-        span: 10,
-      }}
-      wrapperCol={{
-        span: 20,
-      }}
-      layout="horizontal"
-      initialValues={{
-        size: componentSize,
-      }}
-      onValuesChange={onFormLayoutChange}
-      size={componentSize}
-      style={{
-        maxWidth: 1000,
-      }}
-      onFinish={handleSubmit}
-      form={form}
-    
-    >
-        <div className="col-md-4">
-      <Form.Item label="Mã Voucher" name='ma' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng không để trống mã!',
-},
-]}   >
-        <Input  placeholder='Mã giảm giá' className='border-warning'/>
-      </Form.Item>
-      <Form.Item label="Phương thức" name='phuongThuc' style={{borderColor:'yellow'}} rules={[
-{
-required: true,
-message: 'Vui lòng chọn phương thức!',
-},
-]} >
-        <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}} onChange={handleChange}>
-          <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
-          <Select.Option value="Phần trăm">Phần trăm</Select.Option>
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="Giới hạn" name='loaiVoucher' valuePropName="checked">
-        <Switch onChange={handleChangeSwitch}/>
-      </Form.Item>
-      {gioiHan==true?
-      <Form.Item label="Số lượng" name='soLuong'>
-      <InputNumber defaultValue={'1'} min={1}/>
-    </Form.Item>
-    :<></>
-    }
-      
-      </div>
-      <div className='col-md-4'>
-      <Form.Item label="Mức độ" name='mucDo'>
-          {selectedValue==='Tiền mặt'?
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
-    :
-    <InputNumber className='border-warning'
-      defaultValue={0}
-      min={0}
-      max={100}
-      formatter={(value) => `${value}%`}
-      parser={(value) => value.replace('%', '')}
-      style={{width:'100%'}}
-      
-    />
-          }
-      </Form.Item>
-      <Form.Item label="Giảm tối đa" name='giamToiDa' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng nhập giá trị giảm tối đa!',
-},
-]} >
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-       
-    />
-      </Form.Item>
-      <Form.Item label="Điều kiện" name='dieuKien' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng nhập điều kiện giảm!',
-},
-]} >
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
+     <Link to='/themVoucher' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> <PlusCircleOutlined /> Thêm </Link>
         
-      </Form.Item>
-      </div>
-      <div className='col-md-4'>
-      
-      <Form.Item label="Ngày bắt đầu" name='ngayBatDau' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng chọn ngày bắt đầu!',
-},
-{validator:validateDateBD}
-]} >
-      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày bắt đầu'  />
-      </Form.Item>
-      <Form.Item label="Ngày kết thúc"  name='ngayKetThuc' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng chọn ngày kết thúc!',
-},
-{validator:validateDateKT}
-]} >
-      <DatePicker showTime style={{width:'100%'}} className='border-warning' placeholder='Ngày kết thúc' />
-      </Form.Item>
-      </div>
-      <div className="col-md-4"></div>
-      <div className="col-md-1"></div>
-      <div className="col-md-4">
-      
-      </div>
-    </Form>
-               </Modal>
+            
+               
              
    
          
          </div>
       {/* view table voucher */}
+      <div style={{border: '1px solid #ddd', // Border color
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+    borderRadius: '8px',padding:'10px'}}>
          <div className="text-first fw-bold">
-            <p><UnorderedListOutlined size={30}/> Danh sách Voucher </p>
+            <p><UnorderedListOutlined size={30}/> Danh sách phiếu giảm giá </p>
           </div>
      <>
       <Table
         {...tableProps}
         pagination={{
+          showQuickJumper: true,
           position: [top, bottom],
+          defaultPageSize:5,
+          defaultCurrent: 1,
+          total: 100,
         }}
         columns={tableColumns}
         dataSource={hasData ? voucher : []}
         scroll={scroll}
+        
       />
     </>
+    </div>
     {/* hết table voucher */}
     <ModelAddVoucher id={id}  openUpdate={openUpdate} setOpenUpdate={setOpenUpdate} myVoucher={myVoucher} setMyVoucher={setMyVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
 

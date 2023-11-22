@@ -19,6 +19,7 @@ import Hang from './components/sanPham/Hang';
 import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
 import BanHang from './components/banHang/BanHang';
+import AddVoucher from './components/voucher/AddVoucher';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -31,6 +32,7 @@ root.render(
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
+          <Route path='themVoucher' element = {<AddVoucher/>}></Route>
           <Route path='danh-muc' element = {<DanhMuc/>}></Route>
           <Route path='do-cao' element = {<DoCao/>}></Route>
           <Route path='chat-lieu' element = {<ChatLieu/>}></Route>
