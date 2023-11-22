@@ -2,7 +2,8 @@ import { Button, DatePicker, Form, Input, InputNumber, Modal, Popconfirm, Select
 import axios from "axios";
 import { useEffect, useState } from "react";
 import moment from 'moment';
-
+import { FormattedDate, IntlProvider } from 'react-intl';
+import  {FormattedNumber}  from 'react-intl';
 
 
 const ModalDetail=(props)=>{
@@ -27,6 +28,7 @@ const ModalDetail=(props)=>{
 
 
     return(
+        <IntlProvider locale='vi-VN'>
       <Modal
       title={<h5>Thông tin phiếu giảm giá</h5>}
       centered
@@ -76,7 +78,12 @@ const ModalDetail=(props)=>{
         <p style={{ margin: 0, marginRight: '10px' }}>Mức độ:</p>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>{dataUpdate.mucDo}</h5>
+        <h5 style={{ margin: 0 }}><FormattedNumber
+        value={dataUpdate.mucDo}
+        style="currency"
+        currency="VND"
+        minimumFractionDigits={0}
+      /></h5>
     </div>
 </div>
 
@@ -85,7 +92,12 @@ const ModalDetail=(props)=>{
         <p style={{ margin: 0, marginRight: '10px' }}>Giảm tối đa:</p>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>{dataUpdate.giamToiDa}</h5>
+        <h5 style={{ margin: 0 }}><FormattedNumber
+        value={dataUpdate.giamToiDa}
+        style="currency"
+        currency="VND"
+        minimumFractionDigits={0}
+      /></h5>
     </div>
 </div>
 
@@ -94,7 +106,12 @@ const ModalDetail=(props)=>{
         <p style={{ margin: 0, marginRight: '10px' }}>Điều kiện giảm:</p>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>{dataUpdate.dieuKien}</h5>
+        <h5 style={{ margin: 0 }}><FormattedNumber
+        value={dataUpdate.dieuKien}
+        style="currency"
+        currency="VND"
+        minimumFractionDigits={0}
+      /></h5>
     </div>
 </div>
 <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -102,7 +119,15 @@ const ModalDetail=(props)=>{
         <p style={{ margin: 0, marginRight: '10px' }}>Ngày bắt đầu:</p>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>{dataUpdate.ngayBatDau}</h5>
+        <h5 style={{ margin: 0 }}><FormattedDate
+          value={dataUpdate.ngayBatDau}
+          hour="numeric"
+          minute="numeric"
+          second="numeric"
+          day="numeric"
+          month="numeric"
+          year="numeric"
+        /></h5>
     </div>
 </div>
 
@@ -111,12 +136,21 @@ const ModalDetail=(props)=>{
         <p style={{ margin: 0, marginRight: '10px' }}>Ngày kết thúc:</p>
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>{dataUpdate.ngayKetThuc}</h5>
+        <h5 style={{ margin: 0 }}><FormattedDate
+          value={dataUpdate.ngayKetThuc}
+          hour="numeric"
+          minute="numeric"
+          second="numeric"
+          day="numeric"
+          month="numeric"
+          year="numeric"
+        /></h5>
     </div>
 </div>
 
 
     </Modal>
+    </IntlProvider>
     )
 }
 export default ModalDetail;
