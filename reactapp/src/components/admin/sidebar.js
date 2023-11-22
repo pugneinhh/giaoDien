@@ -79,7 +79,7 @@ const SideBar=(props)=>{
                             icon={<RxDashboard color='#f7faf9' size={20} />}
                         >
                             Dashboard
-                            {/* <Link to="/admins"></Link> */}
+                            <Link to="/thong-ke"></Link>
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
