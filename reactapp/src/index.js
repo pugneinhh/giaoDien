@@ -18,9 +18,12 @@ import MauSac from './components/sanPham/MauSac';
 import Hang from './components/sanPham/Hang';
 import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
+
 import AddSanPham from './components/sanPham/AddSanPham';
 import TestAnh from './components/sanPham/TestUpAnh';
 
+
+import BanHang from './components/banHang/BanHang';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -29,7 +32,7 @@ root.render(
       <Routes>
         <Route path = '/' element = {<App/>}>
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
-          <Route path='hoa-don-detail' element={<HoaDonDetail/>}></Route>
+        <Route path='detail-hoa-don/:id' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
@@ -41,8 +44,15 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
+
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
+<<<<<<< HEAD
           <Route path='upanh' element = {<TestAnh/>}></Route>
+=======
+
+          <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
+
+>>>>>>> 8ca4980875c90831ef86e16c8952bf0c3b79cc13
         </Route>
       </Routes>
     </BrowserRouter>

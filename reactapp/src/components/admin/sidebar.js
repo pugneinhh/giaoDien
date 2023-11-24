@@ -17,7 +17,7 @@ import {Image } from 'antd';
 import { RiAccountCircleFill } from 'react-icons/ri';
 import logoShop from '../../assets/images/logo.png';
 import './sidebar.scss'
-
+import { BiSolidDiscount } from "react-icons/bi";
 import {
     ProSidebar,
     Menu,
@@ -87,7 +87,7 @@ const SideBar=(props)=>{
                             icon={<FaCartShopping color='#f7faf9' size={20} />}
                         >
                             Bán Hàng Tại Quầy
-                            {/* <Link to="/admins/sales-at-the-counter"></Link> */}
+                            <Link to="/admin/ban-hang"></Link>
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
@@ -152,22 +152,28 @@ const SideBar=(props)=>{
                         </MenuItem>
                     </Menu>
                     <Menu iconShape="circle">
+                    
+                    <SubMenu
+                            icon={<BiSolidDiscount  color='#f7faf9' size={20}/>}
+                            title="Giảm giá"
+                        >
                         <MenuItem
                             icon={<LuBadgePercent color='#f7faf9' size={25} />}
                         >
-                            Khuyến Mại
+                            Đợt giảm giá
                             <Link to = '/khuyen-mai'></Link>
                         </MenuItem>
-                    </Menu>
-                    <Menu iconShape="circle">
+                    
+                    
                         <MenuItem
                             icon={<FaTag color='#f7faf9'size={20} />}
                         >
-                            Voucher
+                            Phiếu giảm giá
                             <Link to='/voucher'></Link>
                         </MenuItem>
+                    
+                    </SubMenu>
                     </Menu>
-
                 <SidebarFooter style={{ textAlign: 'center' }}>
                     <div
                         className="sidebar-btn-wrapper"
