@@ -23,7 +23,11 @@ import AddSanPham from './components/sanPham/AddSanPham';
 
 
 import BanHang from './components/banHang/BanHang';
+
+import SuaKhuyenMai from './components/khuyenMai/SuaKhuyenMai';
+
 import AddVoucher from './components/voucher/AddVoucher';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -36,6 +40,7 @@ root.render(
         <Route path='detail-hoa-don/:id' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
+          <Route path='sua-khuyen-mai/:id' Component={SuaKhuyenMai} element = {<SuaKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
           <Route path='themVoucher' element = {<AddVoucher/>}></Route>
           <Route path='danh-muc' element = {<DanhMuc/>}></Route>

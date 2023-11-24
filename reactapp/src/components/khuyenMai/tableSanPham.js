@@ -6,7 +6,7 @@ import {
 } from "antd";
 import "./KhuyenMai.scss";
 
-const TableSanPham = ({onSelectedSanPham}) => {
+const TableSanPham = ({onSelectedSanPham , suaIDSP}) => {
     const [sanPham, setSanPhams] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -22,15 +22,14 @@ const TableSanPham = ({onSelectedSanPham}) => {
             }
           };
           loadSanPham();
+          if (suaIDSP !== null) setSelectedRowKeys(suaIDSP);
+          console.log("SuaSanPham",selectedRowKeys);
       }, []);
      
       const handleCheckboxChange = (selectedKeys , selectedRowKeys) => {
       if (selectedRowKeys !== null){
         setSelectedRowKeys(selectedKeys);
         onSelectedSanPham(selectedKeys);
-        console.log("selectedRowkeys",selectedRowKeys);
-        console.log('selectedKeys', selectedKeys);
-        console.log("Sản phẩm",sanPham);
 
       };
     }
@@ -85,7 +84,6 @@ const TableSanPham = ({onSelectedSanPham}) => {
       ];
 
       const handleCancel = (selectedKey) => {
-        console.log('Checkbox bị bỏ chọn:', selectedKey);
         const response =  axios.delete(`http://localhost:8080/san-pham/${selectedKey}`)
         .then (response => {
           console.log("Xóa ",selectedKey);
@@ -103,7 +101,8 @@ const TableSanPham = ({onSelectedSanPham}) => {
       const rowSelection = {
         selectedRowKeys,      
         onChange: handleCheckboxChange,
-        onCancel: () => handleCancel,
+        
+        // onCancel: () => handleCancel,
       };
 
 
@@ -116,11 +115,6 @@ const TableSanPham = ({onSelectedSanPham}) => {
         ten: item.ten,
         trangThai: item.trangThai,      
       }));
-
-
-
-
-
 
      
       return (

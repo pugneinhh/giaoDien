@@ -2,11 +2,16 @@ import React, { useState, useEffect , Text , View} from "react";
 import axios from "axios";
 import { Space, Table, Tag , Form , Input , Select , InputNumber , Button , DatePicker , Divider} from "antd";
 import "./KhuyenMai.scss";
-import { EyeOutlined , PlusCircleOutlined ,UnorderedListOutlined , FilterFilled , SearchOutlined} from "@ant-design/icons";
+import { EyeOutlined , PlusCircleOutlined , StopOutlined,UnorderedListOutlined , FilterFilled , SearchOutlined} from "@ant-design/icons";
 import { LuBadgePercent } from 'react-icons/lu';
 import moment from "moment";
 import {Link} from "react-router-dom";
 import ThemKhuyenMai from "./ThemKhuyenMai";
+import SuaKhuyenMai from "./SuaKhuyenMai";
+import { IoInformation} from 'react-icons/io5';
+
+
+const KhuyenMai = () => {
 
 const onChange = (value) => {
   console.log('changed', value);
@@ -17,41 +22,71 @@ expandedRowRender: (record) => <p>{record.description}</p>,
 };
 
 
+  const handleChange = (event) => {
+    setSelectedValue(event.target.value);
+  }
+  const [selectedValue, setSelectedValue] = useState('Tất cả');
+  const [stateTimKiem, setStateTimKiem] = useState();
 
-export default function KhuyenMai() {
-
-
-  const [selectedValue, setSelectedValue] = useState('Tiền mặt');
-  const handleChange = (value) => {
-      console.log(`Selected value: ${value}`);
-      setSelectedValue(value);
-    };
+  const [form] = Form.useForm();
   
   
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  const [promotions, setPromotions] = useState([]);
 
   const [khuyenMai, setKhuyenMais] = useState([]);
+
   useEffect(() => {
     loadKhuyenMai();
+
   }, []);
 
-  const loadKhuyenMai = async () => {
-    const result = await axios.get("http://localhost:8080/khuyen-mai", {
-      validateStatus: () => {
-        return true;
-      },
-    });
-    if (result.status === 302) {
-      setKhuyenMais(result.data);
+  useEffect(() => {
+    const fetchData = async() => {
+    const response = await axios.get("http://localhost:8080/khuyen-mai");
+    setKhuyenMais(response.data);
     }
+    fetchData();
+  },[khuyenMai])
+
+  const [suaKhuyenMai,setSuaKhuyenMai]=useState({});
+
+
+
+  const resetSuaKhuyenMai=()=>{
+    // setID('');
+    setSuaKhuyenMai({});
+  }
+
+//Tìm kiếm
+function handleFilter(value, key) { 
+  const newListFilter = khuyenMai.filter((item) =>  item[key] === value)
+  setStateTimKiem(newListFilter)
+  
+}
+
+
+
+
+
+
+  const loadKhuyenMai = async () => {
+    const result = await axios.get("http://localhost:8080/khuyen-mai").then((response) => {
+    setKhuyenMais(response.data);
+    setPromotions(response.data);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
   };
   
   const columns = [
     {
       title: "#",
+      selector: (row) => promotions.indexOf(row) +1,
       dataIndex: "id",
       key: "id",
       render: (id, record, index) => {
@@ -94,12 +129,12 @@ export default function KhuyenMai() {
       render: (khuyen_mai_toi_da, x) => (
         <>
           {x.loai === "Tiền Mặt" || x.loai === "Tiền mặt"
-            ? (console.log("Loại" + x.loai),
-              new Intl.NumberFormat("vi-Vi", {
+            ? 
+              (new Intl.NumberFormat("vi-Vi", {
                 style: "currency",
                 currency: "VND",
               }).format(khuyen_mai_toi_da))
-            : (console.log("Loại" + x.loai), khuyen_mai_toi_da + "%")}
+            : (khuyen_mai_toi_da + "%")}
         </>
       ),
     },
@@ -163,14 +198,22 @@ export default function KhuyenMai() {
     {
       title: "Action",
       key: "action",
-
-      render: () => (
+      render: (record) => (
         <Space size="middle">
           <a>
-            <Button success shape="circle"><EyeOutlined color="#ffec3d" /></Button>
+            <Link to={{pathname :`/sua-khuyen-mai/${record.id}` }}className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill">
+              <EyeOutlined/>
+              </Link>
+            
+          </a>
+
+          <a className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill" disabled>
+          <StopOutlined />       
           </a>
         </Space>
       ),
+      center:'true',
+
     },
   ];
   return (
@@ -199,17 +242,19 @@ export default function KhuyenMai() {
                 size: componentSize,
               }}
               onValuesChange={onFormLayoutChange}
+              // onChange={timKiem}
+              form = {form}
               size={componentSize}
               style={{
                 maxWidth: 1600,
               }}
             >
               <div className="col-md-4">
-                <Form.Item label="Mã KM">
+                <Form.Item label="Mã KM" name='ma_khuyen_mai'>
                   <Input placeholder="Mã khuyến mại" className="rounded-pill border-warning"/>
                 </Form.Item>
-                <Form.Item label="Loại">
-                  <select value={selectedValue} onChange={handleChange} className="rounded-pill border-warning" id="abc">
+                <Form.Item label="Loại" name='loai'>
+                  <select value ={selectedValue} onChange= {handleChange} className="rounded-pill border-warning" id="abc">
                     <option value="Tất cả">Tất cả</option>
                     <option value="Tiền mặt" >Tiền mặt</option>
                     <option value="Phần trăm" >Phần trăm</option>
@@ -218,10 +263,10 @@ export default function KhuyenMai() {
               </div>
               <div className="col-md-4">
 
-              <Form.Item label="Tên KM" >
+              <Form.Item label="Tên KM" name='ten'>
               <Input placeholder = "Tên khuyến mại " className="rounded-pill border-warning"/>
                 </Form.Item>
-                <Form.Item label="Giảm Tối Đa" >
+                <Form.Item label="Giảm Tối Đa" name='giam_toi_da'>
                   {selectedValue === "Tiền mặt" ? (
                     <InputNumber
                       defaultValue={0}
@@ -249,10 +294,10 @@ export default function KhuyenMai() {
 
               </div>
               <div className="col-md-4" >
-                <Form.Item label="Ngày bắt đầu" >
+                <Form.Item label="Ngày bắt đầu" name='ngay_bat_dau'>
                   <DatePicker style={{ width: "100%" }} placeholder="Ngày bắt đầu" className="rounded-pill border-warning"/>
                 </Form.Item>
-                <Form.Item label="Ngày kết thúc">
+                <Form.Item label="Ngày kết thúc" name='ngay_ket_thuc'>
                   <DatePicker style={{ width: "100%" }} placeholder="Ngày kết thúc" className="rounded-pill border-warning"/>
                 </Form.Item>
               </div>
@@ -287,7 +332,9 @@ export default function KhuyenMai() {
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
 }
+export default  KhuyenMai;
