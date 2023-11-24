@@ -109,7 +109,7 @@ export default function SanPham() {
             <Link to={`/showct/${title}`} className='btn btn-primary'><InfoCircleFilled/></Link>
           </a>
           <a>
-            <Button type="primary" danger shape="circle" icon={<DeleteFilled size={20} />} />
+            <Button href='/upanh' type="primary" danger shape="circle" icon={<DeleteFilled size={20} />} />
           </a>
         </Space>
       ),

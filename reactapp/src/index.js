@@ -20,6 +20,7 @@ import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
 import ThongKe from './components/thongKe/ThongKe';
 import AddSanPham from './components/sanPham/AddSanPham';
+import TestAnh from './components/sanPham/TestUpAnh';
 
 
 import BanHang from './components/banHang/BanHang';
@@ -53,9 +54,13 @@ root.render(
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
 
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
+<<<<<<< HEAD
+          <Route path='upanh' element = {<TestAnh/>}></Route>
+=======
 
           <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
 
+>>>>>>> 8ca4980875c90831ef86e16c8952bf0c3b79cc13
         </Route>
       </Routes>
     </BrowserRouter>
