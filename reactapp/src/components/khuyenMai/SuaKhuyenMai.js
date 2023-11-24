@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Text, View, Component } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   Space,
@@ -9,30 +10,124 @@ import {
   Select,
   InputNumber,
   Button,
+  DatePicker,
   Divider,
   Pagination,
   Switch,
   Checkbox,
   Modal,
-  DatePicker,
 } from "antd";
 import "./KhuyenMai.scss";
 import { LuBadgePercent } from "react-icons/lu";
 import { ToastContainer, toast } from "react-toastify";
-import { registerLocale, setDefaultLocale } from "react-datepicker";
+import moment from "moment";
 import TableSanPham from "./tableSanPham";
 import TableChiTietSanPham from "./tableChiTietSanPham";
-import KhuyenMai from "./KhuyenMai";
-import { Router, Route } from "react-router-dom";
-import vi from "date-fns/locale/vi"; // Import ngôn ngữ tiếng Việt
-import moment from "moment-timezone";
-const ThemKhuyenMai = () => {
 
+const SuaKhuyenMai = () => {
+  const [formSuaKhuyenMai] = Form.useForm();
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const { id } = useParams("");
+  console.log("id khuyến mại =", id);
 
-  moment.tz.setDefault("America/New_York");
+  const [CTSP, setCTSP] = useState([]);
+  const [idSP, setIDSP] = useState([]);
+  const [chua, setChua] = useState([]);
+  const [dataUpdate, setDataUpdate] = useState({});
 
+  // Hàm xử lý để giữ lại duy nhất một dữ liệu
+  const filterUniqueData = (data) => {
+    if (!data || !Array.isArray(data)) {
+      return [];
+    }
+
+    const uniqueSet = new Set();
+    const uniqueArray = data.filter((item) => {
+      if (!uniqueSet.has(item)) {
+        uniqueSet.add(item);
+        return true;
+      }
+      return false;
+    });
+    return uniqueArray;
+  };
+
+  const loadDetailKhuyenMai = async () => {
+    // Lấy ra chi tiết khuyến mại
+    await axios
+      .get(`http://localhost:8080/khuyen-mai/detail/${id}`)
+      .then((response) => {
+        formSuaKhuyenMai.setFieldsValue({
+          id: response.data.id,
+          ma: response.data.ma,
+          loai: response.data.loai,
+          ten: response.data.ten,
+          khuyen_mai_toi_da: response.data.khuyen_mai_toi_da,
+          trang_thai: response.data.trang_thai,
+          ngay_bat_dau: moment(
+            response.data.ngay_bat_dau,
+            "YYYY-MM-DD HH:mm:ss"
+          ).locale("vi"),
+          ngay_ket_thuc: moment(
+            response.data.ngay_ket_thuc,
+            "YYYY-MM-DD HH:mm:ss"
+          ).locale("vi"),
+        });
+        setDataUpdate(response.data); // set cho DataUpdate
+        loadCTSP();
+        loadSP();
+      })
+      .catch((error) => console.error("Error adding item:", error));
+  };
+
+  const loadCTSP = async () => {
+    // Lấy ra ctsp có KM trên
+    const x = axios.get(`http://localhost:8080/ctsp/showKM/${dataUpdate.id}`);
+    setCTSP(x.data);
+    console.log("CTSP lấy từ khuyến mại =", CTSP);
+
+  };
+
+  const loadSP = async () => {
+    const resp = CTSP.map((id) =>
+      axios.get(`http://localhost:8080/san-pham/showSP/${id}`)
+    );
+    const apiResponses = await Promise.all(resp);
+    console.log(apiResponses);
+    //  setIDSP(apiResponses)
+    setChua(apiResponses.map((i) => i.data));
+    console.log(filterUniqueData(chua));
+    setIDSP(filterUniqueData(chua));
+    //   Lấy chi tiết sản phẩm theo CTSP
+    // for (let i = 0; i < CTSP.length; i++) {
+    //   await axios
+    //     .get(`http://localhost:8080/san-pham/showSP/${CTSP[i]}`)
+    //     .then((response2) => {
+    //       // setIDSP((prevData) =>
+    //       //   response2.data === prevData
+    //       //     ? console.log("trùng:", prevData)
+    //       //     : [prevData, ...response2.data]
+    //       // );
+    //       setChua(response2.data);
+    //       console.log("SP lấy từ CTSP từ khuyến mại (response)",response2.data);
+
+    //     });
+    // }
+  };
+
+  useEffect(() => {
+    loadDetailKhuyenMai();
+  }, [formSuaKhuyenMai]);
+
+  //  const loadTableSanPham() = async() => {
+  //   await axios.get(`http://localhost:8080/ctsp/showKM/${id}`).then((response) => {
+  //     setDataUpdate( response.data);
+  //     console.log("Form",formSuaKhuyenMai.getFieldValue);
+  //     console.log(response.data.ngay_bat_dau);
+  //     console.log("Data update 1",dataUpdate);
+  //   })
+  //   .catch(error => console.error('Error adding item:', error));
+  //  }
 
   const onChangeLoai = (value) => {
     console.log("changed", value);
@@ -40,7 +135,6 @@ const ThemKhuyenMai = () => {
 
   const [selectedValue, setSelectedValue] = useState("Tiền mặt");
   const handleChange = (value) => {
-    console.log(`Selected value: ${value}`);
     setSelectedValue(value);
   };
 
@@ -52,27 +146,17 @@ const ThemKhuyenMai = () => {
   const [idKM, setIDKM] = useState("");
 
   // Sử dụng form hiện tại
-  const [formThemKhuyenMai] = Form.useForm();
 
   const handleSubmit = (value) => {
-    console.log(value);
     axios
-      .post(`http://localhost:8080/khuyen-mai/add`, value)
+      .put(`http://localhost:8080/khuyen-mai/update/${id}`, value)
       .then((response) => {
-        Promise.all(
-          selectedIDCTSP.map((id) =>
-            axios.put(
-              `http://localhost:8080/ctsp/updateKM/${id}`,
-              response.data
-            )
-          )
-        );
+        // Promise.all(selectedIDCTSP.map(id => axios.put(`http://localhost:8080/ctsp/updateKM/${id}`,response.data)));
         // for(let i = 0; i < selectedIDCTSP.length; i++) {
         //   axios.put(`http://localhost:8080/ctsp/updateKM/${selectedIDCTSP[i]}`,response.data.id)
         // }\
         setIDKM(response.data);
-        console.log("Thêm res", response.data.id);
-        toast("✔️ Thêm thành công!", {
+        toast("✔️ Sửa thành công!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -82,9 +166,9 @@ const ThemKhuyenMai = () => {
           progress: undefined,
           theme: "light",
         });
-        loadKhuyenMai();
         setSelectedIDSP("");
-        formThemKhuyenMai.resetFields();
+
+        formSuaKhuyenMai.resetFields();
       })
       .catch((error) => console.error("Error adding item:", error));
 
@@ -92,7 +176,6 @@ const ThemKhuyenMai = () => {
   };
 
   const [selectedIDSP, setSelectedIDSP] = useState([]);
-  console.log("IDSP", selectedIDSP);
   const handleSelectedSanPham = (selectedRowKeys) => {
     setSelectedIDSP(selectedRowKeys);
   };
@@ -101,27 +184,10 @@ const ThemKhuyenMai = () => {
   const handleSelectedCTSanPham = (selectedRowKeys) => {
     setSelectedIDCTSP(selectedRowKeys);
   };
-  const [khuyenMai, setKhuyenMais] = useState([]);
-  console.log("IDCTSP", selectedIDCTSP);
-
-  useEffect(() => {
-    loadKhuyenMai();
-  }, []);
-
-  const loadKhuyenMai = async () => {
-    const result = await axios.get("http://localhost:8080/khuyen-mai", {
-      validateStatus: () => {
-        return true;
-      },
-    });
-    if (result.status === 302) {
-      setKhuyenMais(result.data);
-    }
-  };
 
   // Validate ngày
   const validateDateKT = (_, value) => {
-    const { getFieldValue } = formThemKhuyenMai;
+    const { getFieldValue } = formSuaKhuyenMai;
     const startDate = getFieldValue("ngay_bat_dau");
     if (startDate && value && value.isBefore(startDate)) {
       return Promise.reject("Ngày kết thúc phải sau ngày bắt đầu");
@@ -130,7 +196,7 @@ const ThemKhuyenMai = () => {
   };
   const [checkNgay, setCheckNgay] = useState(false);
   const validateDateBD = (_, value) => {
-    const { getFieldValue } = formThemKhuyenMai;
+    const { getFieldValue } = formSuaKhuyenMai;
     const endDate = getFieldValue("ngay_ket_thuc");
     if (endDate && value && value.isAfter(endDate)) {
       return Promise.reject("Ngày bắt đầu phải trước ngày kết thúc");
@@ -172,7 +238,7 @@ const ThemKhuyenMai = () => {
                   maxWidth: 1600,
                 }}
                 onFinish={handleSubmit}
-                form={formThemKhuyenMai}
+                form={formSuaKhuyenMai}
               >
                 <Form.Item
                   label="Mã Khuyến Mại"
@@ -189,6 +255,7 @@ const ThemKhuyenMai = () => {
                   <Input
                     placeholder="Mã khuyến mại"
                     style={{ marginLeft: 20, width: 220 }}
+                    // value={dataUpdate.ma}
                   />
                 </Form.Item>
                 <Form.Item
@@ -206,6 +273,7 @@ const ThemKhuyenMai = () => {
                   <Input
                     placeholder="Tên khuyến mại"
                     style={{ marginLeft: 20, width: 220 }}
+                    // value={dataUpdate.ten}
                   />
                 </Form.Item>
                 <Form.Item
@@ -221,9 +289,9 @@ const ThemKhuyenMai = () => {
                   ]}
                 >
                   <Select
-                    value={selectedValue}
                     onChange={handleChange}
                     style={{ marginLeft: 20, width: 220 }}
+                    // value={dataUpdate.loai}
                   >
                     <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
                     <Select.Option value="Phần trăm">Phần trăm</Select.Option>
@@ -241,9 +309,11 @@ const ThemKhuyenMai = () => {
                     },
                   ]}
                 >
-                  {selectedValue === "Tiền mặt" ? (
+                  {dataUpdate.loai === "Tiền mặt" ||
+                  dataUpdate.loai === "Tiền Mặt" ? (
                     <InputNumber
-                      defaultValue={0}
+                      // defaultValue={0}
+                      // value={dataUpdate.khuyen_mai_toi_da}
                       formatter={(value) =>
                         `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                       }
@@ -253,13 +323,14 @@ const ThemKhuyenMai = () => {
                     />
                   ) : (
                     <InputNumber
-                      defaultValue={0}
+                      // defaultValue={0}
                       min={0}
                       max={100}
                       formatter={(value) => `${value}%`}
                       parser={(value) => value.replace("%", "")}
                       onChange={onChangeLoai}
                       style={{ marginLeft: 20, width: 220 }}
+                      // value={dataUpdate.khuyen_mai_toi_da}
                     />
                   )}
                 </Form.Item>
@@ -278,9 +349,13 @@ const ThemKhuyenMai = () => {
                 >
                   <DatePicker
                     showTime
-                    format="YYYY-MM-DD HH:mm:ss"
                     style={{ marginLeft: 20, width: 220 }}
                     placeholder="Ngày bắt đầu"
+                    format={"YYYY-MM-DD HH:mm:ss"}
+                    // value={moment(
+                    //   dataUpdate.ngay_bat_dau,
+                    //   "YYYY-MM-DD HH:mm:ss"
+                    // )}
                   />
                 </Form.Item>
                 <Form.Item
@@ -298,9 +373,13 @@ const ThemKhuyenMai = () => {
                 >
                   <DatePicker
                     showTime
-                    format="YYYY-MM-DD HH:mm:ss"
                     style={{ marginLeft: 20, width: 220 }}
                     placeholder="Ngày kết thúc"
+                    format={"YYYY-MM-DD HH:mm:ss"}
+                    // value={moment(
+                    //   dataUpdate.ngay_ket_thuc,
+                    //   "YYYY-MM-DD HH:mm:ss"
+                    // )}
                   />
                 </Form.Item>
 
@@ -312,9 +391,9 @@ const ThemKhuyenMai = () => {
                       onClick={() => {
                         Modal.confirm({
                           title: "Thông báo",
-                          content: "Bạn có chắc chắn muốn thêm không?",
+                          content: "Bạn có chắc chắn muốn sửa không?",
                           onOk: () => {
-                            formThemKhuyenMai.submit();
+                            formSuaKhuyenMai.submit();
                             // form.finish();
                           },
                           footer: (_, { OkBtn, CancelBtn }) => (
@@ -326,7 +405,7 @@ const ThemKhuyenMai = () => {
                         });
                       }}
                     >
-                      Thêm
+                      Sửa
                     </Button>
                   </Form.Item>
                 </div>
@@ -339,7 +418,10 @@ const ThemKhuyenMai = () => {
                     Sản phẩm
                   </p>
                 </div>
-                <TableSanPham onSelectedSanPham={handleSelectedSanPham} />
+                <TableSanPham
+                  onSelectedSanPham={handleSelectedSanPham}
+                  suaIDSP={idSP}
+                />
               </div>
               <div
                 className="row bg-light"
@@ -376,4 +458,4 @@ const ThemKhuyenMai = () => {
     </div>
   );
 };
-export default ThemKhuyenMai;
+export default SuaKhuyenMai;

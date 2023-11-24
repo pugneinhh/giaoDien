@@ -443,7 +443,7 @@ const columns = [
                     Modal.confirm({
                       title: 'Thông báo',
                       content: 'Bạn có chắc chắn muốn thêm không?',
-                      onOk: () => {form.submit();},
+                      onOk: () => {form.sDubmit();},
                       footer: (_, { OkBtn, CancelBtn }) => (
                         <>
                           <CancelBtn/>

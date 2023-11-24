@@ -8,13 +8,13 @@ import {
 import "./KhuyenMai.scss";
 
 
-const TableChiTietSanPham = ({ selectedIDSPs }) => {
+const TableChiTietSanPham = ({selectedIDSPs,onSelectedCTSanPham}) => {
   const [ctsp, setCTSP] = useState([]);
   const [idSanPham, setIDSanPham] = useState([]);
   const [selectedRowCTSP, setSelectedRowCTSP] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const [selectedCTSP , setSelectedCTSP] = useState([]);
+  // const [selectedCTSP , setSelectedCTSP] = useState([]);
   useEffect(() => {
     const getCTSPByIDSP = async () => {
       try {
@@ -22,7 +22,6 @@ const TableChiTietSanPham = ({ selectedIDSPs }) => {
           const response = await axios.get(`http://localhost:8080/ctsp/showct/${selectedIDSPs[0]}`)
           setCTSP(response.data);
           setIDSanPham(selectedIDSPs);
-          console.log("CTSP 1",ctsp);
         }
         else if (selectedIDSPs.length > 1) {
           const filterArrray = selectedIDSPs.filter((element) => !idSanPham.includes(element));
@@ -226,10 +225,9 @@ const TableChiTietSanPham = ({ selectedIDSPs }) => {
   const rowSelection = {
     selectedRowCTSP,      
     onChange: (selectedKeys) => {
-        setSelectedCTSP(selectedKeys);
+      onSelectedCTSanPham(selectedKeys);
         setSelectedRowCTSP(selectedKeys);
-        // onSelectedCTSanPham(selectedKeys);
-        console.log('selectedKeys', selectedKeys);
+;
     
   }
   };
