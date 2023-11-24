@@ -48,9 +48,99 @@ export default function CTSP() {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
-  //Load kich thước
   const { Option } = Select;
   const FormItem = Form.Item;
+  const [form] = Form.useForm();
+  //Load kich thước
+  const [kt, setKT] = useState([]);
+  useEffect(() => {
+    loadKT();
+  }, []);
+  const loadKT = async () => {
+    const result = await axios.get("http://localhost:8080/kich-thuoc", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setKT(result.data);
+    }
+  };
+  //Load Màu Sắc 
+  const [ms, setMS] = useState([]);
+  useEffect(() => {
+    loadMS();
+  }, []);
+  const loadMS = async () => {
+    const result = await axios.get("http://localhost:8080/mau-sac", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setMS(result.data);
+    }
+  };
+  //Load Chất Liệu
+  const [cl, setCL] = useState([]);
+  useEffect(() => {
+    loadCL();
+  }, []);
+  const loadCL = async () => {
+    const result = await axios.get("http://localhost:8080/chat-lieu", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setCL(result.data);
+    }
+  };
+  //Load Độ Cao
+  const [dc, setDC] = useState([]);
+  useEffect(() => {
+    loadDC();
+  }, []);
+  const loadDC = async () => {
+    const result = await axios.get("http://localhost:8080/do-cao", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setDC(result.data);
+    }
+  };
+  //Load Danh Mục
+  const [dm, setDM] = useState([]);
+  useEffect(() => {
+    loadDM();
+  }, []);
+  const loadDM = async () => {
+    const result = await axios.get("http://localhost:8080/danh-muc", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setDM(result.data);
+    }
+  };
+  //Load Chất Liệu
+  const [h, setH] = useState([]);
+  useEffect(() => {
+    loadH();
+  }, []);
+  const loadH = async () => {
+    const result = await axios.get("http://localhost:8080/hang", {
+      validateStatus: () => {
+        return true;
+      }
+    });
+    if (result.status === 302) {
+      setH(result.data);
+    }
+  };
   //Table
   const [cTSP, setCTSPs] = useState([]);
 
@@ -58,15 +148,14 @@ export default function CTSP() {
     loadCTSP();
   }, []);
   const { uuid } = useParams();
+  console.log(uuid);
   const loadCTSP = async () => {
     const result = await axios.get(`http://localhost:8080/ctsp/showct/${uuid}`, {
       validateStatus: () => {
         return true;
       }
     });
-    if (result.status === 302) {
-      setCTSPs(result.data);
-    }
+    setCTSPs(result.data);
   };
 
   const columns = [
@@ -187,9 +276,10 @@ export default function CTSP() {
             style={{
               maxWidth: 1600,
             }}
+            form={form}
           >
-
             {/* Form tìm kiếm */}
+            {/* Button */}
             <div className='row'>
               <div className='col-md-6'>
                 <Form.Item className='text-start'>
@@ -197,69 +287,95 @@ export default function CTSP() {
                   <Button size='large' className=" text-white bg-danger rounded-pill border ms-3"><UndoOutlined />  Đặt lại tìm kiếm</Button>
                 </Form.Item>
               </div>
-
             </div>
+            {/* Các Thuộc Tính Dòng 1 */}
             <div className='row'>
+              {/* Tên & Mã */}
               <div className="col-md-3">
                 <Form.Item label="Tên & Mã">
                   <Input className="rounded-pill border" />
                 </Form.Item>
               </div>
+              {/* Kích Thước */}
               <div className='col-md-3'>
                 <Form.Item label="Kích Thước">
-                <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                  <Select placeholder="Chọn một giá trị">
+                    {kt.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
+              {/* Màu Sắc */}
               <div className='col-md-3'>
                 <Form.Item label="Màu Sắc">
-                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                <Select placeholder="Chọn một giá trị">
+                    {ms.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
+              {/* Chất Liệu */}
               <div className='col-md-3'>
                 <Form.Item label="Chất Liệu">
-                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                <Select placeholder="Chọn một giá trị">
+                    {cl.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
             </div>
+             {/* Các Thuộc Tính Dòng 2 */}
             <div className='row'>
+              {/* Độ Cao */}
               <div className='col-md-3'>
                 <Form.Item label="Độ Cao">
-                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                <Select placeholder="Chọn một giá trị">
+                    {dc.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
+              {/* Damh Mục */}
               <div className='col-md-3'>
                 <Form.Item label="Danh Mục">
-                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                <Select placeholder="Chọn một giá trị">
+                    {dm.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
+              {/* Hãng */}
               <div className='col-md-3'>
                 <Form.Item label="Hãng">
-                  <Select className="rounded-pill border" value={selectedValue} onChange={handleChange}>
-                    <Select.Option value="1">Còn Bán</Select.Option>
-                    <Select.Option value="0">Dừng Bán</Select.Option>
+                <Select placeholder="Chọn một giá trị">
+                    {h.map(item => (
+                      <Option key={item.id} value={item.id}>
+                        {item.ten}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
               <div className='col-md-3'>
                 <Form.Item label="Số Lượng">
                   <Slider
-                    min={100000}
-                    max={90000000}
+                    min={1}
+                    max={9000}
                   />
                 </Form.Item>
               </div>
@@ -274,14 +390,9 @@ export default function CTSP() {
         </div>
         <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách Chi Tiết Sản Phẩm</h4>
-          <div className="ms-3">
-            <a size='large' class="btn bg-success text-white mt-2 rounded-pill border" href="#">
-              <PlusCircleFilled /> Thêm Chi Tiết Sản Phẩm
-            </a>
-          </div>
           <div className="container-fluid mt-4">
             <div>
-              <Table className='text-center' dataSource={cTSP} columns={columns} pagination='5' />
+              <Table className='text-center' dataSource={cTSP} columns={columns} pagination={{defaultPageSize: 5}} />
             </div>
           </div>
         </div>

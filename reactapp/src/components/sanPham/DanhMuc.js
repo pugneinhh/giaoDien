@@ -224,7 +224,7 @@ export default function DanhMuc() {
                   });
                 }}>Thêm</Button>
               ]}
-              width={1000}
+              width={500}
             >
               <Form
                 initialValues={{
@@ -239,20 +239,12 @@ export default function DanhMuc() {
                 form={form}>
 
                 <div className='row'>
-                  <div className="col-md-6">
+                  <div className="container">
                     <Form.Item label="Tên" name='ten' hasFeedback rules={[{ required: true, message: 'Vui lòng không để trống tên!', },]} >
                       <Input className="border" />
                     </Form.Item>
                   </div>
-                  <div className='col-md-6'>
-                    <Form.Item label="Trạng thái" name='trangThai' hasFeedback rules={[{ required: true, message: 'Vui lòng không để trống trạng thái!', },]}>
-                      <Select className="border" value={selectedValue} onChange={handleChange}>
-                        <Select.Option value="1" >Còn Bán</Select.Option>
-                        <Select.Option value="0">Dừng Bán</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </div>
-                </div>
+                    </div>
               </Form>
             </Modal>
           </div>

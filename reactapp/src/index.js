@@ -19,6 +19,7 @@ import Hang from './components/sanPham/Hang';
 import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
 import AddSanPham from './components/sanPham/AddSanPham';
+import TestAnh from './components/sanPham/TestUpAnh';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -41,6 +42,7 @@ root.render(
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
+          <Route path='upanh' element = {<TestAnh/>}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
