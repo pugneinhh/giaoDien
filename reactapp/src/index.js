@@ -18,8 +18,16 @@ import MauSac from './components/sanPham/MauSac';
 import Hang from './components/sanPham/Hang';
 import SanPham from './components/sanPham/SanPham';
 import ChiTietSanPham from './components/sanPham/CTSP';
+import ThongKe from './components/thongKe/ThongKe';
+import AddSanPham from './components/sanPham/AddSanPham';
+
+
 import BanHang from './components/banHang/BanHang';
+
 import SuaKhuyenMai from './components/khuyenMai/SuaKhuyenMai';
+
+import AddVoucher from './components/voucher/AddVoucher';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
@@ -27,12 +35,14 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path = '/' element = {<App/>}>
+        <Route path='thong-ke' element={<ThongKe/>}></Route>
           <Route path='hoa-don' element = {<HoaDon/>}>   </Route>
         <Route path='detail-hoa-don/:id' element={<HoaDonDetail/>}></Route>
           <Route path='khuyen-mai' element = {<KhuyenMai/>}></Route>
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='sua-khuyen-mai/:id' Component={SuaKhuyenMai} element = {<SuaKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
+          <Route path='themVoucher' element = {<AddVoucher/>}></Route>
           <Route path='danh-muc' element = {<DanhMuc/>}></Route>
           <Route path='do-cao' element = {<DoCao/>}></Route>
           <Route path='chat-lieu' element = {<ChatLieu/>}></Route>
@@ -41,7 +51,11 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
+
+          <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
+
           <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
+
         </Route>
       </Routes>
     </BrowserRouter>

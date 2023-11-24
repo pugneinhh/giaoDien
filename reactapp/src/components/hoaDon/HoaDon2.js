@@ -7,25 +7,27 @@ import { BsFillEyeFill } from 'react-icons/bs';
 import { Link } from "react-router-dom";
 import moment from "moment";
 import Input from 'antd/es/input/Input';
+import { FormattedNumber, IntlProvider } from 'react-intl';
+
 export default function HoaDon() {
  
     // tìm kiếm
 
-    const handleSubmit = (values) => {
-
-
+    const tim = (values) => {
         // Send a POST request to the backend
-        axios.get(`http://localhost:8080/hoa-don/tim-kiem/${values.hehe}/${values.loaiHD}/${moment(values.BD).format('YYYY-MM-DD')}/${moment(values.KT).format('YYYY-MM-DD')}`
-        
-        )
-            .then(response => {
-                // Update the list of items
-                console.log(response.data);
-                setHoaDons(response.data);
-                form.resetFields();
-            })
-            .catch(error => console.error('Error adding item:', error));
-        console.log(moment(values.BD).format('YYYY-MM-DD'));
+            // Send a POST request to the backend
+            axios.get(`http://localhost:8080/hoa-don/tim-kiem/${values.key}/${values.timLoai}/${moment(values.ngayBD).format('YYYY-MM-DD')}/${moment(values.ngayKT).format('YYYY-MM-DD')}`)
+                .then(response => {
+                    // Update the list of items
+                    setHoaDons(response.data);
+                    form.resetFields();
+
+                })
+                .catch(error => console.error('Error adding item:', error));
+    
+        console.log(moment(values.ngayBD));
+        console.log(moment(values.ngayKT).format('YYYY-MM-DD'));
+        console.log(moment(values.ngayKT));
     }
 
     const [hoaDon, setHoaDons] = useState([])
@@ -273,6 +275,19 @@ export default function HoaDon() {
         {
             title: 'Thành tiền ',
             dataIndex: 'thanhTien',
+            render: (thanhTien) => (
+                <IntlProvider locale='vi-VN'>
+                    <div>
+                        <FormattedNumber
+                            value={thanhTien}
+                            style="currency"
+                            currency="VND"
+                            minimumFractionDigits={0}
+                        />
+                    </div>
+                </IntlProvider>
+            ),
+             
             filters: [
                 {
                     text: 'London',
@@ -289,6 +304,7 @@ export default function HoaDon() {
             title: 'Trạng thái',
             dataIndex: 'trangThai',
             key: 'trangThai',
+            center: 'true',
             render: (trangThai) => (
                 <>
                     {
@@ -353,6 +369,7 @@ export default function HoaDon() {
                 },
             ],
             onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
+           
         },
         {
             title: 'Action',
@@ -364,7 +381,9 @@ export default function HoaDon() {
                     <Link to={`/detail-hoa-don/${title}`} className='btn btn-danger'><BsFillEyeFill /></Link>
                 </Space>
             ),
+            center: 'true',
         },
+       
     ];
 
     const onChange = (key) => {
@@ -374,42 +393,42 @@ export default function HoaDon() {
         {
             key: '1',
             label: 'Tất cả',
-            children: <Table dataSource={hoaDon} columns={columns} />,
+            children: <Table dataSource={hoaDon} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '2',
             label: 'Chờ xác nhận',
-            children: <Table dataSource={hoaDonCho} columns={columns} />,
+            children: <Table dataSource={hoaDonCho} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '3',
             label: 'Xác nhận',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonXN} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '4',
             label: 'Chờ vận chuyển',
-            children: <Table dataSource={hoaDonCVC} columns={columns} />,
+            children: <Table dataSource={hoaDonCVC} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '5',
             label: 'Vận chuyển',
-            children: <Table dataSource={hoaDonVC} columns={columns} />,
+            children: <Table dataSource={hoaDonVC} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '6',
             label: 'Thanh toán',
-            children: <Table dataSource={hoaDonTT} columns={columns} />,
+            children: <Table dataSource={hoaDonTT} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '7',
             label: 'Hoàn thành',
-            children: <Table dataSource={hoaDonHT} columns={columns} />,
+            children: <Table dataSource={hoaDonHT} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
         {
             key: '8',
             label: 'Hủy',
-            children: <Table dataSource={hoaDonXN} columns={columns} />,
+            children: <Table dataSource={hoaDonXN} columns={columns} pagination={{ defaultPageSize: 5, position: ['bottomCenter'] }} />,
         },
     ];
 
@@ -443,14 +462,14 @@ export default function HoaDon() {
                     style={{
                         maxWidth: 1600,
                     }}
-                    onFinish={handleSubmit}
+                    onFinish={tim}
                     form={form}
                 >
                     <div className="col-md-6">
                         <Form.Item label="Tìm kiếm"  name='hehe'>
                             <Input required className="rounded-pill border-warning" />
                         </Form.Item>
-                        <Form.Item label="Loại HD" className="rounded-pill border-warning" name='loaiHD'>
+                        <Form.Item label="Loại HD" className="rounded-pill border-warning" name='timLoai'>
                             <Select className="rounded-pill border-warning" >
                                 <Select.Option className="rounded-pill border-warning" value="1">Tại quầy</Select.Option>
                                 <Select.Option className="rounded-pill border-warning" value="0">Online</Select.Option>
@@ -458,13 +477,16 @@ export default function HoaDon() {
                         </Form.Item>
                     </div>
                     <div className='col-md-6'>
-                        <Form.Item label="Ngày bắt đầu" name='BD'>
-                            <DatePicker style={{ width: '100%' }} className="rounded-pill border-warning" />
-                        </Form.Item>
-                        <Form.Item label="Ngày kết thúc" name='KT'>
-                            <DatePicker style={{ width: '100%' }} className="rounded-pill border-warning" />
-                            
-                        </Form.Item>
+                        <div className='col-md-12'>
+                            <Form.Item label="Ngày bắt đầu" name='ngayBD'>
+                                <DatePicker className='rounded-pill border-warning' placeholder='Ngày bắt đầu' style={{ width: '100%' }} />
+                            </Form.Item>
+                        </div>
+                        <div className='col-md-12'>
+                            <Form.Item label="Ngày kết thúc" name='ngayKT'>
+                                <DatePicker className='rounded-pill border-warning' placeholder='Ngày kết thúc' style={{ width: '100%' }} />
+                            </Form.Item>
+                        </div>
                     </div>
                
                     <Form.Item className='text-end '>
