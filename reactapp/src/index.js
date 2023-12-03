@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import HoaDon from './components/hoaDon/HoaDon2';
 import HoaDonDetail from './components/hoaDon/HoaDonDetail';
 import Voucher from './components/voucher/Voucher';
+import NhanVien from './components/nhanVien/NhanVien'; 
+import KhachHang from './components/khachHang/KhachHang';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import KhuyenMai from './components/khuyenMai/KhuyenMai';
 import ThemKhuyenMai from './components/khuyenMai/ThemKhuyenMai'
@@ -43,6 +45,9 @@ root.render(
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='sua-khuyen-mai/:id' Component={SuaKhuyenMai} element = {<SuaKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
+
+          <Route path='nhan-vien' element={<NhanVien/>}></Route>
+          <Route path='khach-hang' element={<KhachHang/>}></Route>
           <Route path='themVoucher' element = {<AddVoucher/>}></Route>
           <Route path='danh-muc' element = {<DanhMuc/>}></Route>
           <Route path='do-cao' element = {<DoCao/>}></Route>
@@ -52,15 +57,10 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
-
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
-<<<<<<< HEAD
           <Route path='upanh' element = {<TestAnh/>}></Route>
-=======
-
           <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
 
->>>>>>> 8ca4980875c90831ef86e16c8952bf0c3b79cc13
         </Route>
       </Routes>
     </BrowserRouter>
