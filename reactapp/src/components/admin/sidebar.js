@@ -133,11 +133,11 @@ const SideBar=(props)=>{
                         >
                             <MenuItem icon={<BiSolidUserBadge color='#f7faf9' size={20}/>}>
                                 Nhân Viên
-                                
+                                <Link to='/nhan-vien'></Link>
                             </MenuItem>
                             <MenuItem icon={<BiSolidUserDetail color='#f7faf9' size={25} />}>
                                 Khách Hàng
-                                
+                                <Link to='/khach-hang'></Link>
                             </MenuItem>
                            
                         </SubMenu>
