@@ -16,16 +16,18 @@ import { DeleteFilled } from "@ant-design/icons";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
+import { UndoOutlined } from "@ant-design/icons";
 import { MdSearch } from 'react-icons/md';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from "sweetalert2";
 import FormItem from 'antd/es/form/FormItem';
+import { set } from 'date-fns';
 
 export default function DanhMuc() {
   //Form
-  const [selectedValue, setSelectedValue] = useState('1');
+  const [selectedValue, setSelectedValue] = useState('');
   const handleChange = (value) => {
     console.log(`Selected value: ${value}`);
     setSelectedValue(value);
@@ -34,6 +36,7 @@ export default function DanhMuc() {
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  const [form] = Form.useForm();
   //Ấn add 
   const [open, setOpen] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
@@ -61,16 +64,15 @@ export default function DanhMuc() {
 
   }
   //Tìm kiếm 
-  const handleSubmit = (values) => {
-
-    console.log(`${values.key}`);
-    // Send a POST request to the backend
-    axios.get(`http://localhost:8080/danh-muc/tim-kiem/${values.key}/${values.timTT}`)
+  const onChangeFilter = (changedValues, allValues) => {
+    timKiemDanhMuc(allValues);
+  }
+  const timKiemDanhMuc = (dataSearch) => {
+    axios.post('http://localhost:8080/danh-muc/tim-kiem', dataSearch)
       .then(response => {
         // Update the list of items
-        console.log(response.data);
         setDanhMucs(response.data);
-        form.resetFields();
+        console.log("tìm kím:", response.data);
       })
       .catch(error => console.error('Error adding item:', error));
   }
@@ -79,17 +81,15 @@ export default function DanhMuc() {
 
   useEffect(() => {
     loadDanhMuc();
-  }, []);
+  },[]);
 
   const loadDanhMuc = async () => {
-    const result = await axios.get("http://localhost:8080/danh-muc", {
-      validateStatus: () => {
-        return true;
-      }
-    });
-    if (result.status === 302) {
-      setDanhMucs(result.data);
-    }
+    await axios.get('http://localhost:8080/danh-muc')
+        .then(response => {
+          // Update the list of items
+          setDanhMucs(response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
   };
 
   const columns = [
@@ -107,35 +107,46 @@ export default function DanhMuc() {
       title: "Mã",
       dataIndex: "ma",
       center: "true",
-      sorter: (a, b) => a.ma - b.ma,
+      sorter: (a, b) => a.ma.slice(2) - b.ma.slice(2),
     }, ,
     {
       title: "Tên",
       dataIndex: "ten",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "trangThai",
-      key: "trangThai",
-      render: (trang_thai) => (
+      title: 'Trạng thái',
+      dataIndex: 'trangThai',
+      key: 'trangThai',
+      render: (trangThai) => (
         <>
-          {trang_thai === 0 ? (
-            <Tag
-              color="#f50
-                "
-            >
-              Dừng Bán
-            </Tag>
-          ) : (
-            <Tag
-              color="#87d068
-                "
-            >
-              Còn Bán
-            </Tag>
-          )}
-        </>
-      ),
+          {
+            (trangThai == 0) ?
+              (
+                <Tag color="red">
+                  Dừng bán
+                </Tag>
+              ) : (trangThai == 1) ?
+                <Tag color="green">
+                  Còn bán
+                </Tag>
+                : <Tag color="red">
+                  Ngừng hoạt động
+                </Tag>
+
+          }
+        </>),
+      filters: [
+        {
+          text: 'Dừng bán',
+          value: '0',
+        },
+        {
+          text: 'Còn bán',
+          value: '1',
+        },
+
+      ],
+      onFilter: (value, record) => record.trangThai === parseInt(value),
     },
     {
       title: "Action",
@@ -146,62 +157,66 @@ export default function DanhMuc() {
           <a>
             <Button type="primary" primary shape="circle" icon={<InfoCircleFilled size={20} />} />
           </a>
-          <a>
-            <Button type="primary" danger shape="circle" icon={<DeleteFilled size={20} />} />
-          </a>
         </Space>
       ),
     },
   ]
-  const [form] = Form.useForm();
 
   return (
     <div>
       <div className="container-fluid">
-        <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
+        <div style={{
+          marginTop : '50px',
+          border: '1px solid #ddd', // Border color
+          boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+          borderRadius: '8px', padding: '10px'
+        }}>
           <h4 className="ms-3 mt-2 mb-2"><FilterFilled /> Bộ lọc</h4>
           <Form className="row"
             labelCol={{
-              span: 10,
+              span: 8,
             }}
             wrapperCol={{
-              span: 20,
+              span: 14,
             }}
             layout="horizontal"
             initialValues={{
               size: componentSize,
             }}
-            onValuesChange={onFormLayoutChange}
+            onValuesChange={onChangeFilter}
             size={componentSize}
             style={{
-              maxWidth: 1000,
+              maxWidth: 1400,
+
             }}
-            onFinish={handleSubmit}
             form={form}
           >
             <div className="col-md-5">
-              <Form.Item label="Tên & Mã" name='key'>
+              <Form.Item label="Tên & Mã" name='tenDM'>
                 <Input />
               </Form.Item>
             </div>
             <div className='col-md-5'>
-              <Form.Item label="Trạng Thái" name='timTT'>
-                <Select value={selectedValue} onChange={handleChange}>
-                  <Select.Option value="1">Còn Bán</Select.Option>
-                  <Select.Option value="0">Dừng Bán</Select.Option>
+              <Form.Item label="Trạng Thái" name='trangThaiDM'>
+                <Select defaultValue={null}>
+                  <Select.Option value={null}>Tất cả</Select.Option>
+                  <Select.Option value='0'>Dừng Bán</Select.Option>
+                  <Select.Option value='1' >Còn Bán</Select.Option>
                 </Select>
               </Form.Item>
             </div>
-            <Form.Item className='ms-3'>
-              <Button type='primary' size='large' htmlType='submit'><MdSearch />  Tìm Kiếm</Button>
-            </Form.Item>
           </Form>
         </div>
-        <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
+        <div style={{
+          marginTop : '50px',
+          border: '1px solid #ddd', // Border color
+          boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+          borderRadius: '8px', padding: '10px'
+        }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách danh mục</h4>
           <div className="ms-3">
             {/* Add danh mục */}
-            <a name="" id="" class="btn btn-success mt-2" href="#" role="button" onClick={() => setOpen(true)}> <PlusCircleFilled />  Thêm danh mục</a>
+            <a name="" id="" className="btn btn-success mt-2" href="#" role="button" onClick={() => setOpen(true)}> <PlusCircleFilled />  Thêm danh mục</a>
             <Modal
               title="Thêm Danh Mục"
               centered
@@ -244,13 +259,17 @@ export default function DanhMuc() {
                       <Input className="border" />
                     </Form.Item>
                   </div>
-                    </div>
+                </div>
               </Form>
             </Modal>
           </div>
           <div className="container-fluid mt-4">
             <div>
-              <Table className='text-center' dataSource={danhMuc} columns={columns} pagination={{ defaultPageSize: 5 }} />
+              <Table className='text-center'
+                dataSource={danhMuc}
+                columns={columns}
+                pagination={{ showQuickJumper: true, defaultPageSize: 4, defaultCurrent: 1, total:100}}
+              />
             </div>
           </div>
         </div>

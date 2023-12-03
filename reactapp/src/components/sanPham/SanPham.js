@@ -9,6 +9,9 @@ import {
   Space,
   Table,
   Tag,
+  Row,
+  Col,
+  Slider
 } from 'antd';
 import { Link } from "react-router-dom";
 import { InfoCircleFilled } from "@ant-design/icons";
@@ -16,7 +19,7 @@ import { DeleteFilled } from "@ant-design/icons";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { BookFilled } from "@ant-design/icons";
 import { FilterFilled } from "@ant-design/icons";
-import {MdSearch} from 'react-icons/md';
+import { MdSearch } from 'react-icons/md';
 import axios from 'axios';
 export default function SanPham() {
   //Form
@@ -25,12 +28,23 @@ export default function SanPham() {
     console.log(`Selected value: ${value}`);
     setSelectedValue(value);
   };
-
-
   const [componentSize, setComponentSize] = useState('default');
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
+  const [form] = Form.useForm();
+  //Tìm kiếm 
+  const onChangeFilter = (changedValues, allValues) => {
+    timKiemSanPham(allValues);
+  }
+  const timKiemSanPham = (dataSearch) => {
+    axios.post('http://localhost:8080/san-pham/tim-kiem', dataSearch)
+      .then(response => {
+        // Update the list of items
+        setSanPhams(response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
+  }
   //Table
   const [sanPham, setSanPhams] = useState([]);
 
@@ -44,9 +58,7 @@ export default function SanPham() {
         return true;
       }
     });
-    if (result.status === 302) {
-      setSanPhams(result.data);
-    }
+    setSanPhams(result.data);
   };
 
   const columns = [
@@ -64,16 +76,16 @@ export default function SanPham() {
       title: "Mã",
       dataIndex: "ma",
       center: "true",
-      sorter: (a, b) => a.ma - b.ma,
-    }, 
+      sorter: (a, b) => a.ma.slice(2) - b.ma.slice(2),
+    },
     {
       title: "Tên",
       dataIndex: "ten",
     },
     {
-        title: "Số Lượng",
-        dataIndex: "soLuong",
-      },
+      title: "Số Lượng",
+      dataIndex: "soLuong",
+    },
     {
       title: "Trạng thái",
       dataIndex: "trangThai",
@@ -101,16 +113,16 @@ export default function SanPham() {
     {
       title: "Action",
       key: "action",
-      dataIndex:"idSP",
+      dataIndex: "idSP",
 
       render: (title) => (
-              <Space size="middle">
+        <Space size="middle">
           <a>
-            <Link to={`/showct/${title}`} className='btn btn-primary'><InfoCircleFilled/></Link>
+            <Button href={`/showct/${title}`} type="primary" primary shape="circle" icon={<InfoCircleFilled size={20} />} />
           </a>
-          <a>
+          {/* <a>
             <Button href='/upanh' type="primary" danger shape="circle" icon={<DeleteFilled size={20} />} />
-          </a>
+          </a> */}
         </Space>
       ),
     },
@@ -119,11 +131,16 @@ export default function SanPham() {
   return (
     <div>
       <div className="container-fluid">
-        <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
+        <div style={{
+          marginTop: '50px',
+          border: '1px solid #ddd', // Border color
+          boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+          borderRadius: '8px', padding: '10px'
+        }}>
           <h4 className="ms-3 mt-2 mb-2"><FilterFilled /> Bộ lọc</h4>
           <Form className="row"
             labelCol={{
-              span: 6,
+              span: 8,
             }}
             wrapperCol={{
               span: 14,
@@ -132,38 +149,50 @@ export default function SanPham() {
             initialValues={{
               size: componentSize,
             }}
-            onValuesChange={onFormLayoutChange}
+            onValuesChange={onChangeFilter}
+            onClick={onChangeFilter}
             size={componentSize}
             style={{
-              maxWidth: 1600,
+              maxWidth: 1400,
+
             }}
+
+            form={form}
           >
-            <div className="col-md-5">
-              <Form.Item label="Tên & Mã">
+            <div className="col-md-4">
+              <Form.Item label="Tên & Mã" name='tenSP'>
                 <Input />
               </Form.Item>
             </div>
-            <div className='col-md-5'>
-              <Form.Item label="Trạng Thái">
-                <Select value={selectedValue} onChange={handleChange}>
-                  <Select.Option value="1">Còn Bán</Select.Option>
-                  <Select.Option value="0">Dừng Bán</Select.Option>
+            <div className='col-md-4'>
+              <Form.Item label="Trạng Thái" name='trangThaiSP'>
+                <Select defaultValue={null}>
+                  <Select.Option value={null}>Tất cả</Select.Option>
+                  <Select.Option value='1'>Còn Bán</Select.Option>
+                  <Select.Option value='0'>Dừng Bán</Select.Option>
                 </Select>
               </Form.Item>
             </div>
-            <Form.Item className='ms-3'>
-              <Button type='primary' size='large'><MdSearch/>  Tìm Kiếm</Button>
-            </Form.Item>
+            <div className="col-md-4">
+              <Form.Item label="Số lượng" name='soLuongSP'>
+                 <Slider style={{width: '250px'}} min={2} max={1000}/>             
+              </Form.Item>
+            </div>
           </Form>
         </div>
-        <div className='bg-light pb-2 pt-2 mt-2' style={{ borderRadius: 20 }}>
+        <div style={{
+          marginTop: '50px',
+          border: '1px solid #ddd', // Border color
+          boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+          borderRadius: '8px', padding: '10px'
+        }}>
           <h4 className="ms-3 mt-2 mb-2"><BookFilled /> Danh sách sản phẩm</h4>
           <div className="ms-3">
             <a name="" id="" class="btn btn-success mt-2" href="/them-san-pham" role="button"> <PlusCircleFilled />  Thêm sản phẩm</a>
           </div>
           <div className="container-fluid mt-4">
             <div>
-              <Table className='text-center' dataSource={sanPham} columns={columns} pagination='5' />
+              <Table className='text-center' dataSource={sanPham} columns={columns} pagination={{ showQuickJumper: true, defaultPageSize: 3, defaultCurrent: 1, total:100}} />
             </div>
           </div>
         </div>

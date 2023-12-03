@@ -96,8 +96,7 @@ const Voucher = ()=>{
           // Update the list of items
           setVouchers(response.data);
           form.resetFields();
-          
-      })
+          })
       .catch(error => console.error('Error adding item:', error));
     }else{
       loadVoucher();
@@ -134,17 +133,17 @@ const columns = [
   {
     title: 'Mã Voucher',
     dataIndex: 'ma',
-    sorter: (a, b) => a.ma - b.ma,
+    
   },
   {
     title: 'Tên Voucher',
     dataIndex: 'ten',
-    sorter: (a, b) => a.ma - b.ma,
+    
   },
   {
     title: 'Phương thức',
     dataIndex: 'phuongThuc',
-    sorter: (a, b) => a.phuongThuc - b.phuongThuc,
+    
   },
   {
     title: 'Ngày bắt đầu',
@@ -159,7 +158,7 @@ const columns = [
     render: (ngayKetThuc) => (
       <>{moment(ngayKetThuc).format("DD/MM/YYYY")}</>
   ),
-    sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
+    
   },
   {
     title: 'Trạng thái',
@@ -170,12 +169,15 @@ const columns = [
                     {
                         (trangThai == 0) ?
                             (
-                                <Tag color="green">
-                                    Hoạt động
+                                <Tag color="gold">
+                                    Sắp diễn ra
                                 </Tag>
-                            ) :
+                            ) : (trangThai==1)?
+                            <Tag color="green">
+                            Hoạt động
+                            </Tag>
                             
-                                    <Tag color="red">
+                                    :<Tag color="red">
                                         Ngừng hoạt động
                                     </Tag>
                               
@@ -220,7 +222,7 @@ const columns = [
   
     const [open, setOpen] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
-    const [openDetail, setOpenDetail] = useState(false);
+const [openDetail, setOpenDetail] = useState(false);
     const [bordered] = useState(false);
     const [size] = useState('large');
     const [expandable] = useState(undefined);
@@ -323,9 +325,7 @@ const columns = [
     return (
 
         <div className="container" style={{borderRadius:20}}>
-      
-      
-         <div className="container-fluid">
+<div className="container-fluid">
          <Divider orientation="left" color="#d0aa73"><h4 className="text-first pt-1 fw-bold"> <FaTag size={20} />Quản lý phiếu giảm giá</h4></Divider>
          {/* form tìm kiếm */}
             <div className=' bg-light m-2 p-3 pt-2' style={{border: '1px solid #ddd', // Border color
@@ -385,7 +385,7 @@ const columns = [
                       <DatePicker className='rounded-pill border-warning' placeholder='Ngày bắt đầu' style={{ width: '100%' }} />
                   </Form.Item>
                   <Form.Item label="Ngày kết thúc" name='ngayKTVoucher'>
-                      <DatePicker className='rounded-pill border-warning' placeholder='Ngày kết thúc' style={{ width: '100%' }} />
+<DatePicker className='rounded-pill border-warning' placeholder='Ngày kết thúc' style={{ width: '100%' }} />
                   </Form.Item>
               </div>
            
@@ -401,141 +401,7 @@ const columns = [
      {/* view add voucher */}
      <div className=' text-end mt-3'>
              
-
-             
-               <Button type="primary" className='fw-bold nut-them rounded-pill' onClick={() => setOpen(true)}>
-               + Thêm
-               </Button>
-               <Modal
-                 title="Thêm voucher"
-                 centered
-                 open={open}
-                 onOk={() => setOpen(false)}
-                 onCancel={() => setOpen(false)}
-                 footer={[
-                  <Button onClick={()=>setOpen(false)}>Hủy</Button>,
-                  <Button type="primary"  onClick={() => {
-                    Modal.confirm({
-                      title: 'Thông báo',
-                      content: 'Bạn có chắc chắn muốn thêm không?',
-                      onOk: () => {form.sDubmit();},
-                      footer: (_, { OkBtn, CancelBtn }) => (
-                        <>
-                          <CancelBtn/>
-                          <OkBtn />
-                        </>
-                      ),
-                    });
-                  }}>Thêm</Button>
-                ]}
-                 width={1000}
-               >
-                 {/* form add voucher */}
-                 <Form className="row col-md-12 mt-3"
-
-      labelCol={{
-        span: 10,
-      }}
-      wrapperCol={{
-        span: 20,
-      }}
-      layout="horizontal"
-      initialValues={{
-        size: componentSize,
-      }}
-      onValuesChange={onFormLayoutChange}
-      size={componentSize}
-      style={{
-        maxWidth: 1000,
-      }}
-      onFinish={handleSubmit}
-      form={form}
-    
-    >
-        <div className="col-md-4">
-      <Form.Item label="Mã Voucher" name='ma' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng không để trống mã!',
-},
-]}   >
-        <Input  placeholder='Mã giảm giá' className='border-warning'/>
-      </Form.Item>
-      <Form.Item label="Phương thức" name='phuongThuc' style={{borderColor:'yellow'}} rules={[
-{
-required: true,
-message: 'Vui lòng chọn phương thức!',
-},
-]} >
-        <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}} onChange={handleChange}>
-          <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
-          <Select.Option value="Phần trăm">Phần trăm</Select.Option>
-        </Select>
-      </Form.Item>
-
-      <Form.Item label="Giới hạn" name='loaiVoucher' valuePropName="checked">
-        <Switch onChange={handleChangeSwitch}/>
-      </Form.Item>
-      {gioiHan==true?
-      <Form.Item label="Số lượng" name='soLuong'>
-      <InputNumber defaultValue={'1'} min={1}/>
-    </Form.Item>
-    :<></>
-    }
-      
-      </div>
-      <div className='col-md-4'>
-      <Form.Item label="Mức độ" name='mucDo'>
-          {selectedValue==='Tiền mặt'?
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
-    :
-    <InputNumber className='border-warning'
-      defaultValue={0}
-      min={0}
-      max={100}
-      formatter={(value) => `${value}%`}
-      parser={(value) => value.replace('%', '')}
-      style={{width:'100%'}}
-      
-    />
-          }
-      </Form.Item>
-      <Form.Item label="Giảm tối đa" name='giamToiDa' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng nhập giá trị giảm tối đa!',
-},
-]} >
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-       
-    />
-      </Form.Item>
-      <Form.Item label="Điều kiện" name='dieuKien' hasFeedback rules={[
-{
-required: true,
-message: 'Vui lòng nhập điều kiện giảm!',
-},
-]} >
-      <InputNumber className='border-warning'
-      defaultValue={0}
-      formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-      parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      style={{width:'100%'}}
-      
-    />
-
      <Link to='/themVoucher' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> <PlusCircleOutlined /> Thêm </Link>
-
         
             
                

@@ -52,15 +52,9 @@ root.render(
           <Route path='hang' element = {<Hang/>}></Route>
           <Route path='san-pham' element = {<SanPham/>}></Route>
           <Route path='showct/:uuid' element = {<ChiTietSanPham/>}></Route>
-
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
-<<<<<<< HEAD
           <Route path='upanh' element = {<TestAnh/>}></Route>
-=======
-
           <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
-
->>>>>>> 8ca4980875c90831ef86e16c8952bf0c3b79cc13
         </Route>
       </Routes>
     </BrowserRouter>
