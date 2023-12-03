@@ -45,7 +45,6 @@ root.render(
           <Route path='frm-khuyen-mai' element = {<ThemKhuyenMai />}></Route>
           <Route path='sua-khuyen-mai/:id' Component={SuaKhuyenMai} element = {<SuaKhuyenMai />}></Route>
           <Route path='voucher' element = {<Voucher/>}></Route>
-
           <Route path='nhan-vien' element={<NhanVien/>}></Route>
           <Route path='khach-hang' element={<KhachHang/>}></Route>
           <Route path='themVoucher' element = {<AddVoucher/>}></Route>
@@ -60,7 +59,6 @@ root.render(
           <Route path='them-san-pham' element = {<AddSanPham/>}></Route>
           <Route path='upanh' element = {<TestAnh/>}></Route>
           <Route path='/admin/ban-hang' element={<BanHang/>}></Route>
-
         </Route>
       </Routes>
     </BrowserRouter>
