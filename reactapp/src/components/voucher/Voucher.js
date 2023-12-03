@@ -1,58 +1,121 @@
 import React, { useEffect, useState } from 'react';
 import {
   Button,
+  Collapse,
   DatePicker,
+  Divider,
   Form,
   Input,
   InputNumber,
+  Modal,
+  Popconfirm,
   Select,
   Space, 
+   Switch, 
    Table,
    Tag,
 } from 'antd';
-import {MdDeleteForever} from 'react-icons/md';
-import {IoInformation} from 'react-icons/io5';
+import {FilterFilled , UnorderedListOutlined}  from "@ant-design/icons";
+import { IoInformation} from 'react-icons/io5';
 import {BsPencilSquare} from 'react-icons/bs';
 import axios from 'axios';
-const onChange = (value) => {
-    console.log('changed', value);
-  };
+import moment from 'moment';
+import {PlusCircleOutlined} from '@ant-design/icons';
+import "./Voucher.scss";
+import ModelAddVoucher from "./ModelUpdateVoucher";
+import ModalDetail from "./ModalDetail";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { render } from '@testing-library/react';
+import { FaTag } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { da } from 'date-fns/locale';
 
-const defaultExpandable = {
-  expandedRowRender: (record) => <p>{record.description}</p>,
-};
 
 const Voucher = ()=>{
-    //của form voucher
-    const [selectedValue, setSelectedValue] = useState('Tiền mặt');
-    const handleChange = (value) => {
-        console.log(`Selected value: ${value}`);
-        setSelectedValue(value);
-      };
-    
+    // const [dataSearch,setDataSearch]=useState({
+    //   tenVoucher:"",
+    //   trangThaiVoucher:"",
+    //   loaiVoucher:"",
+    //   phuongThucVoucher:"",
+    //   ngayBDVoucher:"",
+    //   ngayKTVoucher:"",
+    // });
+     const [dataSearch,setDataSearch]=useState({});
+    const onChangeFilter=(changedValues, allValues)=>{
+      
+      console.log("hi",changedValues);
+      // console.log("gtri",value);
+      setDataSearch(allValues);
+      // setDataSearch(e);
+      console.log(dataSearch);
+      timKiemVoucher(dataSearch);
+    }
+    //call api tìm kiếm
+    const timKiemVoucher=(dataSearch)=>{
+      axios.post('http://localhost:8080/voucher/search-voucher',dataSearch)
+      .then(response => {
+          // Update the list of items
+          setVouchers(response.data);
+          console.log("tìm kím:",response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }
+
+
+
 
     const [componentSize, setComponentSize] = useState('default');
     const onFormLayoutChange = ({ size }) => {
       setComponentSize(size);
     };
+
+  
+    const [form] = Form.useForm();
+ 
     ///call api
 
     const[voucher,setVouchers]=useState([])
+    const [myVoucher,setMyVoucher]=useState({});
     useEffect(()=>{
-        loadVoucher();
-       
-    },[]);
+      loadVoucher();
+      // setInterval(()=>{
+      //   loadVoucher();
+      // },60000);
+      // return () => clearInterval();
+      timKiemVoucher(dataSearch);
+    },[dataSearch]);
+    
+     //tìm kiếm
+     const timKiem = (values) => {
+      if(values.key!==undefined&&values.key!==null&&values.ngayBD!==undefined&&values.ngayBD!==null&&values.ngayKT!==undefined&&values.ngayKT!==null){
+       console.log(values);
+      // Send a POST request to the backend
+      axios.get(`http://localhost:8080/voucher/tim-voucher/${values.key}/${moment(values.ngayBD).format('YYYY-MM-DD')}/${moment(values.ngayKT).format('YYYY-MM-DD')}`)
+      .then(response => {
+          // Update the list of items
+          setVouchers(response.data);
+          form.resetFields();
+          
+      })
+      .catch(error => console.error('Error adding item:', error));
+    }else{
+      loadVoucher();
   
+    }
+       console.log(moment(values.ngayKT).format('YYYY-MM-DD'));
+    }
+  
+
+    //loadvoucher
     const loadVoucher=async()=>{
        
-        const result = await axios.get('http://localhost:8080/voucher', {
-            validateStatus: () => {
-                return true;
-            },
-        });
-        if (result.status === 302) {
-            setVouchers(result.data); 
-        }  
+        await axios.get('http://localhost:8080/voucher/hien-thi')
+        .then(response => {
+          // Update the list of items
+          setVouchers(response.data);
+      })
+      .catch(error => console.error('Error adding item:', error));
     
       
     };
@@ -67,11 +130,15 @@ const columns = [
     key: 'id',
     render: (id,record,index) => {++index; return index},
     showSortTooltip:false,
-
 },
   {
     title: 'Mã Voucher',
     dataIndex: 'ma',
+    sorter: (a, b) => a.ma - b.ma,
+  },
+  {
+    title: 'Tên Voucher',
+    dataIndex: 'ten',
     sorter: (a, b) => a.ma - b.ma,
   },
   {
@@ -82,21 +149,16 @@ const columns = [
   {
     title: 'Ngày bắt đầu',
     dataIndex: 'ngayBatDau',
-    filters: [
-      {
-        text: 'London',
-        value: 'London',
-      },
-      {
-        text: 'New York',
-        value: 'New York',
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+    render: (ngayBatDau) => (
+      <>{moment(ngayBatDau).format("DD/MM/YYYY")}</>
+  ),
   },
   {
     title: 'Ngày kết thúc',
     dataIndex: 'ngayKetThuc',
+    render: (ngayKetThuc) => (
+      <>{moment(ngayKetThuc).format("DD/MM/YYYY")}</>
+  ),
     sorter: (a, b) => a.ngayKetThuc - b.ngayKetThuc,
   },
   {
@@ -121,41 +183,48 @@ const columns = [
                 </>),
     filters: [
       {
-        text: 'Hoạt động',
-        value: 'Hoạt động',
+          text: 'Hoạt động',
+          value: '0',
       },
       {
-        text: 'Ngừng hoạt động',
-        value: 'Ngừng hoạt động',
+          text: 'Ngừng hoạt động',
+          value: '1',
       },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
+
+  ],
+  onFilter: (value, record) => record.trangThai.indexOf(value) === 0,
   },
   {
     title: 'Action',
     key: 'action',
     sorter: true,
-    render: () => (
+    render: (record) => (
+      
       <Space size="middle">
         <a>
-        <Button  danger shape="circle" icon={<IoInformation size={22} />}  />
+        <Button type='primary' danger shape="circle" icon={<IoInformation size={15} />} onClick={()=>{detailVoucher(record)}} />
         </a>
         <a>
-        <Button success shape="circle" icon={<BsPencilSquare size={22} />}  />
+        <Button type='primary' className='btn btn-success text-center' shape="circle" icon={<BsPencilSquare size={15} />} onClick={()=>{editVoucher(record)}}/>
         </a>
-        <a>
-          <Button type="primary" danger shape="circle" icon={<MdDeleteForever size={20} />}  />
-        </a>
+        
       </Space>
+      
+  
     ),
+    center:'true',
   },
 ];
 
+  
+  
+    const [open, setOpen] = useState(false);
+    const [openUpdate, setOpenUpdate] = useState(false);
+    const [openDetail, setOpenDetail] = useState(false);
     const [bordered] = useState(false);
     const [size] = useState('large');
     const [expandable] = useState(undefined);
     const [showHeader] = useState(true);
-    const [rowSelection] = useState({});
     const [hasData] = useState(true);
     const [tableLayout] = useState();
     const [top] = useState('none');
@@ -188,16 +257,187 @@ const columns = [
       tableLayout,
     };
 
+    //khai  báo form update
+    const editVoucher=(row)=>{
+      setMyVoucher(row);
+      setID(row.id);
+      setOpenUpdate(true);
+     
+    }
+    const resetMyVoucher=()=>{
+      // setID('');
+      setMyVoucher({});
+    }
+    //mở form detail
+    const detailVoucher=(row)=>{
+      setMyVoucher(row);
+      setOpenDetail(true);
+      console.log('voucher',myVoucher);
+    }
+    
+    const getVoucherByID = async(id) => {
+      await axios.get(`http://localhost:8080/voucher/detail/${id}`)
+      .then(response => {
+        // Update the list of items
+        setMyVoucher(response.data);
+    })
+    .catch(error => console.error('Error adding item:', error));
+  
+    
+    };
+    const [id,setID]=useState('');
+    
+    
+    ///validate ngày 
+    const validateDateKT = (_, value) => {
+      const { getFieldValue } = form;
+      const startDate = getFieldValue('ngayBatDau');
+      if (startDate && value &&value.isBefore(startDate)) {
+        return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
+      }
+      return Promise.resolve();
+    };
+    const [checkNgay,setCheckNgay]=useState(false);
+
+    const validateDateBD = (_, value) => {
+      const newDate = new Date();
+      // if(startDate && value && value.isAfter(moment)){
+      //   return Promise.reject('Ngày kết thúc phải sau ngày bắt đầu');
+      // }
+      const { getFieldValue } = form;
+      const endDate = getFieldValue('ngayKetThuc');
+      if(endDate && value && value.isAfter(endDate)){
+        return Promise.reject('Ngày bắt đầu phải trước ngày kết thúc');
+      }
+      if ( value && value<newDate) {
+        return Promise.reject('Ngày bắt phải sau ngày hiện tại');
+      }
+      return Promise.resolve();
+    };
+    //hiển thị số lượng
+    const [gioiHan,setGioiHan]=useState(false);
+    const handleChangeSwitch=(value)=>{
+      setGioiHan(value);
+    };
+    
     return (
-        <div className="container border border-bg-dark-subtle border-2 m-2 row" style={{borderRadius:20}}>
-            <h3 className="text-center mt-2">Quản lý Voucher</h3>
-            <div className='bg-light m-2 p-3 pt-5' style={{borderRadius:20}}>
-            <Form className=" row col-md-12"
+
+        <div className="container" style={{borderRadius:20}}>
+      
+      
+         <div className="container-fluid">
+         <Divider orientation="left" color="#d0aa73"><h4 className="text-first pt-1 fw-bold"> <FaTag size={20} />Quản lý phiếu giảm giá</h4></Divider>
+         {/* form tìm kiếm */}
+            <div className=' bg-light m-2 p-3 pt-2' style={{border: '1px solid #ddd', // Border color
+    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.1)', // Box shadow
+    borderRadius: '8px'}}>
+            <h5><FilterFilled size={30}/> Bộ lọc</h5>
+            <hr/>
+            <Form className="row col-md-12"
+              labelCol={{
+                  span: 8,
+              }}
+              wrapperCol={{
+                  span: 14,
+              }}
+              layout="horizontal"
+              initialValues={{
+                  size: componentSize,
+              }}
+              onValuesChange={onChangeFilter}
+              size={componentSize}
+              style={{
+                  maxWidth: 1400,
+
+              }}
+              form={form}
+          >
+              <div className="col-md-4">
+                  <Form.Item label="Tìm kiếm" name='tenVoucher'>
+                      <Input className='rounded-pill border-warning' placeholder='Nhập mã hoặc tên hoặc mức độ giảm giá'/>
+                  </Form.Item>
+                  <Form.Item label="Hình thức" name='phuongThucVoucher'>
+                  <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}}  >
+                      <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
+                      <Select.Option value="Phần trăm">Phần trăm</Select.Option>
+                  </Select>
+                  </Form.Item> 
+              </div>
+
+              <div className='col-md-4'>
+              <Form.Item label="Loại" name='loaiVoucher' >
+                  <Select defaultValue={'Tất cả'} style={{borderColor:'yellow'}}>
+                      <Select.Option value="true">Giới hạn</Select.Option>
+                      <Select.Option value="false">Không giới hạn</Select.Option>
+                  </Select>
+                  </Form.Item> 
+                  <Form.Item label="Trạng thái" name='trangThaiVoucher' >
+                  <Select defaultValue={'Tất cả'} style={{borderColor:'yellow'}}>
+                      <Select.Option value="0">Sắp diễn ra</Select.Option>
+                      <Select.Option value="1">Hoạt động</Select.Option>
+                      <Select.Option value="2">Ngừng hoạt động</Select.Option>
+                  </Select>
+                  </Form.Item> 
+                 
+                  </div>
+                  <div className='col-md-4'>
+                  <Form.Item label="Ngày bắt đầu" name='ngayBDVoucher' >
+                      <DatePicker className='rounded-pill border-warning' placeholder='Ngày bắt đầu' style={{ width: '100%' }} />
+                  </Form.Item>
+                  <Form.Item label="Ngày kết thúc" name='ngayKTVoucher'>
+                      <DatePicker className='rounded-pill border-warning' placeholder='Ngày kết thúc' style={{ width: '100%' }} />
+                  </Form.Item>
+              </div>
+           
+              <Form.Item className='text-end '>
+                      <Button type="primary" htmlType='reset'>Làm mới</Button>
+                  </Form.Item>
+          </Form>
+      
+    
+           
+    </div>
+    {/* hết form tìm kiếm */}
+     {/* view add voucher */}
+     <div className=' text-end mt-3'>
+             
+
+             
+               <Button type="primary" className='fw-bold nut-them rounded-pill' onClick={() => setOpen(true)}>
+               + Thêm
+               </Button>
+               <Modal
+                 title="Thêm voucher"
+                 centered
+                 open={open}
+                 onOk={() => setOpen(false)}
+                 onCancel={() => setOpen(false)}
+                 footer={[
+                  <Button onClick={()=>setOpen(false)}>Hủy</Button>,
+                  <Button type="primary"  onClick={() => {
+                    Modal.confirm({
+                      title: 'Thông báo',
+                      content: 'Bạn có chắc chắn muốn thêm không?',
+                      onOk: () => {form.sDubmit();},
+                      footer: (_, { OkBtn, CancelBtn }) => (
+                        <>
+                          <CancelBtn/>
+                          <OkBtn />
+                        </>
+                      ),
+                    });
+                  }}>Thêm</Button>
+                ]}
+                 width={1000}
+               >
+                 {/* form add voucher */}
+                 <Form className="row col-md-12 mt-3"
+
       labelCol={{
-        span: 6,
+        span: 10,
       }}
       wrapperCol={{
-        span: 14,
+        span: 20,
       }}
       layout="horizontal"
       initialValues={{
@@ -206,96 +446,151 @@ const columns = [
       onValuesChange={onFormLayoutChange}
       size={componentSize}
       style={{
-        maxWidth: 1600,
+        maxWidth: 1000,
       }}
+      onFinish={handleSubmit}
+      form={form}
+    
     >
         <div className="col-md-4">
-      <Form.Item label="Mã Voucher">
-        <Input />
+      <Form.Item label="Mã Voucher" name='ma' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng không để trống mã!',
+},
+]}   >
+        <Input  placeholder='Mã giảm giá' className='border-warning'/>
       </Form.Item>
-      <Form.Item label="Phương thức">
-        <Select value={selectedValue} onChange={handleChange}>
+      <Form.Item label="Phương thức" name='phuongThuc' style={{borderColor:'yellow'}} rules={[
+{
+required: true,
+message: 'Vui lòng chọn phương thức!',
+},
+]} >
+        <Select defaultValue={'Phương thức'} style={{borderColor:'yellow'}} onChange={handleChange}>
           <Select.Option value="Tiền mặt">Tiền mặt</Select.Option>
           <Select.Option value="Phần trăm">Phần trăm</Select.Option>
         </Select>
       </Form.Item>
+
+      <Form.Item label="Giới hạn" name='loaiVoucher' valuePropName="checked">
+        <Switch onChange={handleChangeSwitch}/>
+      </Form.Item>
+      {gioiHan==true?
+      <Form.Item label="Số lượng" name='soLuong'>
+      <InputNumber defaultValue={'1'} min={1}/>
+    </Form.Item>
+    :<></>
+    }
+      
       </div>
       <div className='col-md-4'>
-      <Form.Item label="Mức độ">
+      <Form.Item label="Mức độ" name='mucDo'>
           {selectedValue==='Tiền mặt'?
-      <InputNumber
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
     :
-    <InputNumber
+    <InputNumber className='border-warning'
       defaultValue={0}
       min={0}
       max={100}
       formatter={(value) => `${value}%`}
       parser={(value) => value.replace('%', '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
           }
       </Form.Item>
-      <Form.Item label="Giảm tối đa">
-      <InputNumber
+      <Form.Item label="Giảm tối đa" name='giamToiDa' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng nhập giá trị giảm tối đa!',
+},
+]} >
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+       
     />
       </Form.Item>
-      <Form.Item label="Điều kiện">
-      <InputNumber
+      <Form.Item label="Điều kiện" name='dieuKien' hasFeedback rules={[
+{
+required: true,
+message: 'Vui lòng nhập điều kiện giảm!',
+},
+]} >
+      <InputNumber className='border-warning'
       defaultValue={0}
       formatter={(value) => `VND ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
       parser={(value) => value.replace(/\VND\s?|(,*)/g, '')}
-      onChange={onChange}
       style={{width:'100%'}}
+      
     />
-        
-      </Form.Item>
-      </div>
-      <div className='col-md-4'>
-      
-      <Form.Item label="Ngày bắt đầu">
-      <DatePicker style={{width:'100%'}}/>
-      </Form.Item>
-      <Form.Item label="Ngày kết thúc">
-      <DatePicker style={{width:'100%'}}/>
-      </Form.Item>
-      </div>
-      
-      <Form.Item className='text-center'>
-      <Button type="primary">Thêm</Button>
-      </Form.Item>
-      
-    </Form>
-    </div>
-     {/* hết form Voucher */}
 
+     <Link to='/themVoucher' className="btn btn-warning bg-gradient fw-bold nut-them rounded-pill"> <PlusCircleOutlined /> Thêm </Link>
+
+        
+            
+               
+             
+   
+         
+         </div>
+      {/* view table voucher */}
+      <div style={{border: '1px solid #ddd', // Border color
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)', // Box shadow
+    borderRadius: '8px',padding:'10px'}}>
+         <div className="text-first fw-bold">
+            <p><UnorderedListOutlined size={30}/> Danh sách phiếu giảm giá </p>
+          </div>
      <>
       <Table
         {...tableProps}
         pagination={{
+          showQuickJumper: true,
           position: [top, bottom],
+          defaultPageSize:5,
+          defaultCurrent: 1,
+          total: 100,
         }}
         columns={tableColumns}
         dataSource={hasData ? voucher : []}
         scroll={scroll}
+        
       />
     </>
+    </div>
+    {/* hết table voucher */}
+    <ModelAddVoucher id={id}  openUpdate={openUpdate} setOpenUpdate={setOpenUpdate} myVoucher={myVoucher} setMyVoucher={setMyVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+
+    <ModalDetail  openDetail={openDetail} setOpenDetail={setOpenDetail} myVoucher={myVoucher} setMyVoucher={setMyVoucher} resetMyVoucher={resetMyVoucher} loadVoucher={loadVoucher}/>
+    
+    <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="light"
+/>
+{/* Same as */}
+<ToastContainer />
         </div>
-
-       
-          
-
+ </div>
+     
+     ////VIEW UPDATE VOUCHER
+     
     );
 }
 export default Voucher;

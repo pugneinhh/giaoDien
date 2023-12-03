@@ -3,14 +3,15 @@
     width: 100vw;
     .admin-sidebar{
         height: 100vh;
+        
     }
     .admin-contents{
         flex:100%;
-        background-color: #e6e8e7;
+        background-color: #fefffe;
         flex-direction: column; 
     }
     .admin-content{
-        background-color: #e6e8e7;
+        background-color: #fbfbfb;
     }
 }
 .admin-header{

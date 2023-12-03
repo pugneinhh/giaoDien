@@ -4,14 +4,14 @@ import SideBar from "./Sidebar";
 import './admin.scss';
 import { TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarRightCollapseFilled } from "react-icons/tb"
 import { useEffect, useState } from "react";
-import {Avatar,Badge, Button} from 'antd';
+import { Avatar, Badge, Button } from 'antd';
 import { IoNotifications } from 'react-icons/io5';
 import { FaUserAlt } from 'react-icons/fa';
 import { Header } from "antd/es/layout/layout";
-const Admin=(props) =>{
-    const [collapsed,setCollapsed] = useState(false);
-    const [isHeaderFixed, setIsHeaderFixed] = useState(false);
-    
+const Admin = (props) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       // Khi người dùng cuộn trang, kiểm tra vị trí cuộn so với vị trí của sidebar
@@ -31,10 +31,12 @@ const Admin=(props) =>{
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
     return(
         <div className={`admin-container ${isHeaderFixed ? 'fixed' : ''}`}>
            <div class="admin-sidebar">
-                <SideBar collapsed={collapsed}/>
+                <SideBar collapsed={collapsed} />
+                
             </div>
             <div className="admin-contents">
                
@@ -61,12 +63,14 @@ const Admin=(props) =>{
                    
                 </Header>
 
+                
                 <div className="admin-content">
                     <Outlet/>
                 </div>
-            </div >
-        </div >
-        
-    )
+</div>
+</div>
+
+
+  )
 }
 export default Admin;
