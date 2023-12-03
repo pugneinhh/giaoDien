@@ -119,7 +119,6 @@ export default function NhanVien() {
                 dataSource={hasData ? nhanVien : []}
                 scroll={scroll}
       />
-
           </div>
         </div>
       </div>
